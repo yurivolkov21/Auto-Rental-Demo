@@ -1,6 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import { ChevronLeft, Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -53,22 +53,21 @@ export default function AdminLocationsCreate() {
             <Head title="Create Location" />
 
             <div className="space-y-6">
-                {/* Page Header */}
-                <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                        <h1 className="text-3xl font-bold tracking-tight">
+                {/* Header */}
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="/admin/locations">
+                            <ChevronLeft className="h-5 w-5" />
+                        </Link>
+                    </Button>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">
                             Create Location
                         </h1>
-                        <p className="text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                             Add a new pickup/dropoff location
                         </p>
                     </div>
-                    <Button variant="outline" asChild>
-                        <Link href="/admin/locations">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back
-                        </Link>
-                    </Button>
                 </div>
 
                 <form onSubmit={handleSubmit}>

@@ -52,8 +52,10 @@ class LocationController extends Controller
         $stats = [
             'total'    => Location::count(),
             'active'   => Location::where('is_active', true)->count(),
+            'inactive' => Location::where('is_active', false)->count(),
             'airports' => Location::where('is_airport', true)->count(),
             'popular'  => Location::where('is_popular', true)->count(),
+            'is_24_7'  => Location::where('is_24_7', true)->count(),
         ];
 
         return Inertia::render('admin/locations/index', [

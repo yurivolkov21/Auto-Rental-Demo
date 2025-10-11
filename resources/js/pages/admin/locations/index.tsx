@@ -40,7 +40,9 @@ interface Stats {
     total: number;
     active: number;
     inactive: number;
-    airport: number;
+    airports: number;
+    popular: number;
+    is_24_7: number;
 }
 
 interface Pagination {
@@ -152,6 +154,9 @@ export default function AdminLocationsIndex({
                         </CardHeader>
                         <CardContent className="pt-0">
                             <div className="text-2xl font-bold">{stats.total}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                All pickup/dropoff points
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -164,18 +169,9 @@ export default function AdminLocationsIndex({
                         </CardHeader>
                         <CardContent className="pt-0">
                             <div className="text-2xl font-bold">{stats.active}</div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="hover:shadow-md transition-shadow">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
-                            <CardTitle className="text-sm font-medium leading-tight">
-                                Inactive Locations
-                            </CardTitle>
-                            <X className="h-4 w-4 text-gray-600 flex-shrink-0" />
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                            <div className="text-2xl font-bold">{stats.inactive}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                {stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}% operational
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -187,7 +183,25 @@ export default function AdminLocationsIndex({
                             <Plane className="h-4 w-4 text-purple-600 flex-shrink-0" />
                         </CardHeader>
                         <CardContent className="pt-0">
-                            <div className="text-2xl font-bold">{stats.airport}</div>
+                            <div className="text-2xl font-bold">{stats.airports}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Near airports & terminals
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-md transition-shadow">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+                            <CardTitle className="text-sm font-medium leading-tight">
+                                24/7 Locations
+                            </CardTitle>
+                            <Clock className="h-4 w-4 text-orange-600 flex-shrink-0" />
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.is_24_7}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Always available
+                            </p>
                         </CardContent>
                     </Card>
                 </div>

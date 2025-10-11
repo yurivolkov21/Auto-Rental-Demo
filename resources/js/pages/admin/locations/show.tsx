@@ -1,9 +1,8 @@
 import { type Location, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
-    ArrowLeft,
-    CheckCircle,
-    CircleOff,
+    Check,
+    ChevronLeft,
     Clock,
     Edit,
     Globe,
@@ -13,6 +12,7 @@ import {
     Plane,
     Star,
     Trash2,
+    X,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -84,20 +84,20 @@ export default function AdminLocationsShow({ location }: Props) {
             <Head title={`${location.name} - Location Details`} />
 
             <div className="space-y-6">
-                {/* Page Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" size="icon" asChild>
+                {/* Header */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" size="icon" asChild>
                             <Link href="/admin/locations">
-                                <ArrowLeft className="h-4 w-4" />
+                                <ChevronLeft className="h-5 w-5" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
+                            <h1 className="text-2xl font-bold tracking-tight">
                                 {location.name}
                             </h1>
-                            <p className="text-muted-foreground">
-                                Location Details
+                            <p className="text-sm text-muted-foreground">
+                                Location details and management
                             </p>
                         </div>
                     </div>
@@ -109,12 +109,12 @@ export default function AdminLocationsShow({ location }: Props) {
                         >
                             {location.is_active ? (
                                 <>
-                                    <CircleOff className="mr-2 h-4 w-4" />
+                                    <X className="mr-2 h-4 w-4" />
                                     Deactivate
                                 </>
                             ) : (
                                 <>
-                                    <CheckCircle className="mr-2 h-4 w-4" />
+                                    <Check className="mr-2 h-4 w-4" />
                                     Activate
                                 </>
                             )}
@@ -155,12 +155,12 @@ export default function AdminLocationsShow({ location }: Props) {
                                     >
                                         {location.is_active ? (
                                             <>
-                                                <CheckCircle className="mr-1 h-3 w-3" />
+                                                <Check className="mr-1 h-3 w-3" />
                                                 Active
                                             </>
                                         ) : (
                                             <>
-                                                <CircleOff className="mr-1 h-3 w-3" />
+                                                <X className="mr-1 h-3 w-3" />
                                                 Inactive
                                             </>
                                         )}
