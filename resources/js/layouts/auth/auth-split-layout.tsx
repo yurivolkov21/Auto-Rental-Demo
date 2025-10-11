@@ -48,13 +48,10 @@ export default function AuthSplitLayout({
 
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-gradient-to-br from-zinc-900 via-black to-zinc-900 p-10 text-white lg:flex dark:border-r">
-                {/* Subtle Gradient Overlay */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-zinc-800/30 via-transparent to-zinc-800/30" />
-
+            <div className="relative hidden h-full flex-col bg-gradient-to-br from-black via-gray-900 to-black p-10 text-white lg:flex dark:border-r">
                 {/* Decorative Background Pattern */}
                 <div className="absolute inset-0 opacity-5">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] bg-repeat" />
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE0YzYuNjI3IDAgMTIgNS4zNzMgMTIgMTJzLTUuMzczIDEyLTEyIDEyLTEyLTUuMzczLTEyLTEyIDUuMzczLTEyIDEyLTEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-20" />
                 </div>
 
                 {/* Logo & Brand */}
@@ -73,11 +70,11 @@ export default function AuthSplitLayout({
                         <h2 className="text-4xl font-bold leading-tight drop-shadow-lg">
                             Premium Car Rental
                             <br />
-                            <span className="bg-gradient-to-r from-zinc-300 to-zinc-100 bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-gray-300 to-gray-100 bg-clip-text text-transparent">
                                 in Vietnam
                             </span>
                         </h2>
-                        <p className="text-lg text-zinc-300 drop-shadow-md">
+                        <p className="text-lg text-gray-300 drop-shadow-md">
                             Experience the freedom of the road with our premium
                             fleet. Book instantly, drive confidently.
                         </p>
@@ -90,13 +87,13 @@ export default function AuthSplitLayout({
                             return (
                                 <div
                                     key={index}
-                                    className="group rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm transition-all hover:border-zinc-700 hover:bg-zinc-800/50 hover:shadow-lg"
+                                    className="group rounded-lg border border-gray-800 bg-gray-900/50 p-4 backdrop-blur-sm transition-all hover:border-gray-700 hover:bg-gray-800/50 hover:shadow-lg"
                                 >
-                                    <Icon className="mb-2 size-6 text-zinc-400 transition-transform group-hover:scale-110 group-hover:text-white" />
+                                    <Icon className="mb-2 size-6 text-gray-400 transition-transform group-hover:scale-110 group-hover:text-white" />
                                     <h3 className="text-sm font-semibold">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-xs text-zinc-400">
+                                    <p className="text-xs text-gray-400">
                                         {feature.description}
                                     </p>
                                 </div>
@@ -105,13 +102,13 @@ export default function AuthSplitLayout({
                     </div>
 
                     {/* Stats Section */}
-                    <div className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                    <div className="flex items-center justify-between rounded-lg border border-gray-800 bg-gray-900/50 p-4 backdrop-blur-sm">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-center">
                                 <div className="text-2xl font-bold text-white">
                                     {stat.value}
                                 </div>
-                                <div className="text-xs text-zinc-400">
+                                <div className="text-xs text-gray-400">
                                     {stat.label}
                                 </div>
                             </div>
@@ -119,7 +116,7 @@ export default function AuthSplitLayout({
                     </div>
 
                     {/* Trust Badge */}
-                    <div className="flex items-center gap-2 text-sm text-zinc-300">
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
                         <CheckCircle2 className="size-5 text-emerald-500" />
                         <span>
                             Trusted by thousands of travelers across Vietnam
