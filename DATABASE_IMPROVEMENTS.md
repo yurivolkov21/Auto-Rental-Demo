@@ -1,4 +1,4 @@
-# 📝 Database Schema Improvements - User & UserVerification Tables
+# 📝 Database Schema Improvements - User & UserVerification Tables (#1)
 
 ## 📅 Date: October 11, 2025
 
