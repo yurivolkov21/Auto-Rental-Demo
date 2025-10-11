@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests\Settings;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 use Laravel\Fortify\Features;
+use Illuminate\Foundation\Http\FormRequest;
 use Laravel\Fortify\InteractsWithTwoFactorState;
 
+/**
+ * @method User|null user(string|null $guard = null)
+ */
 class TwoFactorAuthenticationRequest extends FormRequest
 {
     use InteractsWithTwoFactorState;

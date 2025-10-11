@@ -13,6 +13,8 @@ use Illuminate\Validation\ValidationException;
  * @method array only(string|array $keys)
  * @method \Illuminate\Support\Stringable string(string $key, mixed $default = null)
  * @method string|null ip()
+ * @method \Illuminate\Session\Store session()
+ * @method bool boolean(string|null $key = null, bool $default = false)
  */
 class LoginRequest extends FormRequest
 {
