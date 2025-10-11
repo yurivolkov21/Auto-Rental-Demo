@@ -110,23 +110,27 @@ class VerificationController extends Controller
      */
     public function approve(UserVerification $verification): RedirectResponse
     {
-        if ($verification->status === 'verified') {
-            return back()->with('error', 'This verification is already approved.');
+        try {
+            if ($verification->status === 'verified') {
+                return back()->with('error', 'This verification is already approved.');
+            }
+
+            /** @var \App\Models\User */
+            $admin = Auth::user();
+
+            $verification->update([
+                'status'          => 'verified',
+                'verified_by'     => $admin->id,
+                'verified_at'     => now(),
+                'rejected_by'     => null,
+                'rejected_at'     => null,
+                'rejected_reason' => null,
+            ]);
+
+            return back()->with('success', 'Verification approved successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to approve verification. Please try again.');
         }
-
-        /** @var \App\Models\User */
-        $admin = Auth::user();
-
-        $verification->update([
-            'status'          => 'verified',
-            'verified_by'     => $admin->id,
-            'verified_at'     => now(),
-            'rejected_by'     => null,
-            'rejected_at'     => null,
-            'rejected_reason' => null,
-        ]);
-
-        return back()->with('success', 'Verification approved successfully.');
     }
 
     /**
@@ -134,26 +138,30 @@ class VerificationController extends Controller
      */
     public function reject(Request $request, UserVerification $verification): RedirectResponse
     {
-        $request->validate([
-            'reason' => ['required', 'string', 'max:1000'],
-        ]);
+        try {
+            $request->validate([
+                'reason' => ['required', 'string', 'max:1000'],
+            ]);
 
-        if ($verification->status === 'rejected') {
-            return back()->with('error', 'This verification is already rejected.');
+            if ($verification->status === 'rejected') {
+                return back()->with('error', 'This verification is already rejected.');
+            }
+
+            /** @var \App\Models\User */
+            $admin = Auth::user();
+
+            $verification->update([
+                'status'          => 'rejected',
+                'rejected_by'     => $admin->id,
+                'rejected_at'     => now(),
+                'rejected_reason' => $request->reason,
+                'verified_by'     => null,
+                'verified_at'     => null,
+            ]);
+
+            return back()->with('success', 'Verification rejected successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to reject verification. Please try again.');
         }
-
-        /** @var \App\Models\User */
-        $admin = Auth::user();
-
-        $verification->update([
-            'status'          => 'rejected',
-            'rejected_by'     => $admin->id,
-            'rejected_at'     => now(),
-            'rejected_reason' => $request->reason,
-            'verified_by'     => null,
-            'verified_at'     => null,
-        ]);
-
-        return back()->with('success', 'Verification rejected successfully.');
     }
 }

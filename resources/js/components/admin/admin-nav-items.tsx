@@ -5,6 +5,7 @@ import {
     Calendar,
     Car,
     UserCheck,
+    MapPin,
     Tag,
     Settings,
 } from 'lucide-react';
@@ -57,6 +58,12 @@ export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
             href: '/admin/drivers',
             icon: UserCheck,
             isActive: currentPath.startsWith('/admin/drivers'),
+        },
+        {
+            title: 'Locations',
+            href: '/admin/locations',
+            icon: MapPin,
+            isActive: currentPath.startsWith('/admin/locations'),
         },
         {
             title: 'Promotions',
