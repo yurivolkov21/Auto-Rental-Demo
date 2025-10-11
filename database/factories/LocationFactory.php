@@ -65,12 +65,16 @@ class LocationFactory extends Factory
         $type = fake()->randomElement(self::$locationTypes);
         $name = "{$type} - {$city}";
 
+        // Add unique suffix to avoid slug collisions
+        $uniqueSuffix = fake()->unique()->numerify('####');
+        $slug = Str::slug($name) . '-' . $uniqueSuffix;
+
         // Generate realistic Vietnam coordinates
         $coordinates = $this->getCoordinatesForCity($city);
 
         return [
             'name'         => $name,
-            'slug'         => Str::slug($name),
+            'slug'         => $slug,
             'description'  => fake()->optional(0.7)->sentence(15),
             'address'      => fake()->streetAddress(),
             'latitude'     => $coordinates['lat'],

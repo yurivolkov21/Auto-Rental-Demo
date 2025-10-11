@@ -110,10 +110,13 @@ function TwoFactorSetupStep({
                                         type="text"
                                         readOnly
                                         value={manualSetupKey}
+                                        aria-label="Two-factor authentication setup key"
                                         className="h-full w-full bg-background p-3 text-foreground outline-none"
                                     />
                                     <button
                                         onClick={() => copy(manualSetupKey)}
+                                        aria-label={copiedText === manualSetupKey ? 'Copied to clipboard' : 'Copy setup key to clipboard'}
+                                        title={copiedText === manualSetupKey ? 'Copied!' : 'Copy to clipboard'}
                                         className="border-l border-border px-3 hover:bg-muted"
                                     >
                                         <IconComponent className="w-4" />

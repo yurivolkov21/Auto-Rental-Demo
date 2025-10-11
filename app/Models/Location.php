@@ -43,8 +43,6 @@ class Location extends Model
         return [
             'latitude'     => 'decimal:8',
             'longitude'    => 'decimal:8',
-            'opening_time' => 'datetime:H:i',
-            'closing_time' => 'datetime:H:i',
             'is_24_7'      => 'boolean',
             'is_airport'   => 'boolean',
             'is_popular'   => 'boolean',
@@ -146,10 +144,14 @@ class Location extends Model
             return 'Hours not set';
         }
 
-        return sprintf(
-            '%s - %s',
-            $this->opening_time->format('H:i'),
-            $this->closing_time->format('H:i')
-        );
+        // Handle time strings directly
+        $openingTime = is_string($this->opening_time)
+            ? substr($this->opening_time, 0, 5)
+            : $this->opening_time;
+        $closingTime = is_string($this->closing_time)
+            ? substr($this->closing_time, 0, 5)
+            : $this->closing_time;
+
+        return sprintf('%s - %s', $openingTime, $closingTime);
     }
 }
