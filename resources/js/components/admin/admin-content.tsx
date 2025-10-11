@@ -16,7 +16,7 @@ export default function AdminContent({ children, breadcrumbs = [] }: AdminConten
     return (
         <SidebarInset className="overflow-x-hidden">
             <AdminSidebarHeader breadcrumbs={breadcrumbs} />
-            <div className="flex flex-col gap-6 p-4 md:p-6 lg:p-8">
+            <div className="flex flex-col gap-4 p-4">
                 {children}
             </div>
         </SidebarInset>

@@ -56,6 +56,7 @@ export default function AdminVerificationShow({
 }) {
     const [imageDialog, setImageDialog] = useState<string | null>(null);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [approveDialogOpen, setApproveDialogOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -89,24 +90,21 @@ export default function AdminVerificationShow({
     };
 
     const handleApprove = () => {
-        if (confirm('Are you sure you want to approve this verification?')) {
-            router.post(
-                `/admin/verifications/${verification.id}/approve`,
-                {},
-                {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        alert('Verification approved successfully!');
-                    },
-                }
-            );
-        }
+        router.post(
+            `/admin/verifications/${verification.id}/approve`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setApproveDialogOpen(false);
+                },
+            }
+        );
     };
 
     const handleReject = (e: React.FormEvent) => {
         e.preventDefault();
         if (!rejectReason.trim()) {
-            alert('Please provide a reason for rejection');
             return;
         }
 
@@ -118,7 +116,6 @@ export default function AdminVerificationShow({
                 onSuccess: () => {
                     setRejectDialogOpen(false);
                     setRejectReason('');
-                    alert('Verification rejected successfully!');
                 },
             }
         );
@@ -174,7 +171,10 @@ export default function AdminVerificationShow({
                                         <XCircle className="mr-2 h-4 w-4" />
                                         Reject
                                     </Button>
-                                    <Button variant="default" onClick={handleApprove}>
+                                    <Button
+                                        variant="default"
+                                        onClick={() => setApproveDialogOpen(true)}
+                                    >
                                         <CheckCircle className="mr-2 h-4 w-4" />
                                         Approve
                                     </Button>
@@ -515,6 +515,49 @@ export default function AdminVerificationShow({
                             />
                         </div>
                     )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Approve Dialog */}
+            <Dialog open={approveDialogOpen} onOpenChange={setApproveDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            Approve Verification
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <p className="text-sm text-muted-foreground">
+                            Are you sure you want to approve this verification for{' '}
+                            <strong>{verification.user?.name}</strong>?
+                        </p>
+                        <Alert>
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Please confirm</AlertTitle>
+                            <AlertDescription>
+                                This action will mark the user's identity as verified and grant them
+                                access to owner features.
+                            </AlertDescription>
+                        </Alert>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setApproveDialogOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="default"
+                            onClick={handleApprove}
+                        >
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Approve Verification
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
 
