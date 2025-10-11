@@ -36,6 +36,17 @@ import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
+// Helper function to get avatar URL
+const getAvatarUrl = (avatar: string | null | undefined): string | undefined => {
+    if (!avatar) return undefined;
+    // If it's a full URL (http/https), return as is
+    if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+        return avatar;
+    }
+    // Otherwise, it's a storage path
+    return `/storage/${avatar}`;
+};
+
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -246,7 +257,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 >
                                     <Avatar className="size-8 overflow-hidden rounded-full">
                                         <AvatarImage
-                                            src={auth.user.avatar}
+                                            src={getAvatarUrl(auth.user.avatar)}
                                             alt={auth.user.name}
                                         />
                                         <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
