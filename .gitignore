@@ -1,28 +1,44 @@
-/.phpunit.cache
+# Project directories
+/app/storage
+/bootstrap/compiled.php
 /bootstrap/ssr
 /node_modules
 /public/build
 /public/hot
 /public/storage
+/public_html/storage
+/public_html/hot
 /resources/js/actions
 /resources/js/routes
 /resources/js/wayfinder
 /storage/*.key
 /storage/pail
 /vendor
-.DS_Store
+/.vagrant
+
+# Environment files
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
-/auth.json
+
+# Tooling and IDE files
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+.phpactor.json
+Homestead.json
+Homestead.yaml
+
+# Cache and log files
+.phpunit.result.cache
+/.phpunit.cache
+npm-debug.log
+yarn-error.log
+
+# Authentication files
+auth.json
+
+# Additional files
+/carbook-master
