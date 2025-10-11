@@ -27,14 +27,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const LICENSE_TYPES = [
-    { value: 'A1', label: 'A1 - Motorcycle under 125cc' },
-    { value: 'A2', label: 'A2 - Motorcycle under 400cc' },
-    { value: 'A', label: 'A - All motorcycles' },
-    { value: 'B1', label: 'B1 - Light vehicles' },
-    { value: 'B', label: 'B - Cars and light vehicles' },
-    { value: 'C', label: 'C - Trucks' },
-    { value: 'D', label: 'D - Buses' },
-    { value: 'E', label: 'E - Trailers' },
+    { value: 'B2', label: 'B2 - Cars (4-9 seats)' },
+    { value: 'D', label: 'D - Passenger vehicles (10-16 seats)' },
 ];
 
 const STATUS_CONFIG = {
@@ -161,15 +155,21 @@ export default function Verification({
                                             <Label htmlFor="driving_license_image">
                                                 License Photo *
                                             </Label>
-                                            {licensePreview && (
-                                                <div className="mb-2">
+                                            <div className="mb-2">
+                                                {licensePreview ? (
                                                     <img
                                                         src={licensePreview}
                                                         alt="License preview"
                                                         className="h-48 w-auto rounded-md border object-cover"
                                                     />
-                                                </div>
-                                            )}
+                                                ) : (
+                                                    <div className="flex h-48 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            No image selected
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
                                             <Input
                                                 id="driving_license_image"
                                                 name="driving_license_image"
@@ -280,15 +280,21 @@ export default function Verification({
                                             <Label htmlFor="id_image">
                                                 Government ID Photo *
                                             </Label>
-                                            {idPreview && (
-                                                <div className="mb-2">
+                                            <div className="mb-2">
+                                                {idPreview ? (
                                                     <img
                                                         src={idPreview}
                                                         alt="ID preview"
                                                         className="h-48 w-auto rounded-md border object-cover"
                                                     />
-                                                </div>
-                                            )}
+                                                ) : (
+                                                    <div className="flex h-48 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            No image selected
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
                                             <Input
                                                 id="id_image"
                                                 name="id_image"
@@ -309,15 +315,21 @@ export default function Verification({
                                             <Label htmlFor="selfie_image">
                                                 Selfie Photo *
                                             </Label>
-                                            {selfiePreview && (
-                                                <div className="mb-2">
+                                            <div className="mb-2">
+                                                {selfiePreview ? (
                                                     <img
                                                         src={selfiePreview}
                                                         alt="Selfie preview"
                                                         className="h-48 w-auto rounded-md border object-cover"
                                                     />
-                                                </div>
-                                            )}
+                                                ) : (
+                                                    <div className="flex h-48 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            No image selected
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
                                             <Input
                                                 id="selfie_image"
                                                 name="selfie_image"

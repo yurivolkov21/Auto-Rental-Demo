@@ -34,7 +34,7 @@ class UserVerificationFactory extends Factory
             // Driving license information
             'driving_license_number' => fake()->numerify('B######'),
             'driving_license_image'  => fake()->imageUrl(800, 600, 'business'),
-            'license_type'           => fake()->randomElement(['A1', 'A2', 'B1', 'B2', 'C', 'D', 'E']),
+            'license_type'           => fake()->randomElement(['B2', 'D']),
             'license_issue_date'     => $issueDate->format('Y-m-d'),
             'license_expiry_date'    => $expiryDate->format('Y-m-d'),
             'license_issued_country' => 'Vietnam',

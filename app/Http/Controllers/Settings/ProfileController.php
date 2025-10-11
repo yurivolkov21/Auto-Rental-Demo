@@ -19,9 +19,21 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+
+        // Format date_of_birth for HTML date input
+        $dateOfBirth = null;
+        if ($user->date_of_birth instanceof \Carbon\Carbon) {
+            $dateOfBirth = $user->date_of_birth->format('Y-m-d');
+        }
+
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status'          => $request->session()->get('status'),
+            'user' => [
+                'date_of_birth' => $dateOfBirth,
+            ],
         ]);
     }
 

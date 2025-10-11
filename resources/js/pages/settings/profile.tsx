@@ -29,9 +29,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Profile({
     mustVerifyEmail,
     status,
+    user,
 }: {
     mustVerifyEmail: boolean;
     status?: string;
+    user?: {
+        date_of_birth?: string | null;
+    };
 }) {
     const { auth } = usePage<SharedData>().props;
 
@@ -231,7 +235,7 @@ export default function Profile({
                                                 id="date_of_birth"
                                                 type="date"
                                                 defaultValue={
-                                                    auth.user.date_of_birth || ''
+                                                    user?.date_of_birth || ''
                                                 }
                                                 name="date_of_birth"
                                             />

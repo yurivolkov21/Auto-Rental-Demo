@@ -27,8 +27,23 @@ class VerificationController extends Controller
             'status' => 'pending',
         ]);
 
+        // Format dates for HTML date inputs
+        $licenseIssueDate = null;
+        $licenseExpiryDate = null;
+        
+        if ($verification->license_issue_date instanceof \Carbon\Carbon) {
+            $licenseIssueDate = $verification->license_issue_date->format('Y-m-d');
+        }
+        
+        if ($verification->license_expiry_date instanceof \Carbon\Carbon) {
+            $licenseExpiryDate = $verification->license_expiry_date->format('Y-m-d');
+        }
+
         return Inertia::render('settings/verification', [
-            'verification' => $verification,
+            'verification' => array_merge($verification->toArray(), [
+                'license_issue_date' => $licenseIssueDate,
+                'license_expiry_date' => $licenseExpiryDate,
+            ]),
         ]);
     }
 

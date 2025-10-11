@@ -18,7 +18,7 @@ class VerificationUpdateRequest extends FormRequest
             // Driving license information
             'driving_license_number'  => ['nullable', 'string', 'max:50'],
             'driving_license_image'   => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'], // Max 5MB
-            'license_type'            => ['nullable', 'string', 'max:20'],
+            'license_type'            => ['nullable', 'string', 'in:B2,D'], // B2: 4-9 seats, D: 10-16 seats
             'license_issue_date'      => ['nullable', 'date', 'before:today'],
             'license_expiry_date'     => ['nullable', 'date', 'after:license_issue_date'],
             'license_issued_country'  => ['nullable', 'string', 'max:100'],
