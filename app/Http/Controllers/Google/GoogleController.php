@@ -23,8 +23,7 @@ class GoogleController extends Controller
         $avatar = $googleUser->getAvatar();
 
         // If avatar is empty or default, use UI Avatars
-        if (!$avatar || $avatar === '' || strpos($avatar, 'default') !== false)
-        {
+        if (!$avatar || $avatar === '' || strpos($avatar, 'default') !== false) {
             // Create a default avatar from the user's name using the UI Avatars service
             $name = urlencode($googleUser->getName() ?: 'User');
 
@@ -41,84 +40,60 @@ class GoogleController extends Controller
 
     public function handleGoogleCallback(Request $request)
     {
-        Log::info('Google callback started');
-
-        try
-        {
+        try {
             $googleUser = Socialite::driver('google')->user();
-            Log::info('Google user retrieved', [
-                'email'    => $googleUser->getEmail(),
-                'name'     => $googleUser->getName(),
-                'avatar'   => $googleUser->getAvatar(),
-                'nickname' => $googleUser->getNickname(),
-                'id'       => $googleUser->getId()
-            ]);
-        }
-        catch (\Throwable $e)
-        {
+
+            // Validate that we have an email from Google
+            if (!$googleUser->getEmail()) {
+                throw new \Exception('Email not provided by Google');
+            }
+        } catch (\Throwable $e) {
             return redirect()
                 ->route('login')
-                ->withErrors(['google' => 'Unable to login using Google. Please try again.']);
+                ->withErrors(['google' => 'Unable to login using Google. Please try again or contact support.']);
         }
 
+        // Find user by Google provider ID
         $user = User::where('provider', 'google')
             ->where('provider_id', $googleUser->getId())
             ->first();
 
-        if (!$user && $googleUser->getEmail())
-        {
+        // If not found by provider, check if email already exists
+        if (!$user && $googleUser->getEmail()) {
             $user = User::where('email', $googleUser->getEmail())->first();
         }
 
-        if (!$user)
-        {
+        if (!$user) {
+            // Create new user from Google account
             $user = User::create([
                 'name'              => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Google User',
                 'email'             => $googleUser->getEmail(),
-                'password'          => Hash::make(Str::random(32)),
+                'password'          => Hash::make(Str::random(32)), // Random password for OAuth users
                 'provider'          => 'google',
                 'provider_id'       => $googleUser->getId(),
+                'avatar'            => $this->getValidAvatar($googleUser),
                 'email_verified_at' => now(),
+                'role'              => 'customer', // Default role
+                'status'            => 'active',
             ]);
-
-            // Create user profile with avatar
-            $user->profile()->create([
-                'avatar' => $this->getValidAvatar($googleUser),
-            ]);
-        }
-        else
-        {
+        } else {
+            // Update existing user with Google info
             $user->update([
-                'name'              => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Google User',
+                'name'              => $googleUser->getName() ?: $googleUser->getNickname() ?: $user->name,
                 'provider'          => 'google',
                 'provider_id'       => $googleUser->getId(),
+                'avatar'            => $this->getValidAvatar($googleUser),
                 'email_verified_at' => $user->email_verified_at ?: now(),
+                'status'            => 'active', // Ensure account is active
             ]);
-
-            // Update profile avatar
-            if ($user->profile)
-            {
-                $user->profile->update([
-                    'avatar' => $this->getValidAvatar($googleUser),
-                ]);
-            }
-            else
-            {
-                $user->profile()->create([
-                    'avatar' => $this->getValidAvatar($googleUser),
-                ]);
-            }
         }
 
+        // Login the user
         Auth::login($user, true);
 
-        // Redirect admin users to admin dashboard, others to regular dashboard
-        $defaultRoute = $user->role === 'admin'
-            ? route('admin.dashboard')
-            : route('dashboard');
-
+        // Redirect to dashboard
         return redirect()
-            ->intended($defaultRoute)
-            ->with('status', 'You have been logged in using Google.');
+            ->intended(route('dashboard'))
+            ->with('status', 'Successfully logged in with Google!');
     }
 }
