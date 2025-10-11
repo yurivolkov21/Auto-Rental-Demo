@@ -16,7 +16,7 @@ export default function AdminSidebarLayout({
     breadcrumbs = []
 }: AdminSidebarLayoutProps) {
     return (
-        <SidebarProvider defaultOpen={true}>
+        <SidebarProvider defaultOpen={false}>
             <AdminSidebar />
             <AdminContent breadcrumbs={breadcrumbs}>{children}</AdminContent>
         </SidebarProvider>
