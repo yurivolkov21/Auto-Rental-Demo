@@ -104,3 +104,43 @@ export interface UserVerification {
     created_at: string;
     updated_at: string;
 }
+
+export interface Location {
+    id: number;
+
+    // Basic Information
+    name: string;
+    slug: string;
+    description?: string | null;
+
+    // Address Details
+    address?: string | null;
+
+    // Geographic Coordinates
+    latitude?: number | null;
+    longitude?: number | null;
+
+    // Contact Information
+    phone?: string | null;
+    email?: string | null;
+
+    // Operating Hours
+    opening_time?: string | null; // HH:mm format
+    closing_time?: string | null; // HH:mm format
+    is_24_7: boolean;
+
+    // Display & Status
+    is_airport: boolean;
+    is_popular: boolean;
+    is_active: boolean;
+    sort_order: number;
+
+    // Computed Properties (from Model)
+    operating_hours?: string; // e.g., "08:00 - 18:00" or "24/7"
+    distance?: number; // Distance in km (when using nearby scope)
+
+    // Timestamps
+    created_at: string;
+    updated_at: string;
+}
+
