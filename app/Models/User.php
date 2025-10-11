@@ -3,10 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -22,6 +22,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'email_verified_at',
+        'provider',
+        'provider_id',
+        'avatar',
+        'bio',
+        'phone',
+        'address',
+        'date_of_birth',
+        'role',
+        'status',
+        'deletion_reason',
+        'deletion_requested_at',
+        'deleted_at',
     ];
 
     /**
@@ -44,8 +57,20 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'       => 'datetime',
+            'password'                => 'hashed',
+            'two_factor_confirmed_at' => 'datetime',
+            'date_of_birth'           => 'date',
+            'deletion_requested_at'   => 'datetime',
+            'deleted_at'              => 'datetime',
         ];
+    }
+
+    /**
+     * Get the user's verification record.
+     */
+    public function verification()
+    {
+        return $this->hasOne(UserVerification::class);
     }
 }

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();                  // Unique email address
             $table->string('password');                         // Hashed password
             $table->timestamp('email_verified_at')->nullable(); // Email verification timestamp
-            $table->timestamp('user_verified_at')->nullable();  // User verification timestamp
 
             // OAuth fields
             $table->string('provider', 50)->nullable(); // OAuth provider name (e.g., 'google', 'facebook')
@@ -29,23 +28,33 @@ return new class extends Migration
             $table->timestamp('two_factor_confirmed_at')->nullable(); // 2FA confirmation timestamp
 
             // Profile information
-            $table->string('phone', 20)->unique()->nullable(); // Phone number (international format)
-            $table->text('address')->nullable();                       // Physical address
-            $table->string('avatar', 500)->nullable();         // URL to avatar image (can be long)
-            $table->text('bio')->nullable();                           // Short biography
-            $table->date('date_of_birth')->nullable();                 // Date of birth
+            $table->text('avatar')->nullable();              // URL to avatar image
+            $table->text('bio')->nullable();                 // Short biography
+            $table->string('phone', 20)->nullable(); // Phone number (international format)
+            $table->text('address')->nullable();             // Physical address
+            $table->date('date_of_birth')->nullable();       // Date of birth
 
-            // Role & verification
-            $table->enum('role', ['customer', 'driver', 'admin'])->default('customer'); // User role
+            // Role & status
+            $table->enum('role', ['customer', 'owner', 'admin'])->default('customer'); // User role
+            $table->enum('status', ['active', 'inactive', 'suspended', 'banned'])->default('active'); // Account status
 
-            // Account deletion tracking (soft delete)
+            // Account deletion
             $table->text('deletion_reason')->nullable();            // Reason for deletion
             $table->timestamp('deletion_requested_at')->nullable(); // When deletion was requested
             $table->timestamp('deleted_at')->nullable();            // When the account was deleted
 
-
             $table->rememberToken();
             $table->timestamps();
+
+            // Indexes for better query performance
+            $table->index('role');
+            $table->index('status');
+            $table->index(['provider', 'provider_id']);
+            $table->index('deleted_at');
+            $table->index('phone');
+
+            // Composite unique constraint for OAuth
+            $table->unique(['provider', 'provider_id'], 'oauth_unique');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
