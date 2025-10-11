@@ -8,6 +8,7 @@ use Inertia\Response;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Rules\DifferentFromUserPassword;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -38,7 +39,12 @@ class NewPasswordController extends Controller
         $request->validate([
             'token'    => 'required',
             'email'    => 'required|email',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+                new DifferentFromUserPassword($request->email),
+            ],
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we

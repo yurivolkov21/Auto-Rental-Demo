@@ -84,4 +84,35 @@ class PasswordResetTest extends TestCase
 
         $response->assertSessionHasErrors('email');
     }
+
+    public function test_password_cannot_be_reset_to_same_password()
+    {
+        Notification::fake();
+
+        $user = User::factory()->create([
+            'password' => bcrypt('OldPassword123!'),
+        ]);
+
+        $this->post(route('password.email'), ['email' => $user->email]);
+
+        Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
+            $response = $this->post(route('password.store'), [
+                'token' => $notification->token,
+                'email' => $user->email,
+                'password' => 'OldPassword123!',
+                'password_confirmation' => 'OldPassword123!',
+            ]);
+
+            $response->assertSessionHasErrors('password');
+
+            // Verify error message
+            $errors = session('errors');
+            $this->assertStringContainsString(
+                'different from your current password',
+                $errors->first('password')
+            );
+
+            return true;
+        });
+    }
 }

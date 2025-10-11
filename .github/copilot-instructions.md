@@ -20,6 +20,32 @@ npm run types && npm run lint  # Frontend validation
 
 **Rules:** Backend changes cần tests. Frontend pass types+lint. Schema changes → update 6 places: Migration, Model `$fillable`+`$casts`, Factory, Seeder, Controller validation, TS types.
 
+## AI Assistant Behavior Rules
+**CRITICAL - Follow these rules strictly:**
+
+1. **Documentation Files:**
+   - ❌ **DO NOT** automatically create markdown documentation files (*.md)
+   - ✅ Only create documentation when explicitly requested by user
+   - ✅ Provide summary in chat response instead of creating files
+   - Exception: README.md or docs specifically requested
+
+2. **Test Files:**
+   - ❌ **DO NOT** automatically create or update test files
+   - ✅ Only create/modify tests when explicitly requested
+   - ✅ Mention what tests should be added, but don't create them
+   - Exception: User specifically asks "create tests" or "add test coverage"
+
+3. **Code Changes:**
+   - ✅ Always implement requested features/fixes directly in code
+   - ✅ Update Models, Controllers, Migrations, Factories, Seeders as needed
+   - ✅ Sync TypeScript types with PHP models
+   - ✅ Provide clear summary of changes in chat
+
+**Example workflows:**
+- User: "Add status field to users" → Update migration, model, types (NO .md file, NO tests unless asked)
+- User: "Document this feature" → Create .md file (explicitly requested)
+- User: "Add tests for password validation" → Create test files (explicitly requested)
+
 ## Database Seeding Workflow
 **CRITICAL FLOW:** `Migrations (source of truth) → Factories → Seeders → php artisan db:seed`
 

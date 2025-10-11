@@ -20,7 +20,7 @@ class DifferentFromUserPassword implements ValidationRule
         $user = User::where('email', $this->email)->first();
 
         if ($user && Hash::check($value, $user->password)) {
-            $fail('The new password must be different from your previous password.');
+            $fail('The new password must be different from your current password.');
         }
     }
 }
