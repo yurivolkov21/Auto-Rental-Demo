@@ -1,4 +1,4 @@
-import { type UserVerification } from '@/types';
+import { type UserVerification, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import {
@@ -58,6 +58,21 @@ export default function AdminVerificationShow({
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Admin',
+            href: '/admin',
+        },
+        {
+            title: 'Verifications',
+            href: index().url,
+        },
+        {
+            title: verification.user?.name || 'Details',
+            href: `/admin/verifications/${verification.id}`,
+        },
+    ];
+
     const StatusIcon = STATUS_CONFIG[verification.status].icon;
 
     const getAvatarUrl = (avatar: string | null | undefined): string | null => {
@@ -110,7 +125,7 @@ export default function AdminVerificationShow({
     };
 
     return (
-        <AdminLayout>
+        <AdminLayout breadcrumbs={breadcrumbs}>
             <Head title={`Verification - ${verification.user?.name}`} />
 
             <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { type UserVerification } from '@/types';
+import { type UserVerification, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { AlertCircle, CheckCircle, Clock, Eye, Search, XCircle } from 'lucide-react';
@@ -19,6 +19,17 @@ import {
 } from '@/components/ui/table';
 import AdminLayout from '@/layouts/admin-layout';
 import { index, show } from '@/routes/admin/verifications';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Admin',
+        href: '/admin',
+    },
+    {
+        title: 'Verifications',
+        href: index().url,
+    },
+];
 
 const STATUS_CONFIG = {
     pending: {
@@ -91,7 +102,7 @@ export default function AdminVerificationsIndex({
     };
 
     return (
-        <AdminLayout>
+        <AdminLayout breadcrumbs={breadcrumbs}>
             <Head title="Verification Management" />
 
             <div className="space-y-6">
