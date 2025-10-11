@@ -1,10 +1,8 @@
-import { type BreadcrumbItem, type UserVerification } from '@/types';
+import { type UserVerification } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { AlertCircle, CheckCircle, Clock, Eye, Search, XCircle } from 'lucide-react';
 import { useState } from 'react';
-
-import HeadingSmall from '@/components/heading-small';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,19 +17,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import AppLayout from '@/layouts/app-layout';
+import AdminLayout from '@/layouts/admin-layout';
 import { index, show } from '@/routes/admin/verifications';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Admin',
-        href: '/admin',
-    },
-    {
-        title: 'Verifications',
-        href: index().url,
-    },
-];
 
 const STATUS_CONFIG = {
     pending: {
@@ -104,23 +91,28 @@ export default function AdminVerificationsIndex({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AdminLayout>
             <Head title="Verification Management" />
 
             <div className="space-y-6">
-                <HeadingSmall
-                    title="Verification Management"
-                    description="Review and manage user identity verifications"
-                />
+                {/* Page Header */}
+                <div className="space-y-2">
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        Verification Management
+                    </h1>
+                    <p className="text-muted-foreground">
+                        Review and manage user identity verifications
+                    </p>
+                </div>
 
                 <Card>
-                    <CardHeader>
-                        <CardTitle>User Verifications</CardTitle>
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-xl">User Verifications</CardTitle>
                         <CardDescription>
                             Filter and search through user verification submissions
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6">
                         {/* Filters */}
                         <div className="flex flex-col gap-4 sm:flex-row">
                             <div className="flex-1">
@@ -342,6 +334,6 @@ export default function AdminVerificationsIndex({
                     </CardContent>
                 </Card>
             </div>
-        </AppLayout>
+        </AdminLayout>
     );
 }

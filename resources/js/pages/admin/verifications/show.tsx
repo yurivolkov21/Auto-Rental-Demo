@@ -1,4 +1,4 @@
-import { type BreadcrumbItem, type UserVerification } from '@/types';
+import { type UserVerification } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import {
@@ -14,8 +14,6 @@ import {
     XCircle,
 } from 'lucide-react';
 import { useState } from 'react';
-
-import HeadingSmall from '@/components/heading-small';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -25,8 +23,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import AppLayout from '@/layouts/app-layout';
-import { index, show } from '@/routes/admin/verifications';
+import AdminLayout from '@/layouts/admin-layout';
+import { index } from '@/routes/admin/verifications';
 
 const STATUS_CONFIG = {
     pending: {
@@ -59,21 +57,6 @@ export default function AdminVerificationShow({
     const [imageDialog, setImageDialog] = useState<string | null>(null);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
-
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Admin',
-            href: '/admin',
-        },
-        {
-            title: 'Verifications',
-            href: index().url,
-        },
-        {
-            title: verification.user?.name || 'Details',
-            href: show({ verification: verification.id }).url,
-        },
-    ];
 
     const StatusIcon = STATUS_CONFIG[verification.status].icon;
 
@@ -127,54 +110,60 @@ export default function AdminVerificationShow({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AdminLayout>
             <Head title={`Verification - ${verification.user?.name}`} />
 
             <div className="space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" asChild>
                             <Link href={index().url}>
-                                <ChevronLeft className="h-4 w-4" />
+                                <ChevronLeft className="h-5 w-5" />
                             </Link>
                         </Button>
-                        <HeadingSmall
-                            title="Verification Details"
-                            description="Review user identity verification submission"
-                        />
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight">
+                                Verification Details
+                            </h1>
+                            <p className="text-sm text-muted-foreground">
+                                Review user identity verification submission
+                            </p>
+                        </div>
                     </div>
-                    <Badge className={STATUS_CONFIG[verification.status].color}>
-                        <StatusIcon className="mr-1 h-3 w-3" />
+                    <Badge className={`${STATUS_CONFIG[verification.status].color} h-fit`}>
+                        <StatusIcon className="mr-1.5 h-4 w-4" />
                         {STATUS_CONFIG[verification.status].label}
                     </Badge>
                 </div>
 
                 {/* Action Buttons */}
                 {verification.status === 'pending' && (
-                    <Card className="border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950">
-                        <CardContent className="flex items-center justify-between p-4">
-                            <div>
-                                <p className="font-medium text-blue-900 dark:text-blue-100">
-                                    Action Required
-                                </p>
-                                <p className="text-sm text-blue-700 dark:text-blue-300">
-                                    Please review the documents and approve or reject this
-                                    verification
-                                </p>
-                            </div>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant="destructive"
-                                    onClick={() => setRejectDialogOpen(true)}
-                                >
-                                    <XCircle className="mr-2 h-4 w-4" />
-                                    Reject
-                                </Button>
-                                <Button variant="default" onClick={handleApprove}>
-                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                    Approve
-                                </Button>
+                    <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
+                        <CardContent className="p-6">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="space-y-1">
+                                    <p className="font-semibold text-blue-900 dark:text-blue-100">
+                                        Action Required
+                                    </p>
+                                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                                        Please review the documents and approve or reject this
+                                        verification
+                                    </p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => setRejectDialogOpen(true)}
+                                    >
+                                        <XCircle className="mr-2 h-4 w-4" />
+                                        Reject
+                                    </Button>
+                                    <Button variant="default" onClick={handleApprove}>
+                                        <CheckCircle className="mr-2 h-4 w-4" />
+                                        Approve
+                                    </Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -185,7 +174,7 @@ export default function AdminVerificationShow({
                     <Alert variant="destructive">
                         <XCircle className="h-4 w-4" />
                         <AlertTitle>Rejected</AlertTitle>
-                        <AlertDescription>
+                        <AlertDescription className="mt-2">
                             <p className="mb-2">
                                 <strong>Reason:</strong> {verification.rejected_reason}
                             </p>
@@ -205,12 +194,12 @@ export default function AdminVerificationShow({
 
                 {/* Verification Info */}
                 {verification.status === 'verified' && verification.verifier && (
-                    <Alert className="border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950">
+                    <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
                         <CheckCircle className="h-4 w-4 text-green-600" />
                         <AlertTitle className="text-green-900 dark:text-green-100">
                             Verified
                         </AlertTitle>
-                        <AlertDescription className="text-green-700 dark:text-green-300">
+                        <AlertDescription className="mt-2 text-green-700 dark:text-green-300">
                             Verified by {verification.verifier.name} on{' '}
                             {verification.verified_at &&
                                 format(new Date(verification.verified_at), 'MMM dd, yyyy')}
@@ -218,11 +207,11 @@ export default function AdminVerificationShow({
                     </Alert>
                 )}
 
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-2">
                     {/* User Information */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                        <CardHeader className="space-y-1">
+                            <CardTitle className="flex items-center gap-2 text-lg">
                                 <User className="h-5 w-5" />
                                 User Information
                             </CardTitle>
@@ -230,22 +219,24 @@ export default function AdminVerificationShow({
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center gap-4">
-                                <Avatar className="h-16 w-16">
+                                <Avatar className="h-20 w-20 ring-2 ring-border">
                                     <AvatarImage
                                         src={getAvatarUrl(verification.user?.avatar) || undefined}
                                         alt={verification.user?.name}
                                     />
-                                    <AvatarFallback className="text-lg">
+                                    <AvatarFallback className="text-xl font-semibold">
                                         {verification.user?.name
-                                            .split(' ')
-                                            .map((n) => n[0])
-                                            .join('')
-                                            .toUpperCase()
-                                            .slice(0, 2)}
+                                            ? verification.user.name
+                                                  .split(' ')
+                                                  .map((n) => n[0])
+                                                  .join('')
+                                                  .toUpperCase()
+                                                  .slice(0, 2)
+                                            : 'NA'}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div>
-                                    <p className="text-lg font-semibold">
+                                <div className="flex-1">
+                                    <p className="text-lg font-semibold leading-tight">
                                         {verification.user?.name}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
@@ -256,19 +247,23 @@ export default function AdminVerificationShow({
 
                             <Separator />
 
-                            <div className="space-y-2 text-sm">
+                            <div className="space-y-3">
                                 {verification.user?.phone && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Phone:</span>
-                                        <span className="font-medium">
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
+                                            Phone:
+                                        </span>
+                                        <span className="text-sm font-semibold">
                                             {verification.user.phone}
                                         </span>
                                     </div>
                                 )}
                                 {verification.user?.date_of_birth && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Date of Birth:</span>
-                                        <span className="font-medium">
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
+                                            Date of Birth:
+                                        </span>
+                                        <span className="text-sm font-semibold">
                                             {format(
                                                 new Date(verification.user.date_of_birth),
                                                 'MMM dd, yyyy'
@@ -276,15 +271,19 @@ export default function AdminVerificationShow({
                                         </span>
                                     </div>
                                 )}
-                                <div className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">Role:</span>
-                                    <Badge variant="outline">
-                                        {verification.user?.role.toUpperCase()}
+                                <div className="flex items-center justify-between py-1">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Role:
+                                    </span>
+                                    <Badge variant="outline" className="font-semibold">
+                                        {verification.user?.role?.toUpperCase() || 'N/A'}
                                     </Badge>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">Submitted:</span>
-                                    <span className="font-medium">
+                                <div className="flex items-center justify-between py-1">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Submitted:
+                                    </span>
+                                    <span className="text-sm font-semibold">
                                         {format(new Date(verification.created_at), 'MMM dd, yyyy')}
                                     </span>
                                 </div>
@@ -294,32 +293,38 @@ export default function AdminVerificationShow({
 
                     {/* Driving License Info */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                        <CardHeader className="space-y-1">
+                            <CardTitle className="flex items-center gap-2 text-lg">
                                 <IdCard className="h-5 w-5" />
                                 Driving License
                             </CardTitle>
                             <CardDescription>License details and documentation</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="space-y-2 text-sm">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">License Number:</span>
-                                    <span className="font-mono font-medium">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between py-1">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        License Number:
+                                    </span>
+                                    <span className="font-mono text-sm font-semibold">
                                         {verification.driving_license_number || 'N/A'}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">License Type:</span>
-                                    <Badge variant="secondary">
+                                <div className="flex items-center justify-between py-1">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        License Type:
+                                    </span>
+                                    <Badge variant="secondary" className="font-semibold">
                                         {verification.license_type || 'N/A'}
                                     </Badge>
                                 </div>
                                 {verification.license_issue_date && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Issue Date:</span>
-                                        <span className="flex items-center gap-1 font-medium">
-                                            <Calendar className="h-3 w-3" />
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
+                                            Issue Date:
+                                        </span>
+                                        <span className="flex items-center gap-1.5 text-sm font-semibold">
+                                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                                             {format(
                                                 new Date(verification.license_issue_date),
                                                 'MMM dd, yyyy'
@@ -328,10 +333,12 @@ export default function AdminVerificationShow({
                                     </div>
                                 )}
                                 {verification.license_expiry_date && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Expiry Date:</span>
-                                        <span className="flex items-center gap-1 font-medium">
-                                            <Calendar className="h-3 w-3" />
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
+                                            Expiry Date:
+                                        </span>
+                                        <span className="flex items-center gap-1.5 text-sm font-semibold">
+                                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                                             {format(
                                                 new Date(verification.license_expiry_date),
                                                 'MMM dd, yyyy'
@@ -340,20 +347,22 @@ export default function AdminVerificationShow({
                                     </div>
                                 )}
                                 {verification.license_issued_country && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
                                             Issued Country:
                                         </span>
-                                        <span className="flex items-center gap-1 font-medium">
-                                            <MapPin className="h-3 w-3" />
+                                        <span className="flex items-center gap-1.5 text-sm font-semibold">
+                                            <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                                             {verification.license_issued_country}
                                         </span>
                                     </div>
                                 )}
                                 {verification.nationality && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Nationality:</span>
-                                        <span className="font-medium">
+                                    <div className="flex items-center justify-between py-1">
+                                        <span className="text-sm font-medium text-muted-foreground">
+                                            Nationality:
+                                        </span>
+                                        <span className="text-sm font-semibold">
                                             {verification.nationality}
                                         </span>
                                     </div>
@@ -365,8 +374,8 @@ export default function AdminVerificationShow({
 
                 {/* Documents */}
                 <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                             <FileText className="h-5 w-5" />
                             Uploaded Documents
                         </CardTitle>
@@ -375,13 +384,15 @@ export default function AdminVerificationShow({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-4 sm:grid-cols-3">
+                        <div className="grid gap-6 md:grid-cols-3">
                             {/* License Image */}
-                            <div className="space-y-2">
-                                <Label>Driving License Photo</Label>
+                            <div className="space-y-2.5">
+                                <Label className="text-sm font-semibold">
+                                    Driving License Photo
+                                </Label>
                                 {verification.driving_license_image ? (
                                     <div
-                                        className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg border"
+                                        className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
                                         onClick={() =>
                                             setImageDialog(
                                                 getImageUrl(verification.driving_license_image)
@@ -391,14 +402,16 @@ export default function AdminVerificationShow({
                                         <img
                                             src={getImageUrl(verification.driving_license_image)!}
                                             alt="Driving License"
-                                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                            <p className="text-sm text-white">Click to enlarge</p>
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <p className="text-sm font-medium text-white">
+                                                Click to enlarge
+                                            </p>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed bg-muted">
+                                    <div className="flex aspect-[4/3] items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
                                         <p className="text-sm text-muted-foreground">
                                             No image uploaded
                                         </p>
@@ -407,11 +420,13 @@ export default function AdminVerificationShow({
                             </div>
 
                             {/* ID Image */}
-                            <div className="space-y-2">
-                                <Label>Government ID Photo</Label>
+                            <div className="space-y-2.5">
+                                <Label className="text-sm font-semibold">
+                                    Government ID Photo
+                                </Label>
                                 {verification.id_image ? (
                                     <div
-                                        className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg border"
+                                        className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
                                         onClick={() =>
                                             setImageDialog(getImageUrl(verification.id_image))
                                         }
@@ -419,14 +434,16 @@ export default function AdminVerificationShow({
                                         <img
                                             src={getImageUrl(verification.id_image)!}
                                             alt="Government ID"
-                                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                            <p className="text-sm text-white">Click to enlarge</p>
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <p className="text-sm font-medium text-white">
+                                                Click to enlarge
+                                            </p>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed bg-muted">
+                                    <div className="flex aspect-[4/3] items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
                                         <p className="text-sm text-muted-foreground">
                                             No image uploaded
                                         </p>
@@ -435,11 +452,11 @@ export default function AdminVerificationShow({
                             </div>
 
                             {/* Selfie Image */}
-                            <div className="space-y-2">
-                                <Label>Selfie Photo</Label>
+                            <div className="space-y-2.5">
+                                <Label className="text-sm font-semibold">Selfie Photo</Label>
                                 {verification.selfie_image ? (
                                     <div
-                                        className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg border"
+                                        className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
                                         onClick={() =>
                                             setImageDialog(getImageUrl(verification.selfie_image))
                                         }
@@ -447,14 +464,16 @@ export default function AdminVerificationShow({
                                         <img
                                             src={getImageUrl(verification.selfie_image)!}
                                             alt="Selfie"
-                                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                            <p className="text-sm text-white">Click to enlarge</p>
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <p className="text-sm font-medium text-white">
+                                                Click to enlarge
+                                            </p>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed bg-muted">
+                                    <div className="flex aspect-[4/3] items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
                                         <p className="text-sm text-muted-foreground">
                                             No image uploaded
                                         </p>
@@ -522,6 +541,6 @@ export default function AdminVerificationShow({
                     </form>
                 </DialogContent>
             </Dialog>
-        </AppLayout>
+        </AdminLayout>
     );
 }

@@ -11,12 +11,19 @@ export function AppContent({
     ...props
 }: AppContentProps) {
     if (variant === 'sidebar') {
-        return <SidebarInset {...props}>{children}</SidebarInset>;
+        return (
+            <SidebarInset
+                className="flex flex-col gap-6 p-4 md:p-6 lg:p-8"
+                {...props}
+            >
+                {children}
+            </SidebarInset>
+        );
     }
 
     return (
         <main
-            className="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl"
+            className="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl p-4 md:p-6 lg:p-8"
             {...props}
         >
             {children}
