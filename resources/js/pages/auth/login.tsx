@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { request } from '@/routes/password';
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
 interface LoginProps {
@@ -105,9 +105,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 </div>
                             </div>
 
-                            <Link
+                            <a
                                 href="/auth/google"
-                                className="flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                                className="flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 tabIndex={6}
                             >
                                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     />
                                 </svg>
                                 Continue with Google
-                            </Link>
+                            </a>
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">
