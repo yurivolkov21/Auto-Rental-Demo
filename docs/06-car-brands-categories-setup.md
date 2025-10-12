@@ -1,34 +1,90 @@
-# Car Brands & Categories - Master Data Setup Guide
+# Car Brands & Categories Management - Setup Guide
+
+**Document Version:** 1.0  
+**Last Updated:** October 12, 2025  
+**Status:** 📋 Setup Guide
 
 ## Overview
-Master data setup cho **car_brands** và **car_categories** - hai bảng độc lập dùng để phân loại xe. Brands (Toyota, Honda) và Categories (SUV, Sedan) được quản lý riêng biệt để tái sử dụng.
 
-**Dependencies**: None (master data tables)
+This guide provides comprehensive setup instructions for the Car Brands and Car Categories master data system. These two tables serve as fundamental classification data for the car rental inventory, enabling filtering, searching, and organizing cars by brand (Toyota, Honda) and category type (SUV, Sedan).
 
----
+**Why Master Data?** Both tables are independent, reusable reference data that:
+- Support dropdown filters in car search
+- Enable category-based browsing
+- Provide brand-specific listings
+- Allow flexible car classification without redundancy
 
-## 1. Database Schema
-
-### Car Brands Table
-```sql
-car_brands (
-    id, name, slug, logo, is_active, sort_order, timestamps
-)
-```
-
-### Car Categories Table  
-```sql
-car_categories (
-    id, name, slug, icon, description, is_active, sort_order, timestamps
-)
-```
+**Dependencies:** None - These are foundational master data tables
 
 ---
 
-## 2. Model Setup
+## Architecture
 
-### CarBrand Model
-**File**: `app/Models/CarBrand.php`
+### Database Schema
+
+#### Table: `car_brands`
+
+**Purpose:** Store vehicle brand/manufacturer information
+
+**Columns:**
+- `id` (bigint unsigned, PK) - Auto-increment primary key
+- `name` (string 100, required) - Brand name (e.g., "Toyota", "Honda")
+- `slug` (string 150, unique, indexed) - URL-friendly identifier
+- `logo` (string 500, nullable) - Brand logo URL/path for display
+- `is_active` (boolean, default true) - Active status flag
+- `sort_order` (smallint unsigned, default 0) - Display order priority
+- `created_at`, `updated_at` (timestamps)
+
+**Indexes:**
+- Primary: `id`
+- Unique: `slug`
+- Regular: `is_active` (for filtering)
+- Composite: `is_active`, `sort_order` (for ordered active brands query)
+
+**Relationships:**
+- `hasMany(Car::class, 'brand_id')` - One brand has many cars
+
+---
+
+#### Table: `car_categories`
+
+**Purpose:** Store vehicle category/type classification
+
+**Columns:**
+- `id` (bigint unsigned, PK) - Auto-increment primary key
+- `name` (string 100, required) - Category name (e.g., "SUV", "Sedan")
+- `slug` (string 150, unique, indexed) - URL-friendly identifier
+- `icon` (string 50, default 'car') - Icon class for UI display (Lucide icons)
+- `description` (text, nullable) - Category description for SEO and customer info
+- `is_active` (boolean, default true) - Active status flag
+- `sort_order` (smallint unsigned, default 0) - Display order priority
+- `created_at`, `updated_at` (timestamps)
+
+**Indexes:**
+- Primary: `id`
+- Unique: `slug`
+- Regular: `is_active` (for filtering)
+- Composite: `is_active`, `sort_order` (for ordered active categories query)
+
+**Relationships:**
+- `hasMany(Car::class, 'category_id')` - One category has many cars
+
+---
+
+## Backend Structure
+
+### Model: CarBrand
+
+**File:** `app/Models/CarBrand.php`
+
+**Purpose:** Represent vehicle brand/manufacturer entities with business logic for active brands and car counting.
+
+**Key Features:**
+- Mass assignment protection with `$fillable`
+- Type casting for boolean and integer fields
+- Query scopes for active brands and custom ordering
+- Dynamic car counting attribute
+- Relationship to Car model
 
 ```php
 <?php
