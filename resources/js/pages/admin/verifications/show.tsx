@@ -578,7 +578,6 @@ export default function AdminVerificationShow({
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
                                 rows={4}
-                                required
                             />
                             <p className="text-sm text-muted-foreground">
                                 This reason will be visible to the user.

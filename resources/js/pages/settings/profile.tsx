@@ -150,7 +150,6 @@ export default function Profile({
                                                 id="name"
                                                 defaultValue={auth.user.name}
                                                 name="name"
-                                                required
                                                 autoComplete="name"
                                                 placeholder="John Doe"
                                             />
@@ -166,7 +165,6 @@ export default function Profile({
                                                 type="email"
                                                 defaultValue={auth.user.email}
                                                 name="email"
-                                                required
                                                 autoComplete="username"
                                                 placeholder="john@example.com"
                                             />
