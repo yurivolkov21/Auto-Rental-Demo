@@ -218,3 +218,65 @@ export interface CarCategory {
     created_at: string;
     updated_at: string;
 }
+
+export interface Car {
+    id: number;
+    owner_id: number;
+    category_id: number;
+    brand_id: number;
+    location_id: number;
+    name?: string | null;
+    model: string;
+    color?: string | null;
+    year: number;
+    license_plate: string;
+    vin?: string | null;
+    seats: number;
+    transmission: 'manual' | 'automatic';
+    fuel_type: 'petrol' | 'diesel' | 'electric' | 'hybrid';
+    odometer_km: number;
+    insurance_expiry?: string | null;
+    registration_expiry?: string | null;
+    last_maintenance_date?: string | null;
+    next_maintenance_km?: number | null;
+    is_delivery_available: boolean;
+    status: 'available' | 'rented' | 'maintenance' | 'inactive';
+    is_verified: boolean;
+    description?: string | null;
+    features?: Record<string, boolean> | null;
+    hourly_rate: string;
+    daily_rate: string;
+    daily_hour_threshold: number;
+    deposit_amount: string;
+    min_rental_hours: number;
+    overtime_fee_per_hour: string;
+    delivery_fee_per_km?: string | null;
+    max_delivery_distance?: number | null;
+    rental_count: number;
+    average_rating?: string | null;
+    created_at: string;
+    updated_at: string;
+
+    // Relationships
+    owner?: User;
+    category?: CarCategory;
+    brand?: CarBrand;
+    location?: Location;
+    images?: CarImage[];
+    primary_image?: CarImage;
+}
+
+export interface CarImage {
+    id: number;
+    car_id: number;
+    image_path: string;
+    alt_text?: string | null;
+    is_primary: boolean;
+    sort_order: number;
+    url: string;
+    created_at: string;
+    updated_at: string;
+
+    // Relationships
+    car?: Car;
+}

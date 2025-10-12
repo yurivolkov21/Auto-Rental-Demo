@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CarBrandController;
+use App\Http\Controllers\Admin\CarImageController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PromotionController;
-use App\Http\Controllers\Admin\VerificationController;
-use App\Http\Controllers\Admin\CarBrandController;
 use App\Http\Controllers\Admin\CarCategoryController;
+use App\Http\Controllers\Admin\VerificationController;
 
 /**
  * Admin Routes
@@ -86,6 +88,26 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::put('/{carCategory}', [CarCategoryController::class, 'update'])->name('update');
         Route::delete('/{carCategory}', [CarCategoryController::class, 'destroy'])->name('destroy');
         Route::post('/{carCategory}/toggle-status', [CarCategoryController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Car Management Routes
+    Route::prefix('cars')->name('cars.')->group(function () {
+        Route::get('/', [CarController::class, 'index'])->name('index');
+        Route::get('/create', [CarController::class, 'create'])->name('create');
+        Route::post('/', [CarController::class, 'store'])->name('store');
+        Route::get('/{car}', [CarController::class, 'show'])->name('show');
+        Route::get('/{car}/edit', [CarController::class, 'edit'])->name('edit');
+        Route::put('/{car}', [CarController::class, 'update'])->name('update');
+        Route::delete('/{car}', [CarController::class, 'destroy'])->name('destroy');
+        Route::post('/{car}/toggle-status', [CarController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Car Image Management Routes (for admin managing car images)
+    Route::prefix('cars/{car}/images')->name('car-images.')->group(function () {
+        Route::post('/', [CarImageController::class, 'store'])->name('store');
+        Route::patch('/{image}/set-primary', [CarImageController::class, 'setPrimary'])->name('set-primary');
+        Route::post('/reorder', [CarImageController::class, 'reorder'])->name('reorder');
+        Route::delete('/{image}', [CarImageController::class, 'destroy'])->name('destroy');
     });
 
 });

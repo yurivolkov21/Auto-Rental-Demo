@@ -30,5 +30,15 @@ class DatabaseSeeder extends Seeder
         // STEP 4: Seed Car Master Data (Brands & Categories)
         // ============================================
         $this->call(CarMasterDataSeeder::class);
+
+        // ============================================
+        // STEP 5: Seed Cars (after brands, categories, users, locations)
+        // ============================================
+        $this->call(CarSeeder::class);
+
+        // ============================================
+        // STEP 6: Seed Car Images (after cars are created)
+        // ============================================
+        $this->call(CarImageSeeder::class);
     }
 }
