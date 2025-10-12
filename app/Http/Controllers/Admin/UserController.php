@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
 
 class UserController extends Controller
@@ -74,47 +73,11 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new user.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('admin/users/create');
-    }
-
-    /**
-     * Store a newly created user in storage.
-     */
-    public function store(UserStoreRequest $request): RedirectResponse
-    {
-        try {
-            $validated = $request->validated();
-
-            // Hash the password
-            $validated['password'] = Hash::make($validated['password']);
-
-            // Auto-verify email for admin-created accounts
-            $validated['email_verified_at'] = now();
-
-            // Create the user
-            $user = User::create($validated);
-
-            return redirect()
-                ->route('admin.users.show', $user)
-                ->with('success', "User '{$user->name}' has been created successfully.");
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Failed to create user: ' . $e->getMessage());
-        }
-    }
-
-    /**
      * Display the specified user.
      */
     public function show(User $user): Response
     {
-        $user->load('verification');
+        $user->load(['verification', 'statusChanger:id,name,email']);
 
         return Inertia::render('admin/users/show', [
             'user' => $user,
@@ -154,42 +117,6 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified user from storage (soft delete).
-     */
-    public function destroy(Request $request, User $user): RedirectResponse
-    {
-        try {
-            // Prevent self-deletion
-            if ($user->id === Auth::id()) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'You cannot delete your own account.');
-            }
-
-            // Prevent deleting the last admin
-            if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot delete the last admin user.');
-            }
-
-            // Soft delete the user
-            $user->update([
-                'deleted_at'            => now(),
-                'deletion_requested_at' => now(),
-            ]);
-
-            return redirect()
-                ->route('admin.users.index')
-                ->with('success', "User '{$user->name}' has been deleted successfully.");
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete user: ' . $e->getMessage());
-        }
-    }
-
-    /**
      * Change the user's status (activate, suspend, ban).
      */
     public function changeStatus(Request $request, User $user): RedirectResponse
@@ -197,7 +124,7 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'status' => ['required', 'in:active,inactive,suspended,banned'],
-                'reason' => ['required_if:status,suspended,banned', 'nullable', 'string'],
+                'note'   => ['required_if:status,suspended,banned', 'nullable', 'string', 'max:500'],
             ]);
 
             // Prevent changing own status
@@ -207,16 +134,13 @@ class UserController extends Controller
                     ->with('error', 'You cannot change your own status.');
             }
 
-            // Update status
+            // Update status with tracking
             $user->update([
-                'status' => $validated['status'],
+                'status'               => $validated['status'],
+                'status_note'          => $validated['note'] ?? null,
+                'status_changed_at'    => now(),
+                'status_changed_by_id' => Auth::id(),
             ]);
-
-            // Log the change (future: create a status_changes table)
-            // StatusChange::create([...]);
-
-            // Send notification email (future)
-            // $user->notify(new StatusChangedNotification($validated['status'], $validated['reason']));
 
             return redirect()
                 ->back()

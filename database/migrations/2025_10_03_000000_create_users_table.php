@@ -38,10 +38,11 @@ return new class extends Migration
             $table->enum('role', ['customer', 'owner', 'admin'])->default('customer'); // User role
             $table->enum('status', ['active', 'inactive', 'suspended', 'banned'])->default('active'); // Account status
 
-            // Account deletion
-            $table->text('deletion_reason')->nullable();             // Reason for deletion
-            $table->timestamp('deletion_requested_at')->nullable(); // When deletion was requested
-            $table->timestamp('deleted_at')->nullable();           // When the account was deleted
+            // Status tracking (for suspended/banned accounts)
+            $table->text('status_note')->nullable(); // Reason for status change (required for suspended/banned)
+            $table->timestamp('status_changed_at')->nullable();    // When status was last changed
+            $table->foreignId('status_changed_by_id')->nullable() // Admin who changed the status
+                  ->constrained('users')->nullOnDelete();
 
             $table->rememberToken();
             $table->timestamps();
@@ -50,7 +51,7 @@ return new class extends Migration
             $table->index('role');
             $table->index('status');
             $table->index(['provider', 'provider_id']);
-            $table->index('deleted_at');
+            $table->index('status_changed_by_id');
             $table->index('phone');
 
             // Composite unique constraint for OAuth

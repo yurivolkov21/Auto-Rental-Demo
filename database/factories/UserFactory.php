@@ -50,10 +50,10 @@ class UserFactory extends Factory
             'provider'    => null,
             'provider_id' => null,
 
-            // Account deletion (null by default)
-            'deletion_reason'       => null,
-            'deletion_requested_at' => null,
-            'deleted_at'            => null,
+            // Status tracking (null by default)
+            'status_note'           => null,
+            'status_changed_at'     => null,
+            'status_changed_by_id'  => null,
         ];
     }
 
@@ -127,7 +127,15 @@ class UserFactory extends Factory
     public function suspended(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'suspended',
+            'status'            => 'suspended',
+            'status_note'       => fake()->randomElement([
+                'Multiple payment failures',
+                'Suspicious activity detected',
+                'Pending investigation',
+                'Temporary account hold',
+                'User requested pause',
+            ]),
+            'status_changed_at' => now()->subDays(fake()->numberBetween(1, 30)),
         ]);
     }
 
@@ -137,7 +145,15 @@ class UserFactory extends Factory
     public function banned(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'banned',
+            'status'            => 'banned',
+            'status_note'       => fake()->randomElement([
+                'Fraudulent activity',
+                'Severe violation of terms of service',
+                'Identity theft',
+                'Repeated violations',
+                'Legal compliance requirement',
+            ]),
+            'status_changed_at' => now()->subDays(fake()->numberBetween(1, 90)),
         ]);
     }
 

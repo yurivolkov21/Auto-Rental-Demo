@@ -61,13 +61,14 @@ export interface User {
     role: 'customer' | 'owner' | 'admin';
     status: 'active' | 'inactive' | 'suspended' | 'banned';
 
-    // Account deletion
-    deletion_reason?: string | null;
-    deletion_requested_at?: string | null;
-    deleted_at?: string | null;
+    // Status tracking (for suspended/banned accounts)
+    status_note?: string | null;
+    status_changed_at?: string | null;
+    status_changed_by_id?: number | null;
 
     // Relationships
     verification?: UserVerification;
+    status_changer?: Pick<User, 'id' | 'name' | 'email'>;
 
     // Timestamps
     created_at: string;

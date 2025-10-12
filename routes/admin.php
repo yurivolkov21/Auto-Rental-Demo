@@ -18,14 +18,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     // User Management Routes
     Route::prefix('users')->name('users.')->group(function () {
-        // Standard CRUD
+        // View & Edit (No delete - users are suspended/banned instead)
         Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('/create', [UserController::class, 'create'])->name('create');
-        Route::post('/', [UserController::class, 'store'])->name('store');
         Route::get('/{user}', [UserController::class, 'show'])->name('show');
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
 
         // Special Actions
         Route::post('/{user}/change-status', [UserController::class, 'changeStatus'])->name('change-status');

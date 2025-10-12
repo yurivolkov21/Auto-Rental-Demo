@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -32,9 +33,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'date_of_birth',
         'role',
         'status',
-        'deletion_reason',
-        'deletion_requested_at',
-        'deleted_at',
+        'status_note',
+        'status_changed_at',
+        'status_changed_by_id',
     ];
 
     /**
@@ -61,10 +62,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'password'                => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'date_of_birth'           => 'date',
-            'deletion_requested_at'   => 'datetime',
-            'deleted_at'              => 'datetime',
+            'status_changed_at'       => 'datetime',
         ];
     }
+
+    /**
+     * Relationships
+     */
 
     /**
      * Get the user's verification record.
@@ -72,6 +76,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function verification()
     {
         return $this->hasOne(UserVerification::class);
+    }
+
+    /**
+     * Get the admin who changed this user's status.
+     */
+    public function statusChanger(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'status_changed_by_id');
     }
 
     /**
@@ -212,5 +224,37 @@ class User extends Authenticatable implements MustVerifyEmail
     public function canListCars(): bool
     {
         return $this->isOwner() && $this->isVerified();
+    }
+
+    /**
+     * Check if user account is suspended.
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    /**
+     * Check if user account is banned.
+     */
+    public function isBanned(): bool
+    {
+        return $this->status === 'banned';
+    }
+
+    /**
+     * Check if user can login (not suspended or banned).
+     */
+    public function canLogin(): bool
+    {
+        return in_array($this->status, ['active', 'inactive']);
+    }
+
+    /**
+     * Check if user account is restricted (suspended or banned).
+     */
+    public function isRestricted(): bool
+    {
+        return $this->isSuspended() || $this->isBanned();
     }
 }

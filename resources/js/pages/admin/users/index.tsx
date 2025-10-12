@@ -4,7 +4,6 @@ import {
     CheckCircle,
     Edit,
     Eye,
-    Plus,
     Search,
     Shield,
     Trash2,
@@ -145,7 +144,7 @@ export default function AdminUsersIndex({
         const classes = {
             active: 'bg-green-100 text-green-800',
             inactive: 'bg-gray-100 text-gray-800',
-            suspended: 'bg-yellow-100 text-yellow-800',
+            suspended: 'bg-orange-100 text-orange-800',
             banned: 'bg-red-100 text-red-800',
         };
         return classes[status as keyof typeof classes] || 'bg-gray-100 text-gray-800';
@@ -165,19 +164,11 @@ export default function AdminUsersIndex({
 
             <div className="space-y-6">
                 {/* Page Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                        <p className="text-muted-foreground mt-1">
-                            Manage users, roles, and permissions across the platform
-                        </p>
-                    </div>
-                    <Button asChild>
-                        <Link href="/admin/users/create">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Add User
-                        </Link>
-                    </Button>
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Manage users, roles, and permissions across the platform
+                    </p>
                 </div>
 
                 {/* Stats Cards */}
