@@ -30,28 +30,28 @@ export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
             isActive: currentPath === '/admin',
         },
         {
-            title: 'Verifications',
-            href: '/admin/verifications',
-            icon: ShieldCheck,
-            isActive: currentPath.startsWith('/admin/verifications'),
-        },
-        {
             title: 'Users',
             href: '/admin/users',
             icon: Users,
             isActive: currentPath.startsWith('/admin/users'),
         },
         {
-            title: 'Bookings',
-            href: '/admin/bookings',
-            icon: Calendar,
-            isActive: currentPath.startsWith('/admin/bookings'),
+            title: 'Verifications',
+            href: '/admin/verifications',
+            icon: ShieldCheck,
+            isActive: currentPath.startsWith('/admin/verifications'),
         },
         {
             title: 'Cars',
             href: '/admin/cars',
             icon: Car,
             isActive: currentPath.startsWith('/admin/cars'),
+        },
+        {
+            title: 'Bookings',
+            href: '/admin/bookings',
+            icon: Calendar,
+            isActive: currentPath.startsWith('/admin/bookings'),
         },
         {
             title: 'Drivers',

@@ -50,6 +50,7 @@ export default function AdminSidebar() {
             <SidebarContent>
                 <SidebarGroup className="px-2 py-0">
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                    <hr className="my-2" />
                     <SidebarMenu>
                         {navItems.map((item) => {
                             const Icon = item.icon;
