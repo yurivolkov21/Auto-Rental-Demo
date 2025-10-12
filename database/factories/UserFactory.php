@@ -149,7 +149,7 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'provider'    => $provider,
             'provider_id' => fake()->uuid(),
-            'password'    => null,
+            'password'    => Hash::make('P@ssword123'), // OAuth users still get a password for fallback
         ]);
     }
 }

@@ -111,6 +111,22 @@ export interface UserVerification {
     updated_at: string;
 }
 
+export interface UserStats {
+    total: number;
+    customers: number;
+    owners: number;
+    admins: number;
+    verified: number;
+    active: number;
+}
+
+export interface UserFilters {
+    role: 'all' | 'customer' | 'owner' | 'admin';
+    status: 'all' | 'active' | 'inactive' | 'suspended' | 'banned';
+    verified: 'all' | 'yes' | 'no';
+    search: string;
+}
+
 export interface Location {
     id: number;
 

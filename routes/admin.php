@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\VerificationController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\VerificationController;
 
 /**
  * Admin Routes
@@ -14,6 +15,23 @@ use App\Http\Controllers\Admin\PromotionController;
  */
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // User Management Routes
+    Route::prefix('users')->name('users.')->group(function () {
+        // Standard CRUD
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+
+        // Special Actions
+        Route::post('/{user}/change-status', [UserController::class, 'changeStatus'])->name('change-status');
+        Route::post('/{user}/change-role', [UserController::class, 'changeRole'])->name('change-role');
+        Route::post('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password');
+    });
 
     // Verification Management Routes
     Route::prefix('verifications')->name('verifications.')->group(function () {
