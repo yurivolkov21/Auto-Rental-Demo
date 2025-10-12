@@ -1,6 +1,6 @@
 # AI Coding Instructions - AutoRental App
 
-Laravel 12 + React 19 + Inertia.js car rental platform (Vietnam market). **Limit markdown docs to 2000-2500 words max.**
+Laravel 12 + React 19 + Inertia.js car rental platform (Vietnam market). **Limit markdown docs to 1500 words max.**
 
 ## Language Preference
 **CRITICAL:** All UI content MUST be in ENGLISH (targeting international audience for Vietnam car rental market).
