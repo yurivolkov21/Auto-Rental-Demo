@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\VerificationController;
+use App\Http\Controllers\Admin\CarBrandController;
+use App\Http\Controllers\Admin\CarCategoryController;
 
 /**
  * Admin Routes
@@ -60,6 +62,30 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
         Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
         Route::post('/{promotion}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Car Brand Management Routes
+    Route::prefix('car-brands')->name('car-brands.')->group(function () {
+        Route::get('/', [CarBrandController::class, 'index'])->name('index');
+        Route::get('/create', [CarBrandController::class, 'create'])->name('create');
+        Route::post('/', [CarBrandController::class, 'store'])->name('store');
+        Route::get('/{carBrand}', [CarBrandController::class, 'show'])->name('show');
+        Route::get('/{carBrand}/edit', [CarBrandController::class, 'edit'])->name('edit');
+        Route::put('/{carBrand}', [CarBrandController::class, 'update'])->name('update');
+        Route::delete('/{carBrand}', [CarBrandController::class, 'destroy'])->name('destroy');
+        Route::post('/{carBrand}/toggle-status', [CarBrandController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Car Category Management Routes
+    Route::prefix('car-categories')->name('car-categories.')->group(function () {
+        Route::get('/', [CarCategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CarCategoryController::class, 'create'])->name('create');
+        Route::post('/', [CarCategoryController::class, 'store'])->name('store');
+        Route::get('/{carCategory}', [CarCategoryController::class, 'show'])->name('show');
+        Route::get('/{carCategory}/edit', [CarCategoryController::class, 'edit'])->name('edit');
+        Route::put('/{carCategory}', [CarCategoryController::class, 'update'])->name('update');
+        Route::delete('/{carCategory}', [CarCategoryController::class, 'destroy'])->name('destroy');
+        Route::post('/{carCategory}/toggle-status', [CarCategoryController::class, 'toggleStatus'])->name('toggle-status');
     });
 
 });

@@ -192,3 +192,29 @@ export interface Promotion {
     updated_at: string;
 }
 
+export interface CarBrand {
+    id: number;
+    name: string;
+    slug: string;
+    logo?: string | null;
+    is_active: boolean;
+    sort_order: number;
+    cars_count?: number;
+    active_cars_count?: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CarCategory {
+    id: number;
+    name: string;
+    slug: string;
+    icon: string;
+    description?: string | null;
+    is_active: boolean;
+    sort_order: number;
+    cars_count?: number;
+    active_cars_count?: number;
+    created_at: string;
+    updated_at: string;
+}

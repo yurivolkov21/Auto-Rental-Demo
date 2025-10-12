@@ -8,6 +8,8 @@ import {
     MapPin,
     Tag,
     Settings,
+    BadgeCheck,
+    Shapes,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -46,6 +48,18 @@ export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
             href: '/admin/cars',
             icon: Car,
             isActive: currentPath.startsWith('/admin/cars'),
+        },
+        {
+            title: 'Car Brands',
+            href: '/admin/car-brands',
+            icon: BadgeCheck,
+            isActive: currentPath.startsWith('/admin/car-brands'),
+        },
+        {
+            title: 'Car Categories',
+            href: '/admin/car-categories',
+            icon: Shapes,
+            isActive: currentPath.startsWith('/admin/car-categories'),
         },
         {
             title: 'Bookings',
