@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade'); // Car owner (role: owner)
             $table->foreignId('category_id')->constrained('car_categories')->onDelete('restrict'); // e.g., SUV, Sedan
             $table->foreignId('brand_id')->constrained('car_brands')->onDelete('restrict'); // e.g., Toyota, Ford
-            $table->foreignId('location_id')->constrained('locations')->onDelete('restrict'); // Base pickup location
+            $table->foreignId('location_id')->nullable()->constrained('locations')->onDelete('restrict'); // Base pickup location (optional)
 
             // Basic Information
             $table->string('name')->nullable(); // Display name (auto-generated from brand + model if null)

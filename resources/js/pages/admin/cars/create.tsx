@@ -55,10 +55,10 @@ const FEATURES = [
 
 export default function Create({ owners, brands, categories, locations }: CreateProps) {
     const { data, setData, post, processing, errors } = useForm({
-        owner_id: '',
-        brand_id: '',
-        category_id: '',
-        location_id: '',
+        owner_id: owners[0]?.id?.toString() || '',
+        brand_id: brands[0]?.id?.toString() || '',
+        category_id: categories[0]?.id?.toString() || '',
+        location_id: locations[0]?.id?.toString() || '',
         model: '',
         year: new Date().getFullYear(),
         color: '',
@@ -99,7 +99,29 @@ export default function Create({ owners, brands, categories, locations }: Create
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/admin/cars');
+        
+        // Debug: Log form data và errors
+        console.group('🚗 Car Form Submission');
+        console.log('Form Data:', data);
+        console.log('Current Errors:', errors);
+        console.log('Processing:', processing);
+        console.groupEnd();
+        
+        post('/admin/cars', {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                console.log('✅ Success! Response:', page);
+            },
+            onError: (errors) => {
+                console.error('❌ Validation Errors:', errors);
+                // Scroll to first error
+                const firstError = document.querySelector('.text-destructive');
+                firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            },
+            onFinish: () => {
+                console.log('🏁 Request finished');
+            },
+        });
     };
 
     const handleFeatureToggle = (featureId: string) => {

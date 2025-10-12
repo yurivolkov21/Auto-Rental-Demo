@@ -5,16 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-import {
     Edit,
-    Trash2,
     ToggleLeft,
     CheckCircle,
     XCircle,
@@ -37,8 +28,6 @@ interface ShowProps {
 }
 
 export default function Show({ car }: ShowProps) {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleting, setDeleting] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -77,16 +66,6 @@ export default function Show({ car }: ShowProps) {
     };
 
     const needsMaintenance = car.next_maintenance_km && car.next_maintenance_km <= car.odometer_km;
-
-    const handleDelete = () => {
-        setDeleting(true);
-        router.delete(`/admin/cars/${car.id}`, {
-            onFinish: () => {
-                setDeleting(false);
-                setDeleteDialogOpen(false);
-            },
-        });
-    };
 
     const handleToggleStatus = () => {
         router.post(`/admin/cars/${car.id}/toggle-status`, {}, {
@@ -190,10 +169,6 @@ export default function Show({ car }: ShowProps) {
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Link>
-                        </Button>
-                        <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
                         </Button>
                     </div>
                 </div>
@@ -729,27 +704,6 @@ export default function Show({ car }: ShowProps) {
                     </div>
                 </div>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Car</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete {car.brand?.name} {car.model} ({car.license_plate})?
-                            This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)} disabled={deleting}>
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-                            {deleting ? 'Deleting...' : 'Delete Car'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

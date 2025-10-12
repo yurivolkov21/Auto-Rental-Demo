@@ -1,18 +1,9 @@
 import { type CarBrand, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { BadgeCheck, ChevronLeft, Edit, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { BadgeCheck, ChevronLeft, Edit } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import AdminLayout from '@/layouts/admin-layout';
 
 const breadcrumbs = (brand: CarBrand): BreadcrumbItem[] => [
@@ -31,23 +22,9 @@ const breadcrumbs = (brand: CarBrand): BreadcrumbItem[] => [
 ];
 
 export default function AdminCarBrandsShow({ brand }: { brand: CarBrand }) {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
     const handleToggleStatus = () => {
         router.post(`/admin/car-brands/${brand.id}/toggle-status`, {}, {
             preserveScroll: true,
-        });
-    };
-
-    const handleDelete = () => {
-        setDeleteDialogOpen(true);
-    };
-
-    const confirmDelete = () => {
-        router.delete(`/admin/car-brands/${brand.id}`, {
-            onSuccess: () => {
-                router.visit('/admin/car-brands');
-            },
         });
     };
 
@@ -87,14 +64,6 @@ export default function AdminCarBrandsShow({ brand }: { brand: CarBrand }) {
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Link>
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={handleDelete}
-                            disabled={brand.cars_count! > 0}
-                        >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
                         </Button>
                     </div>
                 </div>
@@ -243,29 +212,6 @@ export default function AdminCarBrandsShow({ brand }: { brand: CarBrand }) {
                     </div>
                 </div>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Brand</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete "{brand.name}"? This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={confirmDelete}>
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

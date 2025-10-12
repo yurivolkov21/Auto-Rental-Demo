@@ -1,18 +1,10 @@
 import { type CarBrand, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { BadgeCheck, Edit, Eye, Plus, Search, Trash2 } from 'lucide-react';
+import { BadgeCheck, Edit, Eye, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -64,8 +56,6 @@ export default function AdminCarBrandsIndex({
 }) {
     const [statusFilter, setStatusFilter] = useState(filters.status);
     const [searchQuery, setSearchQuery] = useState(filters.search);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedBrand, setSelectedBrand] = useState<CarBrand | null>(null);
 
     const handleStatusFilterChange = (status: string) => {
         setStatusFilter(status);
@@ -88,27 +78,6 @@ export default function AdminCarBrandsIndex({
     const handleToggleStatus = (brand: CarBrand) => {
         router.post(`/admin/car-brands/${brand.id}/toggle-status`, {}, {
             preserveScroll: true,
-        });
-    };
-
-    const handleDelete = (brand: CarBrand) => {
-        setSelectedBrand(brand);
-        setDeleteDialogOpen(true);
-    };
-
-    const confirmDelete = () => {
-        if (!selectedBrand) return;
-
-        router.delete(`/admin/car-brands/${selectedBrand.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setDeleteDialogOpen(false);
-                setSelectedBrand(null);
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-                setSelectedBrand(null);
-            },
         });
     };
 
@@ -314,14 +283,6 @@ export default function AdminCarBrandsIndex({
                                                             }`}
                                                         />
                                                     </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => handleDelete(brand)}
-                                                        disabled={brand.cars_count! > 0}
-                                                    >
-                                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                                    </Button>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -365,32 +326,6 @@ export default function AdminCarBrandsIndex({
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Brand</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete "{selectedBrand?.name}"? This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={confirmDelete}
-                        >
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

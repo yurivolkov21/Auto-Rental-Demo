@@ -7,7 +7,6 @@ import {
     Eye,
     Plus,
     Search,
-    Trash2,
     Wrench,
     Key,
 } from 'lucide-react';
@@ -15,14 +14,6 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -85,8 +76,6 @@ export default function AdminCarsIndex({
     const [brandFilter, setBrandFilter] = useState(filters.brand);
     const [verifiedFilter, setVerifiedFilter] = useState(filters.verified);
     const [searchQuery, setSearchQuery] = useState(filters.search);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedCar, setSelectedCar] = useState<Car | null>(null);
 
     const handleStatusFilterChange = (status: string) => {
         setStatusFilter(status);
@@ -161,27 +150,6 @@ export default function AdminCarsIndex({
             },
             { preserveState: true }
         );
-    };
-
-    const handleDelete = (car: Car) => {
-        setSelectedCar(car);
-        setDeleteDialogOpen(true);
-    };
-
-    const confirmDelete = () => {
-        if (!selectedCar) return;
-
-        router.delete(`/admin/cars/${selectedCar.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setDeleteDialogOpen(false);
-                setSelectedCar(null);
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-                setSelectedCar(null);
-            },
-        });
     };
 
     const formatCurrency = (value: string | number) => {
@@ -460,13 +428,6 @@ export default function AdminCarsIndex({
                                                                 <Edit className="h-4 w-4" />
                                                             </Link>
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleDelete(car)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-red-500" />
-                                                        </Button>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -523,28 +484,6 @@ export default function AdminCarsIndex({
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Car</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete "{selectedCar?.brand?.name}{' '}
-                            {selectedCar?.model}"? This action cannot be undone and will also delete
-                            all associated images.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={confirmDelete}>
-                            Delete Car
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

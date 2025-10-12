@@ -1,18 +1,9 @@
 import { type CarCategory, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { ChevronLeft, Edit, Shapes, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronLeft, Edit, Shapes } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import AdminLayout from '@/layouts/admin-layout';
 
 const breadcrumbs = (category: CarCategory): BreadcrumbItem[] => [
@@ -31,17 +22,9 @@ const breadcrumbs = (category: CarCategory): BreadcrumbItem[] => [
 ];
 
 export default function AdminCarCategoriesShow({ category }: { category: CarCategory }) {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
     const handleToggleStatus = () => {
         router.post(`/admin/car-categories/${category.id}/toggle-status`, {}, {
             preserveScroll: true,
-        });
-    };
-
-    const confirmDelete = () => {
-        router.delete(`/admin/car-categories/${category.id}`, {
-            onSuccess: () => router.visit('/admin/car-categories'),
         });
     };
 
@@ -72,10 +55,6 @@ export default function AdminCarCategoriesShow({ category }: { category: CarCate
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Link>
-                        </Button>
-                        <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)} disabled={category.cars_count! > 0}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
                         </Button>
                     </div>
                 </div>
@@ -166,21 +145,6 @@ export default function AdminCarCategoriesShow({ category }: { category: CarCate
                     </div>
                 </div>
             </div>
-
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Category</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete "{category.name}"? This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }
