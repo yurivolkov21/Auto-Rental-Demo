@@ -11,7 +11,6 @@ import {
     Phone,
     Plane,
     Star,
-    Trash2,
     X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -34,7 +33,6 @@ interface Props {
 }
 
 export default function AdminLocationsShow({ location }: Props) {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [toggleDialogOpen, setToggleDialogOpen] = useState(false);
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -66,17 +64,6 @@ export default function AdminLocationsShow({ location }: Props) {
                 },
             }
         );
-    };
-
-    const handleDelete = () => {
-        router.delete(`/admin/locations/${location.id}`, {
-            onSuccess: () => {
-                // Redirect to index after successful delete
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-            },
-        });
     };
 
     return (
@@ -124,13 +111,6 @@ export default function AdminLocationsShow({ location }: Props) {
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Link>
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={() => setDeleteDialogOpen(true)}
-                        >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
                         </Button>
                     </div>
                 </div>
@@ -412,35 +392,6 @@ export default function AdminLocationsShow({ location }: Props) {
                         </Button>
                         <Button onClick={handleToggleStatus}>
                             {location.is_active ? 'Deactivate' : 'Activate'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Delete Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Location</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete <strong>{location.name}</strong>?
-                            <span className="block mt-2 text-red-600 font-medium">
-                                This action cannot be undone. All data associated with this location will be permanently removed.
-                            </span>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={handleDelete}
-                        >
-                            Delete
                         </Button>
                     </DialogFooter>
                 </DialogContent>

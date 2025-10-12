@@ -38,7 +38,7 @@ return new class extends Migration
             $table->datetime('end_date');  // Promotion end date & time
 
             // Status & Features
-            $table->enum('status', ['active', 'paused', 'upcoming'])->default('active'); // Promotion status (expired calculated from end_date)
+            $table->enum('status', ['active', 'paused', 'upcoming', 'archived'])->default('active'); // Promotion status (archived = cannot be used anymore)
             $table->boolean('is_auto_apply')->default(false); // Auto-apply without code input
             $table->boolean('is_featured')->default(false);  // Display prominently on homepage
             $table->integer('priority')->default(0);        // Priority for applying (lower = higher priority)

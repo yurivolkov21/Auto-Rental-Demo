@@ -6,7 +6,6 @@ import {
     Eye,
     Search,
     Shield,
-    Trash2,
     Users as UsersIcon,
     Car,
     X,
@@ -15,14 +14,6 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -62,8 +53,6 @@ export default function AdminUsersIndex({
     const [statusFilter, setStatusFilter] = useState(filters.status);
     const [verifiedFilter, setVerifiedFilter] = useState(filters.verified);
     const [searchQuery, setSearchQuery] = useState(filters.search);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const handleRoleFilterChange = (role: string) => {
         setRoleFilter(role as typeof roleFilter);
@@ -99,18 +88,6 @@ export default function AdminUsersIndex({
             { role: roleFilter, status: statusFilter, verified: verifiedFilter, search: searchQuery },
             { preserveState: true }
         );
-    };
-
-    const handleDelete = () => {
-        if (!selectedUser) return;
-
-        router.delete(`/admin/users/${selectedUser.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setDeleteDialogOpen(false);
-                setSelectedUser(null);
-            },
-        });
     };
 
     const getInitials = (name: string) => {
@@ -373,16 +350,6 @@ export default function AdminUsersIndex({
                                                                 <Edit className="h-4 w-4" />
                                                             </Link>
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => {
-                                                                setSelectedUser(user);
-                                                                setDeleteDialogOpen(true);
-                                                            }}
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                                        </Button>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -437,27 +404,6 @@ export default function AdminUsersIndex({
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete User</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete <strong>{selectedUser?.name}</strong>? This action will
-                            soft delete the account and it can be restored within 30 days.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Delete User
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

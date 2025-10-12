@@ -9,21 +9,12 @@ import {
     Search,
     Star,
     Tag,
-    Trash2,
     TrendingUp,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -50,6 +41,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface Stats {
     total: number;
     active: number;
+    paused: number;
+    archived: number;
     featured: number;
     total_uses: number;
 }
@@ -78,8 +71,6 @@ export default function AdminPromotionsIndex({
     const [statusFilter, setStatusFilter] = useState(filters.status);
     const [typeFilter, setTypeFilter] = useState(filters.type);
     const [searchQuery, setSearchQuery] = useState(filters.search);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null);
 
     const handleStatusFilterChange = (status: string) => {
         setStatusFilter(status);
@@ -108,27 +99,6 @@ export default function AdminPromotionsIndex({
         );
     };
 
-    const handleDelete = (promotion: Promotion) => {
-        setSelectedPromotion(promotion);
-        setDeleteDialogOpen(true);
-    };
-
-    const confirmDelete = () => {
-        if (!selectedPromotion) return;
-
-        router.delete(`/admin/promotions/${selectedPromotion.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setDeleteDialogOpen(false);
-                setSelectedPromotion(null);
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-                setSelectedPromotion(null);
-            },
-        });
-    };
-
     const formatCurrency = (value: string | number) => {
         const num = typeof value === 'string' ? parseFloat(value) : value;
         return new Intl.NumberFormat('vi-VN', {
@@ -149,8 +119,8 @@ export default function AdminPromotionsIndex({
         const now = new Date();
         const endDate = new Date(promotion.end_date);
 
-        // Check if expired
-        if (endDate < now) {
+        // Check if expired (only for non-archived)
+        if (promotion.status !== 'archived' && endDate < now) {
             return (
                 <Badge className="bg-gray-100 text-gray-800">
                     Expired
@@ -159,10 +129,11 @@ export default function AdminPromotionsIndex({
         }
 
         // Check status
-        const statusColors = {
+        const statusColors: Record<Promotion['status'], string> = {
             active: 'bg-green-100 text-green-800',
             paused: 'bg-yellow-100 text-yellow-800',
             upcoming: 'bg-blue-100 text-blue-800',
+            archived: 'bg-gray-100 text-gray-800',
         };
 
         return (
@@ -314,6 +285,7 @@ export default function AdminPromotionsIndex({
                                             <SelectItem value="active">Active</SelectItem>
                                             <SelectItem value="paused">Paused</SelectItem>
                                             <SelectItem value="upcoming">Upcoming</SelectItem>
+                                            <SelectItem value="archived">Archived</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -428,13 +400,6 @@ export default function AdminPromotionsIndex({
                                                                 <Edit className="h-4 w-4" />
                                                             </Link>
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleDelete(promotion)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                                        </Button>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -500,33 +465,6 @@ export default function AdminPromotionsIndex({
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Promotion</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete <strong>{selectedPromotion?.code}</strong>?
-                            <span className="block mt-2 text-red-600 font-medium">
-                                This action cannot be undone. All promotion data will be permanently
-                                removed.
-                            </span>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={confirmDelete}>
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

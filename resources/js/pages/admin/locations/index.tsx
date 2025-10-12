@@ -1,18 +1,10 @@
 import { type Location, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Check, Clock, Edit, Eye, MapPin, Plane, Search, Trash2, X } from 'lucide-react';
+import { Check, Clock, Edit, Eye, MapPin, Plane, Search, X } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -69,8 +61,6 @@ export default function AdminLocationsIndex({
     const [statusFilter, setStatusFilter] = useState(filters.status);
     const [typeFilter, setTypeFilter] = useState(filters.type);
     const [searchQuery, setSearchQuery] = useState(filters.search);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 
     const handleStatusFilterChange = (status: string) => {
         setStatusFilter(status);
@@ -97,27 +87,6 @@ export default function AdminLocationsIndex({
             { status: statusFilter, type: typeFilter, search: searchQuery },
             { preserveState: true }
         );
-    };
-
-    const handleDelete = (location: Location) => {
-        setSelectedLocation(location);
-        setDeleteDialogOpen(true);
-    };
-
-    const confirmDelete = () => {
-        if (!selectedLocation) return;
-
-        router.delete(`/admin/locations/${selectedLocation.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setDeleteDialogOpen(false);
-                setSelectedLocation(null);
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-                setSelectedLocation(null);
-            },
-        });
     };
 
     return (
@@ -378,14 +347,6 @@ export default function AdminLocationsIndex({
                                                                 <Edit className="h-4 w-4" />
                                                             </Link>
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleDelete(location)}
-                                                            title="Delete location"
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-red-600" />
-                                                        </Button>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -442,35 +403,6 @@ export default function AdminLocationsIndex({
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Location</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete <strong>{selectedLocation?.name}</strong>?
-                            <span className="block mt-2 text-red-600 font-medium">
-                                This action cannot be undone. All data associated with this location will be permanently removed.
-                            </span>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={confirmDelete}
-                            variant="destructive"
-                        >
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </AdminLayout>
     );
 }

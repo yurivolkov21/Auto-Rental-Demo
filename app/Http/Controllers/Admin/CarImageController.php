@@ -75,32 +75,4 @@ class CarImageController extends Controller
 
         return back()->with('success', 'Images reordered successfully');
     }
-
-    /**
-     * Delete an image
-     */
-    public function destroy(CarImage $image)
-    {
-        $carId      = $image->car_id;
-        $wasPrimary = $image->is_primary;
-
-        // Delete physical file
-        $image->deleteFile();
-
-        // Delete database record
-        $image->delete();
-
-        // If deleted image was primary, set first remaining image as primary
-        if ($wasPrimary) {
-            $firstImage = CarImage::where('car_id', $carId)
-                ->ordered()
-                ->first();
-
-            if ($firstImage) {
-                $firstImage->setPrimary();
-            }
-        }
-
-        return back()->with('success', 'Image deleted successfully');
-    }
 }

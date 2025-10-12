@@ -166,24 +166,6 @@ class LocationController extends Controller
     }
 
     /**
-     * Remove the specified location from storage.
-     */
-    public function destroy(Location $location): RedirectResponse
-    {
-        try {
-            $location->delete();
-
-            return redirect()
-                ->route('admin.locations.index')
-                ->with('success', 'Location deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete location. It may be in use.');
-        }
-    }
-
-    /**
      * Toggle location active status.
      */
     public function toggleStatus(Location $location): RedirectResponse

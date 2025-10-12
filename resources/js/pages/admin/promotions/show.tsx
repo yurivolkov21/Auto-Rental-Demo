@@ -1,6 +1,7 @@
 import { type Promotion, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
+    Archive,
     Calendar,
     Check,
     ChevronLeft,
@@ -8,7 +9,6 @@ import {
     Edit,
     Percent,
     Star,
-    Trash2,
     X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -31,8 +31,8 @@ interface Props {
 }
 
 export default function AdminPromotionsShow({ promotion }: Props) {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [toggleDialogOpen, setToggleDialogOpen] = useState(false);
+    const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -65,15 +65,20 @@ export default function AdminPromotionsShow({ promotion }: Props) {
         );
     };
 
-    const handleDelete = () => {
-        router.delete(`/admin/promotions/${promotion.id}`, {
-            onSuccess: () => {
-                // Redirect to index after successful delete
-            },
-            onError: () => {
-                setDeleteDialogOpen(false);
-            },
-        });
+    const handleArchive = () => {
+        router.post(
+            `/admin/promotions/${promotion.id}/archive`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setArchiveDialogOpen(false);
+                },
+                onError: () => {
+                    setArchiveDialogOpen(false);
+                },
+            }
+        );
     };
 
     const formatCurrency = (value: string | number) => {
@@ -98,8 +103,8 @@ export default function AdminPromotionsShow({ promotion }: Props) {
         const now = new Date();
         const endDate = new Date(promotion.end_date);
 
-        // Check if expired
-        if (endDate < now) {
+        // Check if expired (only for non-archived)
+        if (promotion.status !== 'archived' && endDate < now) {
             return (
                 <Badge className="bg-gray-100 text-gray-800">
                     <X className="mr-1 h-3 w-3" />
@@ -109,16 +114,18 @@ export default function AdminPromotionsShow({ promotion }: Props) {
         }
 
         // Check status
-        const statusColors = {
+        const statusColors: Record<Promotion['status'], string> = {
             active: 'bg-green-100 text-green-800',
             paused: 'bg-yellow-100 text-yellow-800',
             upcoming: 'bg-blue-100 text-blue-800',
+            archived: 'bg-gray-100 text-gray-800',
         };
 
-        const statusIcons = {
+        const statusIcons: Record<Promotion['status'], React.ReactNode> = {
             active: <Check className="mr-1 h-3 w-3" />,
             paused: <X className="mr-1 h-3 w-3" />,
             upcoming: <Calendar className="mr-1 h-3 w-3" />,
+            archived: <Archive className="mr-1 h-3 w-3" />,
         };
 
         return (
@@ -165,6 +172,7 @@ export default function AdminPromotionsShow({ promotion }: Props) {
                         <Button
                             variant="outline"
                             onClick={() => setToggleDialogOpen(true)}
+                            disabled={promotion.status === 'archived'}
                         >
                             {promotion.status === 'active' ? (
                                 <>
@@ -178,19 +186,21 @@ export default function AdminPromotionsShow({ promotion }: Props) {
                                 </>
                             )}
                         </Button>
-                        <Button variant="outline" asChild>
+                        <Button variant="outline" asChild disabled={promotion.status === 'archived'}>
                             <Link href={`/admin/promotions/${promotion.id}/edit`}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Link>
                         </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={() => setDeleteDialogOpen(true)}
-                        >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                        </Button>
+                        {promotion.status !== 'archived' && (
+                            <Button
+                                variant="destructive"
+                                onClick={() => setArchiveDialogOpen(true)}
+                            >
+                                <Archive className="mr-2 h-4 w-4" />
+                                Archive
+                            </Button>
+                        )}
                     </div>
                 </div>
 
@@ -478,25 +488,25 @@ export default function AdminPromotionsShow({ promotion }: Props) {
                 </DialogContent>
             </Dialog>
 
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            {/* Archive Dialog */}
+            <Dialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete Promotion</DialogTitle>
+                        <DialogTitle>Archive Promotion</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete <strong>{promotion.code}</strong>?
+                            Are you sure you want to archive <strong>{promotion.code}</strong>?
                             <span className="block mt-2 text-red-600 font-medium">
-                                This action cannot be undone. All promotion data will be permanently
-                                removed.
+                                This action is permanent. Archived promotions cannot be reactivated or used.
+                                Use this when the promotion has expired or reached its usage limit.
                             </span>
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setArchiveDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Delete
+                        <Button variant="destructive" onClick={handleArchive}>
+                            Archive
                         </Button>
                     </DialogFooter>
                 </DialogContent>

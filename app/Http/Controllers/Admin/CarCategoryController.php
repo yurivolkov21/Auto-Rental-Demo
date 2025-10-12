@@ -158,31 +158,6 @@ class CarCategoryController extends Controller
     }
 
     /**
-     * Remove the specified car category from storage.
-     */
-    public function destroy(CarCategory $carCategory): RedirectResponse
-    {
-        try {
-            // Check if category has cars
-            if ($carCategory->cars()->exists()) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot delete category. It has associated cars.');
-            }
-
-            $carCategory->delete();
-
-            return redirect()
-                ->route('admin.car-categories.index')
-                ->with('success', 'Car category deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete car category. Please try again.');
-        }
-    }
-
-    /**
      * Toggle car category active status.
      */
     public function toggleStatus(CarCategory $carCategory): RedirectResponse

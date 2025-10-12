@@ -50,7 +50,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{location}', [LocationController::class, 'show'])->name('show');
         Route::get('/{location}/edit', [LocationController::class, 'edit'])->name('edit');
         Route::put('/{location}', [LocationController::class, 'update'])->name('update');
-        Route::delete('/{location}', [LocationController::class, 'destroy'])->name('destroy');
         Route::post('/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('toggle-status');
     });
 
@@ -62,8 +61,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
         Route::post('/{promotion}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{promotion}/archive', [PromotionController::class, 'archive'])->name('archive');
     });
 
     // Car Brand Management Routes
@@ -74,7 +73,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{carBrand}', [CarBrandController::class, 'show'])->name('show');
         Route::get('/{carBrand}/edit', [CarBrandController::class, 'edit'])->name('edit');
         Route::put('/{carBrand}', [CarBrandController::class, 'update'])->name('update');
-        Route::delete('/{carBrand}', [CarBrandController::class, 'destroy'])->name('destroy');
         Route::post('/{carBrand}/toggle-status', [CarBrandController::class, 'toggleStatus'])->name('toggle-status');
     });
 
@@ -86,7 +84,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{carCategory}', [CarCategoryController::class, 'show'])->name('show');
         Route::get('/{carCategory}/edit', [CarCategoryController::class, 'edit'])->name('edit');
         Route::put('/{carCategory}', [CarCategoryController::class, 'update'])->name('update');
-        Route::delete('/{carCategory}', [CarCategoryController::class, 'destroy'])->name('destroy');
         Route::post('/{carCategory}/toggle-status', [CarCategoryController::class, 'toggleStatus'])->name('toggle-status');
     });
 
@@ -98,7 +95,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{car}', [CarController::class, 'show'])->name('show');
         Route::get('/{car}/edit', [CarController::class, 'edit'])->name('edit');
         Route::put('/{car}', [CarController::class, 'update'])->name('update');
-        Route::delete('/{car}', [CarController::class, 'destroy'])->name('destroy');
         Route::post('/{car}/toggle-status', [CarController::class, 'toggleStatus'])->name('toggle-status');
     });
 
@@ -107,7 +103,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::post('/', [CarImageController::class, 'store'])->name('store');
         Route::patch('/{image}/set-primary', [CarImageController::class, 'setPrimary'])->name('set-primary');
         Route::post('/reorder', [CarImageController::class, 'reorder'])->name('reorder');
-        Route::delete('/{image}', [CarImageController::class, 'destroy'])->name('destroy');
     });
 
 });

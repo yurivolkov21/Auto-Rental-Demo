@@ -182,7 +182,7 @@ export interface Promotion {
     used_count: number;
     start_date: string;
     end_date: string;
-    status: 'active' | 'paused' | 'upcoming';
+    status: 'active' | 'paused' | 'upcoming' | 'archived';
     is_auto_apply: boolean;
     is_featured: boolean;
     priority: number;

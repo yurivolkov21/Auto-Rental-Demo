@@ -234,21 +234,6 @@ class CarController extends Controller
     }
 
     /**
-     * Remove the specified car from storage
-     */
-    public function destroy(Car $car)
-    {
-        // TODO: Check for active bookings before deletion
-        // if ($car->bookings()->whereIn('status', ['pending', 'confirmed'])->exists()) {
-        //     return back()->with('error', 'Cannot delete car with active bookings');
-        // }
-
-        $car->delete();
-
-        return redirect()->route('admin.cars.index')->with('success', 'Car deleted successfully');
-    }
-
-    /**
      * Toggle car status
      */
     public function toggleStatus(Car $car)

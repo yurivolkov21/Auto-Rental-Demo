@@ -19,6 +19,9 @@ class PromotionController extends Controller
      */
     public function index(Request $request): Response
     {
+        // Auto-archive promotions that should be archived
+        $this->autoArchivePromotions();
+
         $query = Promotion::query()
             ->with('creator')
             ->orderBy('priority')
@@ -45,6 +48,8 @@ class PromotionController extends Controller
         $stats = [
             'total'      => Promotion::count(),
             'active'     => Promotion::where('status', 'active')->count(),
+            'paused'     => Promotion::where('status', 'paused')->count(),
+            'archived'   => Promotion::where('status', 'archived')->count(),
             'featured'   => Promotion::where('is_featured', true)->count(),
             'total_uses' => Promotion::sum('used_count'),
         ];
@@ -137,29 +142,18 @@ class PromotionController extends Controller
     }
 
     /**
-     * Remove the specified promotion.
-     */
-    public function destroy(Promotion $promotion): RedirectResponse
-    {
-        try {
-            $promotion->delete();
-
-            return redirect()
-                ->route('admin.promotions.index')
-                ->with('success', 'Promotion deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete promotion. Please try again.');
-        }
-    }
-
-    /**
      * Toggle promotion status.
      */
     public function toggleStatus(Promotion $promotion): RedirectResponse
     {
         try {
+            // Cannot toggle archived promotions
+            if ($promotion->isArchived()) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Cannot toggle archived promotions.');
+            }
+
             $newStatus = $promotion->status === 'active' ? 'paused' : 'active';
             $promotion->update(['status' => $newStatus]);
 
@@ -175,5 +169,43 @@ class PromotionController extends Controller
                 ->back()
                 ->with('error', 'Failed to toggle promotion status. Please try again.');
         }
+    }
+
+    /**
+     * Archive a promotion (cannot be reactivated).
+     */
+    public function archive(Promotion $promotion): RedirectResponse
+    {
+        try {
+            if ($promotion->isArchived()) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Promotion is already archived.');
+            }
+
+            $promotion->update(['status' => 'archived']);
+
+            return redirect()
+                ->back()
+                ->with('success', 'Promotion archived successfully. This promotion can no longer be used.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to archive promotion. Please try again.');
+        }
+    }
+
+    /**
+     * Auto-archive promotions that have expired or reached usage limit.
+     */
+    private function autoArchivePromotions(): void
+    {
+        Promotion::whereIn('status', ['active', 'paused'])
+            ->get()
+            ->each(function ($promotion) {
+                if ($promotion->shouldBeArchived()) {
+                    $promotion->update(['status' => 'archived']);
+                }
+            });
     }
 }

@@ -157,31 +157,6 @@ class CarBrandController extends Controller
     }
 
     /**
-     * Remove the specified car brand from storage.
-     */
-    public function destroy(CarBrand $carBrand): RedirectResponse
-    {
-        try {
-            // Check if brand has cars
-            if ($carBrand->cars()->exists()) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot delete brand. It has associated cars.');
-            }
-
-            $carBrand->delete();
-
-            return redirect()
-                ->route('admin.car-brands.index')
-                ->with('success', 'Car brand deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete car brand. Please try again.');
-        }
-    }
-
-    /**
      * Toggle car brand active status.
      */
     public function toggleStatus(CarBrand $carBrand): RedirectResponse

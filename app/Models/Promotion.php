@@ -69,13 +69,40 @@ class Promotion extends Model
     }
 
     /**
+     * Check if promotion is archived.
+     */
+    public function isArchived(): bool
+    {
+        return $this->status === 'archived';
+    }
+
+    /**
+     * Check if promotion should be automatically archived.
+     */
+    public function shouldBeArchived(): bool
+    {
+        // Archive if expired
+        if ($this->isExpired()) {
+            return true;
+        }
+
+        // Archive if usage limit reached
+        if ($this->hasReachedLimit()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Check if promotion is currently valid.
      */
     public function isValid(): bool
     {
         return $this->status === 'active'
             && $this->start_date <= now()
-            && $this->end_date >= now();
+            && $this->end_date >= now()
+            && !$this->hasReachedLimit();
     }
 
     /**
