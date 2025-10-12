@@ -41,8 +41,8 @@ export default function AuthSplitLayout({
     ];
 
     const stats = [
-        { label: 'Happy Customers', value: '5,00+' },
-        { label: 'Available Cars', value: '1,00+' },
+        { label: 'Happy Customers', value: '500+' },
+        { label: 'Available Cars', value: '100+' },
         { label: 'Customer Rating', value: '4.9★' },
     ];
 

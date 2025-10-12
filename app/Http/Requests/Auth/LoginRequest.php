@@ -59,6 +59,29 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Check if user account is suspended or banned
+        if ($user->isRestricted()) {
+            RateLimiter::hit($this->throttleKey());
+
+            $message = match ($user->status) {
+                'suspended' => 'Your account has been temporarily suspended.',
+                'banned'    => 'Your account has been permanently banned.',
+                default     => 'Your account has been restricted.',
+            };
+
+            // Add reason if available
+            if ($user->status_note) {
+                $message .= " Reason: {$user->status_note}";
+            }
+
+            // Add contact info for appeal
+            $message .= " Please contact support if you believe this is an error.";
+
+            throw ValidationException::withMessages([
+                'email' => $message,
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
 
         return $user;

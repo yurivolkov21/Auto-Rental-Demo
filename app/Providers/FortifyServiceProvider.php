@@ -31,7 +31,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request) {
             $user = User::where('email', $request->email)->first();
 
-            // Validate credentials
+            // Validate credentials first
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return null;
             }
@@ -52,8 +52,9 @@ class FortifyServiceProvider extends ServiceProvider
                 // Add contact info for appeal
                 $message .= " Please contact support if you believe this is an error.";
 
+                // Throw validation exception
                 throw ValidationException::withMessages([
-                    'email' => [$message],
+                    'email' => $message,
                 ]);
             }
 

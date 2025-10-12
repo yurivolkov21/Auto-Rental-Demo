@@ -125,7 +125,7 @@ export default function Welcome() {
                             <div className="mt-16 grid grid-cols-3 gap-8 border-t border-gray-700 pt-8">
                                 <div>
                                     <div className="text-4xl font-bold text-white">
-                                        1000+
+                                        100+
                                     </div>
                                     <div className="mt-2 text-sm text-gray-400">
                                         Available Cars
@@ -133,7 +133,7 @@ export default function Welcome() {
                                 </div>
                                 <div>
                                     <div className="text-4xl font-bold text-white">
-                                        5000+
+                                        500+
                                     </div>
                                     <div className="mt-2 text-sm text-gray-400">
                                         Happy Customers

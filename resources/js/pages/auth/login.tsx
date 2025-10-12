@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { AlertCircle, LoaderCircle } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
@@ -31,6 +32,20 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             >
                 {({ processing, errors }) => (
                     <>
+                        {/* Account Restriction Alert */}
+                        {errors.email && (
+                            errors.email.includes('suspended') || 
+                            errors.email.includes('banned') || 
+                            errors.email.includes('restricted')
+                        ) && (
+                            <Alert variant="destructive" className="mb-2">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription className="ml-2 text-sm">
+                                    {errors.email}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         <div className="grid gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
@@ -43,7 +58,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     autoComplete="email"
                                     placeholder="email@example.com"
                                 />
-                                <InputError message={errors.email} />
+                                {/* Only show InputError if it's NOT an account restriction error */}
+                                {errors.email && !(
+                                    errors.email.includes('suspended') || 
+                                    errors.email.includes('banned') || 
+                                    errors.email.includes('restricted')
+                                ) && (
+                                    <InputError message={errors.email} />
+                                )}
                             </div>
 
                             <div className="grid gap-2">
