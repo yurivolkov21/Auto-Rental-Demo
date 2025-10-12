@@ -94,6 +94,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::post('/', [CarController::class, 'store'])->name('store');
         Route::get('/{car}', [CarController::class, 'show'])->name('show');
         Route::get('/{car}/edit', [CarController::class, 'edit'])->name('edit');
+        Route::get('/{car}/images', [CarController::class, 'manageImages'])->name('images');
         Route::put('/{car}', [CarController::class, 'update'])->name('update');
         Route::post('/{car}/toggle-status', [CarController::class, 'toggleStatus'])->name('toggle-status');
     });
@@ -101,8 +102,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     // Car Image Management Routes (for admin managing car images)
     Route::prefix('cars/{car}/images')->name('car-images.')->group(function () {
         Route::post('/', [CarImageController::class, 'store'])->name('store');
-        Route::patch('/{image}/set-primary', [CarImageController::class, 'setPrimary'])->name('set-primary');
+        Route::patch('/{carImage}/set-primary', [CarImageController::class, 'setPrimary'])->name('set-primary');
         Route::post('/reorder', [CarImageController::class, 'reorder'])->name('reorder');
+        Route::delete('/{carImage}', [CarImageController::class, 'destroy'])->name('destroy');
     });
 
 });

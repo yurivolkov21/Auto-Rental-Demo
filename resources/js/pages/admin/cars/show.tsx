@@ -10,6 +10,7 @@ import {
     CheckCircle,
     XCircle,
     Car as CarIcon,
+    Image as ImageIcon,
     MapPin,
     User,
     FileText,
@@ -160,6 +161,12 @@ export default function Show({ car }: ShowProps) {
                     </div>
 
                     <div className="flex gap-2">
+                        <Button variant="outline" asChild>
+                            <Link href={`/admin/cars/${car.id}/images`}>
+                                <ImageIcon className="mr-2 h-4 w-4" />
+                                Manage Images
+                            </Link>
+                        </Button>
                         <Button variant="outline" onClick={handleToggleStatus}>
                             <ToggleLeft className="mr-2 h-4 w-4" />
                             Toggle Status

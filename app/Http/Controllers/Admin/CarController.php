@@ -170,6 +170,21 @@ class CarController extends Controller
     }
 
     /**
+     * Show the image management page for a car
+     */
+    public function manageImages(Car $car)
+    {
+        $car->load([
+            'brand:id,name',
+            'images' => fn($q) => $q->ordered(),
+        ]);
+
+        return Inertia::render('admin/cars/images', [
+            'car' => $car,
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified car
      */
     public function edit(Car $car)

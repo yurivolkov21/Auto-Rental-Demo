@@ -49,9 +49,14 @@ class CarImageController extends Controller
     /**
      * Set an image as primary
      */
-    public function setPrimary(CarImage $image)
+    public function setPrimary(Car $car, CarImage $carImage)
     {
-        $image->setPrimary();
+        // Ensure image belongs to this car
+        if ($carImage->car_id !== $car->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $carImage->setPrimary();
 
         return back()->with('success', 'Primary image updated successfully');
     }
@@ -74,5 +79,34 @@ class CarImageController extends Controller
         }
 
         return back()->with('success', 'Images reordered successfully');
+    }
+
+    /**
+     * Delete a car image
+     */
+    public function destroy(Car $car, CarImage $carImage)
+    {
+        // Ensure image belongs to this car
+        if ($carImage->car_id !== $car->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Delete image file from storage
+        if (Storage::disk('public')->exists($carImage->image_path)) {
+            Storage::disk('public')->delete($carImage->image_path);
+        }
+
+        // If this was the primary image, set another as primary
+        $wasPrimary = $carImage->is_primary;
+        $carImage->delete();
+
+        if ($wasPrimary) {
+            $newPrimary = CarImage::where('car_id', $car->id)->orderBy('sort_order')->first();
+            if ($newPrimary) {
+                $newPrimary->setPrimary();
+            }
+        }
+
+        return back()->with('success', 'Image deleted successfully');
     }
 }
