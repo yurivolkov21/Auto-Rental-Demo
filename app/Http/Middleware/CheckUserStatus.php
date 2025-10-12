@@ -46,8 +46,12 @@ class CheckUserStatus
                 $message .= " Reason: {$user->status_note}";
             }
 
-            // Redirect to login with error message
-            return redirect()->route('login')->with('error', $message);
+            $message .= " Please contact support if you believe this is an error.";
+
+            // Redirect to login with validation error (will show in Alert box)
+            return redirect()->route('login')->withErrors([
+                'email' => $message,
+            ]);
         }
 
         return $next($request);
