@@ -1,4 +1,4 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import AdminLayout from '@/layouts/admin-layout';
 import { Button } from '@/components/ui/button';
@@ -54,7 +54,7 @@ const FEATURES = [
 ];
 
 export default function Create({ owners, brands, categories, locations }: CreateProps) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         owner_id: owners[0]?.id?.toString() || '',
         brand_id: brands[0]?.id?.toString() || '',
         category_id: categories[0]?.id?.toString() || '',
@@ -100,26 +100,32 @@ export default function Create({ owners, brands, categories, locations }: Create
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
         
-        // Debug: Log form data và errors
+        // Transform data before submission
+        const formData = { ...data };
+        
+        // If delivery is not available, set delivery fields to null/0
+        if (!formData.is_delivery_available) {
+            formData.delivery_fee_per_km = 0;
+            formData.max_delivery_distance = 0;
+        }
+        
+        // Debug logging
         console.group('🚗 Car Form Submission');
-        console.log('Form Data:', data);
+        console.log('Submitting Data:', formData);
+        console.log('Delivery Available:', formData.is_delivery_available);
         console.log('Current Errors:', errors);
-        console.log('Processing:', processing);
         console.groupEnd();
         
-        post('/admin/cars', {
+        // Use router.post with transformed data
+        router.post('/admin/cars', formData, {
             preserveScroll: true,
-            onSuccess: (page) => {
-                console.log('✅ Success! Response:', page);
+            onSuccess: () => {
+                console.log('✅ Car created successfully!');
             },
-            onError: (errors) => {
-                console.error('❌ Validation Errors:', errors);
-                // Scroll to first error
+            onError: (validationErrors) => {
+                console.error('❌ Validation Errors:', validationErrors);
                 const firstError = document.querySelector('.text-destructive');
                 firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            },
-            onFinish: () => {
-                console.log('🏁 Request finished');
             },
         });
     };

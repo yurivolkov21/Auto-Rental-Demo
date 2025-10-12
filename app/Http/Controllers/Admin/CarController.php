@@ -56,7 +56,7 @@ class CarController extends Controller
         }
 
         // Sort
-        $sortBy = $request->get('sort_by', 'created_at');
+        $sortBy    = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
@@ -64,27 +64,27 @@ class CarController extends Controller
 
         // Calculate stats
         $stats = [
-            'total' => Car::count(),
-            'available' => Car::where('status', 'available')->where('is_verified', true)->count(),
-            'rented' => Car::where('status', 'rented')->count(),
+            'total'       => Car::count(),
+            'available'   => Car::where('status', 'available')->where('is_verified', true)->count(),
+            'rented'      => Car::where('status', 'rented')->count(),
             'maintenance' => Car::where('status', 'maintenance')->count(),
         ];
 
         // Get filter options
-        $brands = CarBrand::active()->ordered()->get(['id', 'name']);
+        $brands     = CarBrand::active()->ordered()->get(['id', 'name']);
         $categories = CarCategory::active()->ordered()->get(['id', 'name']);
 
         return Inertia::render('admin/cars/index', [
-            'cars' => $cars,
-            'stats' => $stats,
-            'brands' => $brands,
+            'cars'       => $cars,
+            'stats'      => $stats,
+            'brands'     => $brands,
             'categories' => $categories,
-            'filters' => [
-                'status' => $request->get('status', 'all'),
+            'filters'    => [
+                'status'   => $request->get('status', 'all'),
                 'category' => $request->get('category', 'all'),
-                'brand' => $request->get('brand', 'all'),
+                'brand'    => $request->get('brand', 'all'),
                 'verified' => $request->get('verified', 'all'),
-                'search' => $request->get('search', ''),
+                'search'   => $request->get('search', ''),
             ],
         ]);
     }
@@ -94,16 +94,16 @@ class CarController extends Controller
      */
     public function create()
     {
-        $owners = User::where('role', 'owner')->orderBy('name')->get(['id', 'name', 'email']);
-        $brands = CarBrand::active()->ordered()->get(['id', 'name']);
+        $owners     = User::where('role', 'owner')->orderBy('name')->get(['id', 'name', 'email']);
+        $brands     = CarBrand::active()->ordered()->get(['id', 'name']);
         $categories = CarCategory::active()->ordered()->get(['id', 'name']);
-        $locations = Location::active()->ordered()->get(['id', 'name']);
+        $locations  = Location::active()->ordered()->get(['id', 'name']);
 
         return Inertia::render('admin/cars/create', [
-            'owners' => $owners,
-            'brands' => $brands,
+            'owners'     => $owners,
+            'brands'     => $brands,
             'categories' => $categories,
-            'locations' => $locations,
+            'locations'  => $locations,
         ]);
     }
 
@@ -113,36 +113,36 @@ class CarController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'owner_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:car_categories,id',
-            'brand_id' => 'required|exists:car_brands,id',
-            'location_id' => 'nullable|exists:locations,id',
-            'model' => 'required|string|max:200',
-            'year' => 'required|integer|between:2000,2030',
-            'license_plate' => 'required|string|max:20|unique:cars,license_plate',
-            'vin' => 'nullable|string|max:50|unique:cars,vin',
-            'color' => 'nullable|string|max:50',
-            'seats' => 'required|integer|between:2,20',
-            'transmission' => 'required|in:automatic,manual',
-            'fuel_type' => 'required|in:petrol,diesel,electric,hybrid',
-            'odometer_km' => 'nullable|integer|min:0',
-            'insurance_expiry' => 'nullable|date|after:today',
-            'registration_expiry' => 'nullable|date|after:today',
+            'owner_id'              => 'required|exists:users,id',
+            'category_id'           => 'required|exists:car_categories,id',
+            'brand_id'              => 'required|exists:car_brands,id',
+            'location_id'           => 'nullable|exists:locations,id',
+            'model'                 => 'required|string|max:200',
+            'year'                  => 'required|integer|between:2000,2030',
+            'license_plate'         => 'required|string|max:20|unique:cars,license_plate',
+            'vin'                   => 'nullable|string|max:50|unique:cars,vin',
+            'color'                 => 'nullable|string|max:50',
+            'seats'                 => 'required|integer|between:2,20',
+            'transmission'          => 'required|in:automatic,manual',
+            'fuel_type'             => 'required|in:petrol,diesel,electric,hybrid',
+            'odometer_km'           => 'nullable|integer|min:0',
+            'insurance_expiry'      => 'nullable|date|after:today',
+            'registration_expiry'   => 'nullable|date|after:today',
             'last_maintenance_date' => 'nullable|date|before_or_equal:today',
-            'next_maintenance_km' => 'nullable|integer|min:0',
+            'next_maintenance_km'   => 'nullable|integer|min:0',
             'is_delivery_available' => 'boolean',
-            'status' => 'required|in:available,rented,maintenance,inactive',
-            'is_verified' => 'boolean',
-            'description' => 'nullable|string|max:5000',
-            'features' => 'nullable|array',
-            'hourly_rate' => 'required|numeric|min:0',
-            'daily_rate' => 'required|numeric|min:0',
-            'daily_hour_threshold' => 'required|integer|between:1,24',
-            'deposit_amount' => 'required|numeric|min:0',
-            'min_rental_hours' => 'required|integer|min:1',
+            'status'                => 'required|in:available,rented,maintenance,inactive',
+            'is_verified'           => 'boolean',
+            'description'           => 'nullable|string|max:5000',
+            'features'              => 'nullable|array',
+            'hourly_rate'           => 'required|numeric|min:0',
+            'daily_rate'            => 'required|numeric|min:0',
+            'daily_hour_threshold'  => 'required|integer|between:1,24',
+            'deposit_amount'        => 'required|numeric|min:0',
+            'min_rental_hours'      => 'required|integer|min:1',
             'overtime_fee_per_hour' => 'nullable|numeric|min:0',
-            'delivery_fee_per_km' => 'nullable|numeric|min:0',
-            'max_delivery_distance' => 'nullable|integer|min:1',
+            'delivery_fee_per_km'   => 'nullable|numeric|min:0',
+            'max_delivery_distance' => 'nullable|integer|min:0',
         ]);
 
         $car = Car::create($validated);
@@ -176,17 +176,17 @@ class CarController extends Controller
     {
         $car->load(['owner:id,name', 'brand:id,name', 'category:id,name', 'location:id,name']);
 
-        $owners = User::where('role', 'owner')->orderBy('name')->get(['id', 'name', 'email']);
-        $brands = CarBrand::active()->ordered()->get(['id', 'name']);
+        $owners     = User::where('role', 'owner')->orderBy('name')->get(['id', 'name', 'email']);
+        $brands     = CarBrand::active()->ordered()->get(['id', 'name']);
         $categories = CarCategory::active()->ordered()->get(['id', 'name']);
-        $locations = Location::active()->ordered()->get(['id', 'name']);
+        $locations  = Location::active()->ordered()->get(['id', 'name']);
 
         return Inertia::render('admin/cars/edit', [
-            'car' => $car,
-            'owners' => $owners,
-            'brands' => $brands,
+            'car'        => $car,
+            'owners'     => $owners,
+            'brands'     => $brands,
             'categories' => $categories,
-            'locations' => $locations,
+            'locations'  => $locations,
         ]);
     }
 
@@ -196,35 +196,35 @@ class CarController extends Controller
     public function update(Request $request, Car $car)
     {
         $validated = $request->validate([
-            'owner_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:car_categories,id',
-            'brand_id' => 'required|exists:car_brands,id',
-            'location_id' => 'nullable|exists:locations,id',
-            'model' => 'required|string|max:200',
-            'year' => 'required|integer|between:2000,2030',
-            'license_plate' => 'required|string|max:20|unique:cars,license_plate,' . $car->id,
-            'vin' => 'nullable|string|max:50|unique:cars,vin,' . $car->id,
-            'color' => 'nullable|string|max:50',
-            'seats' => 'required|integer|between:2,20',
-            'transmission' => 'required|in:automatic,manual',
-            'fuel_type' => 'required|in:petrol,diesel,electric,hybrid',
-            'odometer_km' => 'nullable|integer|min:0',
-            'insurance_expiry' => 'nullable|date',
-            'registration_expiry' => 'nullable|date',
+            'owner_id'              => 'required|exists:users,id',
+            'category_id'           => 'required|exists:car_categories,id',
+            'brand_id'              => 'required|exists:car_brands,id',
+            'location_id'           => 'nullable|exists:locations,id',
+            'model'                 => 'required|string|max:200',
+            'year'                  => 'required|integer|between:2000,2030',
+            'license_plate'         => 'required|string|max:20|unique:cars,license_plate,' . $car->id,
+            'vin'                   => 'nullable|string|max:50|unique:cars,vin,' . $car->id,
+            'color'                 => 'nullable|string|max:50',
+            'seats'                 => 'required|integer|between:2,20',
+            'transmission'          => 'required|in:automatic,manual',
+            'fuel_type'             => 'required|in:petrol,diesel,electric,hybrid',
+            'odometer_km'           => 'nullable|integer|min:0',
+            'insurance_expiry'      => 'nullable|date',
+            'registration_expiry'   => 'nullable|date',
             'last_maintenance_date' => 'nullable|date|before_or_equal:today',
-            'next_maintenance_km' => 'nullable|integer|min:0',
+            'next_maintenance_km'   => 'nullable|integer|min:0',
             'is_delivery_available' => 'boolean',
-            'status' => 'required|in:available,rented,maintenance,inactive',
-            'is_verified' => 'boolean',
-            'description' => 'nullable|string|max:5000',
-            'features' => 'nullable|array',
-            'hourly_rate' => 'required|numeric|min:0',
-            'daily_rate' => 'required|numeric|min:0',
-            'daily_hour_threshold' => 'required|integer|between:1,24',
-            'deposit_amount' => 'required|numeric|min:0',
-            'min_rental_hours' => 'required|integer|min:1',
+            'status'                => 'required|in:available,rented,maintenance,inactive',
+            'is_verified'           => 'boolean',
+            'description'           => 'nullable|string|max:5000',
+            'features'              => 'nullable|array',
+            'hourly_rate'           => 'required|numeric|min:0',
+            'daily_rate'            => 'required|numeric|min:0',
+            'daily_hour_threshold'  => 'required|integer|between:1,24',
+            'deposit_amount'        => 'required|numeric|min:0',
+            'min_rental_hours'      => 'required|integer|min:1',
             'overtime_fee_per_hour' => 'nullable|numeric|min:0',
-            'delivery_fee_per_km' => 'nullable|numeric|min:0',
+            'delivery_fee_per_km'   => 'nullable|numeric|min:0',
             'max_delivery_distance' => 'nullable|integer|min:1',
         ]);
 
@@ -240,10 +240,10 @@ class CarController extends Controller
     {
         // Cycle through statuses: available → maintenance → inactive → available
         $statusCycle = [
-            'available' => 'maintenance',
+            'available'   => 'maintenance',
             'maintenance' => 'inactive',
-            'inactive' => 'available',
-            'rented' => 'available', // If somehow rented, make available
+            'inactive'    => 'available',
+            'rented'      => 'available', // If somehow rented, make available
         ];
 
         $newStatus = $statusCycle[$car->status] ?? 'available';
