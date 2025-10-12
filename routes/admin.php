@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\PromotionController;
 
 /**
  * Admin Routes
@@ -32,6 +33,18 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::put('/{location}', [LocationController::class, 'update'])->name('update');
         Route::delete('/{location}', [LocationController::class, 'destroy'])->name('destroy');
         Route::post('/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Promotion Management Routes
+    Route::prefix('promotions')->name('promotions.')->group(function () {
+        Route::get('/', [PromotionController::class, 'index'])->name('index');
+        Route::get('/create', [PromotionController::class, 'create'])->name('create');
+        Route::post('/', [PromotionController::class, 'store'])->name('store');
+        Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
+        Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
+        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::post('/{promotion}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('toggle-status');
     });
 
 });

@@ -150,3 +150,28 @@ export interface Location {
     updated_at: string;
 }
 
+export interface Promotion {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
+    discount_type: 'percentage' | 'fixed_amount';
+    discount_value: string;
+    max_discount: string | null;
+    min_amount: string;
+    min_rental_hours: number;
+    max_uses: number | null;
+    max_uses_per_user: number;
+    used_count: number;
+    start_date: string;
+    end_date: string;
+    status: 'active' | 'paused' | 'upcoming';
+    is_auto_apply: boolean;
+    is_featured: boolean;
+    priority: number;
+    created_by: number | null;
+    creator?: User;
+    created_at: string;
+    updated_at: string;
+}
+
