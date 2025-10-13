@@ -82,6 +82,16 @@ export default function AdminUserShow({ user }: { user: User }) {
         });
     };
 
+    const getAvatarUrl = (avatar: string | null | undefined): string | undefined => {
+        if (!avatar) return undefined;
+        // If it's a full URL (http/https), return as is
+        if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+            return avatar;
+        }
+        // Otherwise, it's a storage path - prepend /storage/
+        return `/storage/${avatar}`;
+    };
+
     const getRoleBadgeClass = (role: string) => {
         const classes = {
             customer: 'bg-blue-100 text-blue-800',
@@ -213,7 +223,7 @@ export default function AdminUserShow({ user }: { user: User }) {
                             <CardContent className="space-y-6">
                                 <div className="flex items-center gap-6">
                                     <Avatar className="h-24 w-24">
-                                        <AvatarImage src={user.avatar || undefined} />
+                                        <AvatarImage src={getAvatarUrl(user.avatar)} />
                                         <AvatarFallback className="text-2xl">
                                             {getInitials(user.name)}
                                         </AvatarFallback>

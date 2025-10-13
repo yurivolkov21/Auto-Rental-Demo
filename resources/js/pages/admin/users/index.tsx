@@ -99,6 +99,16 @@ export default function AdminUsersIndex({
             .slice(0, 2);
     };
 
+    const getAvatarUrl = (avatar: string | null | undefined): string | undefined => {
+        if (!avatar) return undefined;
+        // If it's a full URL (http/https), return as is
+        if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+            return avatar;
+        }
+        // Otherwise, it's a storage path - prepend /storage/
+        return `/storage/${avatar}`;
+    };
+
     const getRoleBadgeClass = (role: string) => {
         const classes = {
             customer: 'bg-blue-100 text-blue-800',
@@ -302,7 +312,7 @@ export default function AdminUsersIndex({
                                                 <TableCell>
                                                     <div className="flex items-center gap-3">
                                                         <Avatar className="h-10 w-10">
-                                                            <AvatarImage src={user.avatar || undefined} />
+                                                            <AvatarImage src={getAvatarUrl(user.avatar)} />
                                                             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                                                         </Avatar>
                                                         <div>
