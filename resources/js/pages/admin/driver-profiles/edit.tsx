@@ -1,13 +1,14 @@
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { DriverProfileWithRelations } from '@/types/models/driver-profile';
+import { BreadcrumbItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 interface Props {
@@ -55,25 +56,30 @@ export default function Edit({ driver }: Props) {
         });
     };
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Admin', href: '/admin' },
+        { title: 'Driver Profiles', href: '/admin/driver-profiles' },
+        { title: driver.user.name, href: `/admin/driver-profiles/${driver.id}` },
+        { title: 'Edit', href: `/admin/driver-profiles/${driver.id}/edit` },
+    ];
+
     return (
-        <AdminLayout>
+        <AdminLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit Driver: ${driver.user.name}`} />
 
             <div className="space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/driver-profiles/${driver.id}`}>
-                                <ArrowLeft className="h-4 w-4" />
-                            </Link>
-                        </Button>
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">Edit Driver Profile</h1>
-                            <p className="mt-1 text-muted-foreground">
-                                Update {driver.user.name}'s profile settings
-                            </p>
-                        </div>
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href={`/admin/driver-profiles/${driver.id}`}>
+                            <ChevronLeft className="h-5 w-5" />
+                        </Link>
+                    </Button>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Edit Driver Profile</h1>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Update {driver.user.name}'s profile settings
+                        </p>
                     </div>
                 </div>
 

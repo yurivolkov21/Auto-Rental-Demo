@@ -1,12 +1,13 @@
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link } from '@inertiajs/react';
 import { DriverProfileWithRelations } from '@/types/models/driver-profile';
+import { BreadcrumbItem } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
-    ArrowLeft,
+    ChevronLeft,
     Edit,
     Clock,
     DollarSign,
@@ -26,17 +27,17 @@ interface Props {
 }
 
 const STATUS_CONFIG = {
-    available: { label: 'Available', class: 'bg-green-100 text-green-800', icon: CheckCircle },
-    on_duty: { label: 'On Duty', class: 'bg-blue-100 text-blue-800', icon: Clock },
-    off_duty: { label: 'Off Duty', class: 'bg-gray-100 text-gray-800', icon: XCircle },
-    suspended: { label: 'Suspended', class: 'bg-red-100 text-red-800', icon: AlertCircle },
+    available: { label: 'Available', class: 'bg-green-100 text-green-800 border-green-200', icon: CheckCircle },
+    on_duty: { label: 'On Duty', class: 'bg-blue-100 text-blue-800 border-blue-200', icon: Clock },
+    off_duty: { label: 'Off Duty', class: 'bg-gray-100 text-gray-800 border-gray-200', icon: XCircle },
+    suspended: { label: 'Suspended', class: 'bg-red-100 text-red-800 border-red-200', icon: AlertCircle },
 };
 
 const VERIFICATION_STATUS_CONFIG = {
-    pending: { label: 'Pending', class: 'bg-yellow-100 text-yellow-800' },
-    verified: { label: 'Verified', class: 'bg-green-100 text-green-800' },
-    rejected: { label: 'Rejected', class: 'bg-red-100 text-red-800' },
-    expired: { label: 'Expired', class: 'bg-gray-100 text-gray-800' },
+    pending: { label: 'Pending', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    verified: { label: 'Verified', class: 'bg-green-100 text-green-800 border-green-200' },
+    rejected: { label: 'Rejected', class: 'bg-red-100 text-red-800 border-red-200' },
+    expired: { label: 'Expired', class: 'bg-gray-100 text-gray-800 border-gray-200' },
 };
 
 export default function Show({ driver }: Props) {
@@ -59,30 +60,42 @@ export default function Show({ driver }: Props) {
 
     const StatusIcon = STATUS_CONFIG[driver.status].icon;
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Admin', href: '/admin' },
+        { title: 'Driver Profiles', href: '/admin/driver-profiles' },
+        { title: driver.user.name, href: `/admin/driver-profiles/${driver.id}` },
+    ];
+
     return (
-        <AdminLayout>
+        <AdminLayout breadcrumbs={breadcrumbs}>
             <Head title={`Driver: ${driver.user.name}`} />
 
             <div className="space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" size="sm" asChild>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" size="icon" asChild>
                             <Link href="/admin/driver-profiles">
-                                <ArrowLeft className="h-4 w-4" />
+                                <ChevronLeft className="h-5 w-5" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">{driver.user.name}</h1>
-                            <p className="mt-1 text-muted-foreground">
-                                Driver Profile Details
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl font-bold tracking-tight">{driver.user.name}</h1>
+                                <Badge variant="outline" className={STATUS_CONFIG[driver.status].class}>
+                                    <StatusIcon className="mr-1 h-3 w-3" />
+                                    {STATUS_CONFIG[driver.status].label}
+                                </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                {driver.user.email}
                             </p>
                         </div>
                     </div>
-                    <Button asChild>
+                    <Button variant="outline" asChild>
                         <Link href={`/admin/driver-profiles/${driver.id}/edit`}>
                             <Edit className="mr-2 h-4 w-4" />
-                            Edit Profile
+                            Edit
                         </Link>
                     </Button>
                 </div>
