@@ -77,14 +77,14 @@ class CarCategoryController extends Controller
 
             // Ensure slug is unique
             $originalSlug = $data['slug'];
-            $counter = 1;
+            $counter      = 1;
             while (CarCategory::where('slug', $data['slug'])->exists()) {
                 $data['slug'] = $originalSlug . '-' . $counter;
                 $counter++;
             }
 
             // Set defaults
-            $data['icon'] = $data['icon'] ?? 'car';
+            $data['icon']       = $data['icon'] ?? 'car';
             $data['is_active']  = $data['is_active'] ?? true;
             $data['sort_order'] = $data['sort_order'] ?? 0;
 
@@ -138,7 +138,7 @@ class CarCategoryController extends Controller
 
             // Ensure slug is unique (except for current category)
             $originalSlug = $data['slug'];
-            $counter = 1;
+            $counter      = 1;
             while (CarCategory::where('slug', $data['slug'])->where('id', '!=', $carCategory->id)->exists()) {
                 $data['slug'] = $originalSlug . '-' . $counter;
                 $counter++;

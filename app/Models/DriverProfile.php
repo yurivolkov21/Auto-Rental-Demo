@@ -158,7 +158,7 @@ class DriverProfile extends Model
     {
         $totalRatings = $this->completed_trips;
         $currentTotal = ((float)$this->average_rating ?: 0.0) * $totalRatings;
-        $newTotal = $currentTotal + $newRating;
+        $newTotal     = $currentTotal + $newRating;
 
         $this->update([
             'average_rating' => round($newTotal / ($totalRatings + 1), 2),

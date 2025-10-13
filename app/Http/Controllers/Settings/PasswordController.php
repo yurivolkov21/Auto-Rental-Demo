@@ -6,10 +6,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Rules\DifferentFromCurrentPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Password;
+use App\Rules\DifferentFromCurrentPassword;
 
 class PasswordController extends Controller
 {

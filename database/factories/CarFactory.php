@@ -41,7 +41,10 @@ class CarFactory extends Factory
         $dailyRate        = $this->roundPrice($hourlyRate * 8); // Daily = 8 hours equivalent
         $depositAmount    = $this->roundPrice(fake()->numberBetween(2000, 10000) * 1000); // 2M - 10M
         $overtimeFee      = $this->roundPrice($hourlyRate * 1.5); // 1.5x hourly rate
-        $deliveryFeePerKm = $this->roundPrice(fake()->optional(0.8)->randomElement([5000, 10000, 15000, 20000])); // 5k, 10k, 15k, 20k
+
+        // Delivery fee can be null (some cars don't offer delivery)
+        $deliveryFee = fake()->optional(0.8)->randomElement([5000, 10000, 15000, 20000]);
+        $deliveryFeePerKm = $deliveryFee ? $this->roundPrice($deliveryFee) : null;
 
         return [
             'owner_id'      => $owner->id,
@@ -88,7 +91,7 @@ class CarFactory extends Factory
                 'tire_pressure_monitor' => fake()->boolean(60),
                 'collision_warning'     => fake()->boolean(40),
                 '360_camera'            => fake()->boolean(30),
-                
+
                 // Technology
                 'gps'           => fake()->boolean(80),
                 'bluetooth'     => fake()->boolean(95),
@@ -96,7 +99,7 @@ class CarFactory extends Factory
                 'etc'           => fake()->boolean(65),
                 'apple_carplay' => fake()->boolean(50),
                 'android_auto'  => fake()->boolean(50),
-                
+
                 // Comfort
                 'air_conditioning' => fake()->boolean(98),
                 'sunroof'          => fake()->boolean(35),
@@ -106,7 +109,7 @@ class CarFactory extends Factory
                 'cruise_control'   => fake()->boolean(55),
                 'power_windows'    => fake()->boolean(92),
                 'keyless_entry'    => fake()->boolean(70),
-                
+
                 // Entertainment
                 'dvd_screen'    => fake()->boolean(30),
                 'premium_sound' => fake()->boolean(45),
@@ -163,7 +166,7 @@ class CarFactory extends Factory
         if ($amount >= 100000) {
             return (int) (round($amount / 5000) * 5000);
         }
-        
+
         // Round to nearest 1,000 for smaller amounts
         return (int) (round($amount / 1000) * 1000);
     }

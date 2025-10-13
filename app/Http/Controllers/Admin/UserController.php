@@ -19,10 +19,10 @@ class UserController extends Controller
      */
     public function index(Request $request): Response
     {
-        $role = $request->get('role', 'all');
-        $status = $request->get('status', 'all');
+        $role     = $request->get('role', 'all');
+        $status   = $request->get('status', 'all');
         $verified = $request->get('verified', 'all');
-        $search = $request->get('search');
+        $search   = $request->get('search');
 
         // Build query
         $query = User::query()
