@@ -23,7 +23,11 @@ class DriverProfileController extends Controller
         $sortBy    = $request->input('sort', 'name');
         $sortOrder = $request->input('order', 'asc');
 
-        $query     = DriverProfile::with(['user', 'owner', 'verification']);
+        // Only show profiles where user role is currently 'driver'
+        $query     = DriverProfile::with(['user', 'owner', 'verification'])
+                         ->whereHas('user', function ($q) {
+                             $q->where('role', 'driver');
+                         });
 
         // Search by driver name or email
         if ($search) {
@@ -63,12 +67,15 @@ class DriverProfileController extends Controller
 
         $drivers = $query->paginate(15)->withQueryString();
 
-        // Statistics
+        // Statistics - Only count drivers with active 'driver' role
         $stats = [
-            'total'     => DriverProfile::count(),
-            'available' => DriverProfile::where('status', 'available')->count(),
-            'on_duty'   => DriverProfile::where('status', 'on_duty')->count(),
-            'suspended' => DriverProfile::where('status', 'suspended')->count(),
+            'total'     => DriverProfile::whereHas('user', fn($q) => $q->where('role', 'driver'))->count(),
+            'available' => DriverProfile::whereHas('user', fn($q) => $q->where('role', 'driver'))
+                                        ->where('status', 'available')->count(),
+            'on_duty'   => DriverProfile::whereHas('user', fn($q) => $q->where('role', 'driver'))
+                                        ->where('status', 'on_duty')->count(),
+            'suspended' => DriverProfile::whereHas('user', fn($q) => $q->where('role', 'driver'))
+                                        ->where('status', 'suspended')->count(),
         ];
 
         return Inertia::render('admin/driver-profiles/index', [

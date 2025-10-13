@@ -8,7 +8,6 @@ use Inertia\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -167,13 +166,6 @@ class UserController extends Controller
     public function changeRole(Request $request, User $user): RedirectResponse
     {
         try {
-            Log::info('Change role request', [
-                'user_id' => $user->id,
-                'current_role' => $user->role,
-                'requested_role' => $request->input('role'),
-                'all_input' => $request->all(),
-            ]);
-
             $validated = $request->validate([
                 'role' => ['required', 'in:customer,owner,driver,admin'],
             ]);
@@ -192,17 +184,54 @@ class UserController extends Controller
                     ->with('error', 'Cannot change the role of the last admin.');
             }
 
+            $oldRole = $user->role;
+            $newRole = $validated['role'];
+
             // Update role
             $user->update([
-                'role' => $validated['role'],
+                'role' => $newRole,
             ]);
 
-            // Send notification email (future)
-            // $user->notify(new RoleChangedNotification($validated['role']));
+            // Auto-manage DriverProfile based on role changes
+            if ($newRole === 'driver' && $oldRole !== 'driver') {
+                // Case 1: Promoting to driver role
+                $existingProfile = $user->driverProfile;
+
+                if ($existingProfile) {
+                    // Reactivate existing profile (preserves rating, trips, etc.)
+                    $existingProfile->update([
+                        'status'                   => 'off_duty',
+                        'is_available_for_booking' => false,
+                    ]);
+                } else {
+                    // Create new profile with default values
+                    $user->driverProfile()->create([
+                        'status'                   => 'off_duty',
+                        'is_available_for_booking' => false,
+                        'hourly_fee'               => 0.00,
+                        'daily_fee'                => 0.00,
+                        'overtime_fee_per_hour'    => 0.00,
+                        'daily_hour_threshold'     => 10,
+                        'completed_trips'          => 0,
+                        'total_km_driven'          => 0,
+                        'total_hours_driven'       => 0,
+                    ]);
+                }
+            } elseif ($oldRole === 'driver' && $newRole !== 'driver') {
+                // Case 2: Demoting from driver role - Deactivate but preserve data
+                $driverProfile = $user->driverProfile;
+
+                if ($driverProfile) {
+                    $driverProfile->update([
+                        'status'                   => 'off_duty',
+                        'is_available_for_booking' => false,
+                    ]);
+                }
+            }
 
             return redirect()
                 ->back()
-                ->with('success', "User role has been changed to '{$validated['role']}'.");
+                ->with('success', "User role has been changed to '{$newRole}'.");
         } catch (\Exception $e) {
             return redirect()
                 ->back()
