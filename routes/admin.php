@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\CarCategoryController;
 use App\Http\Controllers\Admin\VerificationController;
+use App\Http\Controllers\Admin\DriverProfileController;
 
 /**
  * Admin Routes
@@ -40,6 +41,16 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/{verification}', [VerificationController::class, 'show'])->name('show');
         Route::post('/{verification}/approve', [VerificationController::class, 'approve'])->name('approve');
         Route::post('/{verification}/reject', [VerificationController::class, 'reject'])->name('reject');
+    });
+
+    // Driver Profile Management Routes
+    Route::prefix('driver-profiles')->name('driver-profiles.')->group(function () {
+        Route::get('/', [DriverProfileController::class, 'index'])->name('index');
+        Route::get('/{driverProfile}', [DriverProfileController::class, 'show'])->name('show');
+        Route::get('/{driverProfile}/edit', [DriverProfileController::class, 'edit'])->name('edit');
+        Route::put('/{driverProfile}', [DriverProfileController::class, 'update'])->name('update');
+        Route::post('/{driverProfile}/update-status', [DriverProfileController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{driverProfile}/toggle-availability', [DriverProfileController::class, 'toggleAvailability'])->name('toggle-availability');
     });
 
     // Location Management Routes
