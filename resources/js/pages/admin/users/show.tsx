@@ -96,6 +96,7 @@ export default function AdminUserShow({ user }: { user: User }) {
         const classes = {
             customer: 'bg-blue-100 text-blue-800',
             owner: 'bg-purple-100 text-purple-800',
+            driver: 'bg-green-100 text-green-800',
             admin: 'bg-red-100 text-red-800',
         };
         return classes[role as keyof typeof classes] || 'bg-gray-100 text-gray-800';
@@ -105,6 +106,7 @@ export default function AdminUserShow({ user }: { user: User }) {
         const icons = {
             customer: <UsersIcon className="mr-1 h-3 w-3" />,
             owner: <Car className="mr-1 h-3 w-3" />,
+            driver: <UserCheck className="mr-1 h-3 w-3" />,
             admin: <Shield className="mr-1 h-3 w-3" />,
         };
         return icons[role as keyof typeof icons];
@@ -512,7 +514,7 @@ export default function AdminUserShow({ user }: { user: User }) {
                             <Label htmlFor="role">New Role</Label>
                             <Select
                                 value={newRole}
-                                onValueChange={(value) => setNewRole(value as 'customer' | 'owner' | 'admin')}
+                                onValueChange={(value) => setNewRole(value as 'customer' | 'owner' | 'driver' | 'admin')}
                             >
                                 <SelectTrigger>
                                     <SelectValue />
@@ -520,6 +522,7 @@ export default function AdminUserShow({ user }: { user: User }) {
                                 <SelectContent>
                                     <SelectItem value="customer">Customer</SelectItem>
                                     <SelectItem value="owner">Owner</SelectItem>
+                                    <SelectItem value="driver">Driver</SelectItem>
                                     <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>

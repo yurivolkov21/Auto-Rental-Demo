@@ -89,8 +89,16 @@ class UserController extends Controller
      */
     public function edit(User $user): Response
     {
+        // Format date_of_birth for HTML date input (YYYY-MM-DD)
+        $userData = $user->toArray();
+        if ($user->date_of_birth) {
+            $userData['date_of_birth'] = $user->date_of_birth instanceof \Carbon\Carbon
+                ? $user->date_of_birth->format('Y-m-d')
+                : date('Y-m-d', strtotime($user->date_of_birth));
+        }
+
         return Inertia::render('admin/users/edit', [
-            'user' => $user,
+            'user' => $userData,
         ]);
     }
 
@@ -159,7 +167,7 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'role' => ['required', 'in:customer,owner,admin'],
+                'role' => ['required', 'in:customer,owner,driver,admin'],
             ]);
 
             // Prevent changing own role

@@ -68,10 +68,10 @@ export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
             isActive: currentPath.startsWith('/admin/bookings'),
         },
         {
-            title: 'Drivers',
-            href: '/admin/drivers',
+            title: 'Driver Profiles',
+            href: '/admin/driver-profiles',
             icon: UserCheck,
-            isActive: currentPath.startsWith('/admin/drivers'),
+            isActive: currentPath.startsWith('/admin/driver-profiles'),
         },
         {
             title: 'Locations',

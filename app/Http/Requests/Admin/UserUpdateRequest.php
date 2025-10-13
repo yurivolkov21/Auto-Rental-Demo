@@ -30,7 +30,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'name'          => ['required', 'string', 'max:255'],
             'email'         => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role'          => ['required', 'in:customer,owner,admin'],
+            'role'          => ['required', 'in:customer,owner,driver,admin'],
             'status'        => ['required', 'in:active,inactive,suspended,banned'],
             'phone'         => ['nullable', 'string', 'max:20'],
             'address'       => ['nullable', 'string'],

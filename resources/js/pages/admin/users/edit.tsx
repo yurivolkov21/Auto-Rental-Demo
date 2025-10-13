@@ -195,7 +195,7 @@ export default function AdminUserEdit({ user }: { user: User }) {
                                         <Select
                                             value={data.role}
                                             onValueChange={(value) =>
-                                                setData('role', value as 'customer' | 'owner' | 'admin')
+                                                setData('role', value as 'customer' | 'owner' | 'driver' | 'admin')
                                             }
                                         >
                                             <SelectTrigger
@@ -206,6 +206,7 @@ export default function AdminUserEdit({ user }: { user: User }) {
                                             <SelectContent>
                                                 <SelectItem value="customer">Customer</SelectItem>
                                                 <SelectItem value="owner">Owner</SelectItem>
+                                                <SelectItem value="driver">Driver</SelectItem>
                                                 <SelectItem value="admin">Admin</SelectItem>
                                             </SelectContent>
                                         </Select>

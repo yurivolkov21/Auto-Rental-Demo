@@ -8,6 +8,7 @@ import {
     Shield,
     Users as UsersIcon,
     Car,
+    UserCheck,
     X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -113,6 +114,7 @@ export default function AdminUsersIndex({
         const classes = {
             customer: 'bg-blue-100 text-blue-800',
             owner: 'bg-purple-100 text-purple-800',
+            driver: 'bg-green-100 text-green-800',
             admin: 'bg-red-100 text-red-800',
         };
         return classes[role as keyof typeof classes] || 'bg-gray-100 text-gray-800';
@@ -122,6 +124,7 @@ export default function AdminUsersIndex({
         const icons = {
             customer: <UsersIcon className="mr-1 h-3 w-3" />,
             owner: <Car className="mr-1 h-3 w-3" />,
+            driver: <UserCheck className="mr-1 h-3 w-3" />,
             admin: <Shield className="mr-1 h-3 w-3" />,
         };
         return icons[role as keyof typeof icons] || null;
@@ -257,6 +260,7 @@ export default function AdminUsersIndex({
                                     <SelectItem value="all">All Roles</SelectItem>
                                     <SelectItem value="customer">Customer</SelectItem>
                                     <SelectItem value="owner">Owner</SelectItem>
+                                    <SelectItem value="driver">Driver</SelectItem>
                                     <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>
