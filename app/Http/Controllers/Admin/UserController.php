@@ -8,6 +8,7 @@ use Inertia\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -166,6 +167,13 @@ class UserController extends Controller
     public function changeRole(Request $request, User $user): RedirectResponse
     {
         try {
+            Log::info('Change role request', [
+                'user_id' => $user->id,
+                'current_role' => $user->role,
+                'requested_role' => $request->input('role'),
+                'all_input' => $request->all(),
+            ]);
+
             $validated = $request->validate([
                 'role' => ['required', 'in:customer,owner,driver,admin'],
             ]);
