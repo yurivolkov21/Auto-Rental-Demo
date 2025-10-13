@@ -1,7 +1,6 @@
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { DriverProfileWithRelations } from '@/types/models/driver-profile';
-import { User } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,6 @@ import { FormEventHandler } from 'react';
 
 interface Props {
     driver: DriverProfileWithRelations;
-    owners: User[];
 }
 
 interface FormData {
@@ -32,10 +30,9 @@ interface FormData {
         saturday?: string;
         sunday?: string;
     };
-    owner_id: number | null;
 }
 
-export default function Edit({ driver, owners }: Props) {
+export default function Edit({ driver }: Props) {
     const { data, setData, put, processing, errors } = useForm<FormData>({
         hourly_fee: driver.hourly_fee,
         daily_fee: driver.daily_fee,
@@ -44,7 +41,6 @@ export default function Edit({ driver, owners }: Props) {
         status: driver.status,
         is_available_for_booking: driver.is_available_for_booking,
         working_hours: (driver.working_hours as Record<string, string>) || {},
-        owner_id: driver.owner_id,
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -249,39 +245,6 @@ export default function Edit({ driver, owners }: Props) {
                                     {errors.is_available_for_booking && (
                                         <p className="text-sm text-destructive">{errors.is_available_for_booking}</p>
                                     )}
-                                </CardContent>
-                            </Card>
-
-                            {/* Employment */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Employment</CardTitle>
-                                    <CardDescription>Assign driver to a car owner</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <Label htmlFor="owner_id">Car Owner (Optional)</Label>
-                                    <Select
-                                        value={data.owner_id?.toString() || 'none'}
-                                        onValueChange={(value) => setData('owner_id', value === 'none' ? null : parseInt(value))}
-                                    >
-                                        <SelectTrigger id="owner_id">
-                                            <SelectValue placeholder="Select owner..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">Independent Driver</SelectItem>
-                                            {owners.map((owner) => (
-                                                <SelectItem key={owner.id} value={owner.id.toString()}>
-                                                    {owner.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.owner_id && (
-                                        <p className="text-sm text-destructive">{errors.owner_id}</p>
-                                    )}
-                                    <p className="text-xs text-muted-foreground">
-                                        Leave as "Independent Driver" if not employed
-                                    </p>
                                 </CardContent>
                             </Card>
 

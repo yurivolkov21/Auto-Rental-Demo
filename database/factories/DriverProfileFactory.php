@@ -22,9 +22,7 @@ class DriverProfileFactory extends Factory
     {
         return [
             'user_id'  => User::factory()->driver(), // Will create a user with role='driver'
-            'owner_id' => fake()->boolean(60) // 60% chance driver belongs to an owner
-                ? User::factory()->owner()
-                : null, // 40% independent driver
+            'owner_id' => null, // All drivers are platform-managed (no owner assignment)
 
             // Pricing Configuration
             'hourly_fee'            => fake()->randomFloat(2, 30000, 80000), // 30k - 80k VND/hour
@@ -114,26 +112,6 @@ class DriverProfileFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'average_rating'  => fake()->randomFloat(2, 4.5, 5.0),
             'completed_trips' => fake()->numberBetween(100, 500),
-        ]);
-    }
-
-    /**
-     * Indicate that the driver is an independent driver (no owner).
-     */
-    public function independent(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'owner_id' => null,
-        ]);
-    }
-
-    /**
-     * Indicate that the driver belongs to an owner.
-     */
-    public function employedBy(int $ownerId): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'owner_id' => $ownerId,
         ]);
     }
 }

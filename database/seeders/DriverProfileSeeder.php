@@ -130,48 +130,13 @@ class DriverProfileSeeder extends Seeder
         }
 
         // ============================================
-        // STEP 2: Create Drivers for Car Owners
+        // STEP 2: Create Additional Platform Drivers (Various States)
         // ============================================
-        $this->command->info('Creating drivers for car owners...');
+        $this->command->info('Creating additional platform drivers with various states...');
 
-        $carOwners = User::where('role', 'owner')->get();
-
-        foreach ($carOwners as $owner) {
-            // Each owner has 1-3 drivers
-            $driverCount = rand(1, 3);
-
-            for ($i = 0; $i < $driverCount; $i++) {
-                $user = User::factory()->driver()->create([
-                    'email_verified_at' => now(),
-                ]);
-
-                // Create verification for driver
-                UserVerification::factory()
-                    ->forDriver()
-                    ->verified()
-                    ->create([
-                        'user_id' => $user->id,
-                    ]);
-
-                // Create driver profile
-                DriverProfile::factory()
-                    ->employedBy($owner->id)
-                    ->create([
-                        'user_id' => $user->id,
-                    ]);
-
-                $this->command->info("✅ Created driver for owner: {$owner->name}");
-            }
-        }
-
-        // ============================================
-        // STEP 3: Create Random Drivers (Various States)
-        // ============================================
-        $this->command->info('Creating additional drivers with various states...');
-
-        // 5 available verified drivers
+        // 10 available verified drivers (platform-managed)
         User::factory()
-            ->count(5)
+            ->count(10)
             ->driver()
             ->create()
             ->each(function ($user) {
@@ -185,9 +150,9 @@ class DriverProfileSeeder extends Seeder
                     ->create(['user_id' => $user->id]);
             });
 
-        // 3 drivers on duty
+        // 5 drivers on duty
         User::factory()
-            ->count(3)
+            ->count(5)
             ->driver()
             ->create()
             ->each(function ($user) {
@@ -201,9 +166,9 @@ class DriverProfileSeeder extends Seeder
                     ->create(['user_id' => $user->id]);
             });
 
-        // 2 drivers off duty
+        // 3 drivers off duty
         User::factory()
-            ->count(2)
+            ->count(3)
             ->driver()
             ->create()
             ->each(function ($user) {
@@ -217,9 +182,9 @@ class DriverProfileSeeder extends Seeder
                     ->create(['user_id' => $user->id]);
             });
 
-        // 3 pending verification drivers
+        // 5 pending verification drivers
         User::factory()
-            ->count(3)
+            ->count(5)
             ->driver()
             ->create()
             ->each(function ($user) {
@@ -235,13 +200,15 @@ class DriverProfileSeeder extends Seeder
                     ]);
             });
 
+        // Calculate statistics
         $totalDrivers     = DriverProfile::count();
         $availableDrivers = DriverProfile::where('status', 'available')->count();
         $verifiedDrivers  = DriverProfile::whereHas('verification', function ($q) {
-            $q->where('status', 'verified');
+            $q->where('user_verifications.status', 'verified');
         })->count();
 
         $this->command->info("✅ Driver profiles seeded successfully!");
+        $this->command->info("📊 All drivers are platform-managed (no owner assignment)");
         $this->command->info("📊 Total drivers: {$totalDrivers}");
         $this->command->info("📊 Available drivers: {$availableDrivers}");
         $this->command->info("📊 Verified drivers: {$verifiedDrivers}");

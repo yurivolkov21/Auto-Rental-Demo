@@ -95,7 +95,7 @@ class DriverProfileController extends Controller
      */
     public function show(DriverProfile $driverProfile): Response
     {
-        $driverProfile->load(['user', 'owner', 'verification']);
+        $driverProfile->load(['user', 'verification']);
 
         return Inertia::render('admin/driver-profiles/show', [
             'driver' => $driverProfile,
@@ -107,17 +107,10 @@ class DriverProfileController extends Controller
      */
     public function edit(DriverProfile $driverProfile): Response
     {
-        $driverProfile->load(['user', 'owner', 'verification']);
-
-        // Get all car owners for assignment dropdown
-        $owners = User::where('role', 'owner')
-                      ->select('id', 'name', 'email')
-                      ->orderBy('name')
-                      ->get();
+        $driverProfile->load(['user', 'verification']);
 
         return Inertia::render('admin/driver-profiles/edit', [
             'driver' => $driverProfile,
-            'owners' => $owners,
         ]);
     }
 
