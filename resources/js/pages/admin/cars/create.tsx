@@ -28,7 +28,7 @@ const FEATURES = [
     { id: 'tire_pressure_monitor', label: 'Tire Pressure Monitor', category: 'Safety' },
     { id: 'collision_warning', label: 'Collision Warning', category: 'Safety' },
     { id: '360_camera', label: '360° Camera', category: 'Safety' },
-    
+
     // Technology
     { id: 'gps', label: 'GPS Navigation', category: 'Technology' },
     { id: 'bluetooth', label: 'Bluetooth', category: 'Technology' },
@@ -36,7 +36,7 @@ const FEATURES = [
     { id: 'etc', label: 'ETC (Electronic Toll Collection)', category: 'Technology' },
     { id: 'apple_carplay', label: 'Apple CarPlay', category: 'Technology' },
     { id: 'android_auto', label: 'Android Auto', category: 'Technology' },
-    
+
     // Comfort
     { id: 'air_conditioning', label: 'Air Conditioning', category: 'Comfort' },
     { id: 'sunroof', label: 'Sunroof', category: 'Comfort' },
@@ -46,7 +46,7 @@ const FEATURES = [
     { id: 'cruise_control', label: 'Cruise Control', category: 'Comfort' },
     { id: 'power_windows', label: 'Power Windows', category: 'Comfort' },
     { id: 'keyless_entry', label: 'Keyless Entry', category: 'Comfort' },
-    
+
     // Entertainment
     { id: 'dvd_screen', label: 'DVD Screen', category: 'Entertainment' },
     { id: 'premium_sound', label: 'Premium Sound System', category: 'Entertainment' },
@@ -99,31 +99,20 @@ export default function Create({ owners, brands, categories, locations }: Create
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        
+
         // Transform data before submission
         const formData = { ...data };
-        
+
         // If delivery is not available, set delivery fields to null/0
         if (!formData.is_delivery_available) {
             formData.delivery_fee_per_km = 0;
             formData.max_delivery_distance = 0;
         }
-        
-        // Debug logging
-        console.group('🚗 Car Form Submission');
-        console.log('Submitting Data:', formData);
-        console.log('Delivery Available:', formData.is_delivery_available);
-        console.log('Current Errors:', errors);
-        console.groupEnd();
-        
+
         // Use router.post with transformed data
         router.post('/admin/cars', formData, {
             preserveScroll: true,
-            onSuccess: () => {
-                console.log('✅ Car created successfully!');
-            },
-            onError: (validationErrors) => {
-                console.error('❌ Validation Errors:', validationErrors);
+            onError: () => {
                 const firstError = document.querySelector('.text-destructive');
                 firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             },
@@ -131,7 +120,7 @@ export default function Create({ owners, brands, categories, locations }: Create
     };
 
     const handleFeatureToggle = (featureId: string) => {
-        setData('features', 
+        setData('features',
             data.features.includes(featureId)
                 ? data.features.filter(f => f !== featureId)
                 : [...data.features, featureId]
@@ -693,12 +682,12 @@ export default function Create({ owners, brands, categories, locations }: Create
 
                                     <div className="space-y-4">
                                         <Label>Features</Label>
-                                        
+
                                         {/* Group features by category */}
                                         {['Safety', 'Technology', 'Comfort', 'Entertainment'].map((category) => {
                                             const categoryFeatures = FEATURES.filter(f => f.category === category);
                                             if (categoryFeatures.length === 0) return null;
-                                            
+
                                             return (
                                                 <div key={category} className="space-y-2">
                                                     <h4 className="text-sm font-medium text-muted-foreground">{category}</h4>

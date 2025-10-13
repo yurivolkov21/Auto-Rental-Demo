@@ -17,14 +17,17 @@ return new class extends Migration
 
             // Driving license information
             $table->string('driving_license_number', 50)->nullable(); // License number (max 50 chars)
-            $table->text('driving_license_image')->nullable();               // Image URL of the license
-            $table->string('license_type', 20)->nullable();         // License type (A1, A2, B1, B2, C, D, E, etc.)
-            $table->date('license_issue_date')->nullable();                      // Issue date
-            $table->date('license_expiry_date')->nullable();                    // Expiry date
-            $table->string('license_issued_country', 100)->nullable(); // Country of issue
+            $table->text('license_front_image')->nullable();                // License front side (for drivers: detailed verification)
+            $table->text('license_back_image')->nullable();                // License back side (for drivers: detailed verification)
+            $table->string('license_type', 20)->nullable();       // License type (A1, A2, B1, B2, C, D, E, etc.)
+            $table->date('license_issue_date')->nullable();                          // Issue date
+            $table->date('license_expiry_date')->nullable();                        // Expiry date
+            $table->string('license_issued_country', 100)->nullable();     // Country of issue
+            $table->unsignedSmallInteger('driving_experience_years')->nullable(); // Years of driving experience (for drivers)
 
             // Identity verification
-            $table->text('id_image')->nullable();                     // Government-issued ID image URL
+            $table->text('id_card_front_image')->nullable();           // ID card front side (CCCD/CMND)
+            $table->text('id_card_back_image')->nullable();           // ID card back side (CCCD/CMND)
             $table->text('selfie_image')->nullable();                // Selfie for facial recognition URL
             $table->string('nationality', 100)->nullable(); // User's nationality
 

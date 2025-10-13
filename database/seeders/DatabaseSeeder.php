@@ -40,5 +40,10 @@ class DatabaseSeeder extends Seeder
         // STEP 6: Seed Car Images (after cars are created)
         // ============================================
         $this->call(CarImageSeeder::class);
+
+        // ============================================
+        // STEP 7: Seed Driver Profiles (after users are created)
+        // ============================================
+        $this->call(DriverProfileSeeder::class);
     }
 }

@@ -399,24 +399,24 @@ export default function AdminVerificationShow({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-6 md:grid-cols-3">
-                            {/* License Image */}
+                        <div className="grid gap-6 md:grid-cols-2">
+                            {/* License Front Image */}
                             <div className="space-y-2.5">
                                 <Label className="text-sm font-semibold">
-                                    Driving License Photo
+                                    Driving License (Front)
                                 </Label>
-                                {verification.driving_license_image ? (
+                                {verification.license_front_image ? (
                                     <div
                                         className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
                                         onClick={() =>
                                             setImageDialog(
-                                                getImageUrl(verification.driving_license_image)
+                                                getImageUrl(verification.license_front_image)
                                             )
                                         }
                                     >
                                         <img
-                                            src={getImageUrl(verification.driving_license_image)!}
-                                            alt="Driving License"
+                                            src={getImageUrl(verification.license_front_image)!}
+                                            alt="Driving License Front"
                                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -434,21 +434,91 @@ export default function AdminVerificationShow({
                                 )}
                             </div>
 
-                            {/* ID Image */}
+                            {/* License Back Image */}
                             <div className="space-y-2.5">
                                 <Label className="text-sm font-semibold">
-                                    Government ID Photo
+                                    Driving License (Back)
                                 </Label>
-                                {verification.id_image ? (
+                                {verification.license_back_image ? (
                                     <div
                                         className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
                                         onClick={() =>
-                                            setImageDialog(getImageUrl(verification.id_image))
+                                            setImageDialog(
+                                                getImageUrl(verification.license_back_image)
+                                            )
                                         }
                                     >
                                         <img
-                                            src={getImageUrl(verification.id_image)!}
-                                            alt="Government ID"
+                                            src={getImageUrl(verification.license_back_image)!}
+                                            alt="Driving License Back"
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <p className="text-sm font-medium text-white">
+                                                Click to enlarge
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex aspect-[4/3] items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
+                                        <p className="text-sm text-muted-foreground">
+                                            No image uploaded
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* ID Card Front Image */}
+                            <div className="space-y-2.5">
+                                <Label className="text-sm font-semibold">
+                                    ID Card (Front)
+                                </Label>
+                                {verification.id_card_front_image ? (
+                                    <div
+                                        className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
+                                        onClick={() =>
+                                            setImageDialog(
+                                                getImageUrl(verification.id_card_front_image)
+                                            )
+                                        }
+                                    >
+                                        <img
+                                            src={getImageUrl(verification.id_card_front_image)!}
+                                            alt="ID Card Front"
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <p className="text-sm font-medium text-white">
+                                                Click to enlarge
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex aspect-[4/3] items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
+                                        <p className="text-sm text-muted-foreground">
+                                            No image uploaded
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* ID Card Back Image */}
+                            <div className="space-y-2.5">
+                                <Label className="text-sm font-semibold">
+                                    ID Card (Back)
+                                </Label>
+                                {verification.id_card_back_image ? (
+                                    <div
+                                        className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:border-primary hover:shadow-md"
+                                        onClick={() =>
+                                            setImageDialog(
+                                                getImageUrl(verification.id_card_back_image)
+                                            )
+                                        }
+                                    >
+                                        <img
+                                            src={getImageUrl(verification.id_card_back_image)!}
+                                            alt="ID Card Back"
                                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -467,7 +537,7 @@ export default function AdminVerificationShow({
                             </div>
 
                             {/* Selfie Image */}
-                            <div className="space-y-2.5">
+                            <div className="space-y-2.5 md:col-span-2">
                                 <Label className="text-sm font-semibold">Selfie Photo</Label>
                                 {verification.selfie_image ? (
                                     <div

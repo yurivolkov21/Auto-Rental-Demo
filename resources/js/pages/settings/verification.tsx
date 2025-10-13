@@ -27,8 +27,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const LICENSE_TYPES = [
+    { value: 'B1', label: 'B1 - Motorcycles & small vehicles' },
     { value: 'B2', label: 'B2 - Cars (4-9 seats)' },
+    { value: 'C', label: 'C - Trucks' },
     { value: 'D', label: 'D - Passenger vehicles (10-16 seats)' },
+    { value: 'E', label: 'E - Large passenger vehicles' },
 ];
 
 const STATUS_CONFIG = {
@@ -59,12 +62,23 @@ export default function Verification({
 }: {
     verification: UserVerification;
 }) {
-    const [licensePreview, setLicensePreview] = useState<string | null>(
-        verification.driving_license_image ? `/storage/${verification.driving_license_image}` : null
+    // License images (front & back)
+    const [licenseFrontPreview, setLicenseFrontPreview] = useState<string | null>(
+        verification.license_front_image ? `/storage/${verification.license_front_image}` : null
     );
-    const [idPreview, setIdPreview] = useState<string | null>(
-        verification.id_image ? `/storage/${verification.id_image}` : null
+    const [licenseBackPreview, setLicenseBackPreview] = useState<string | null>(
+        verification.license_back_image ? `/storage/${verification.license_back_image}` : null
     );
+
+    // ID card images (front & back)
+    const [idCardFrontPreview, setIdCardFrontPreview] = useState<string | null>(
+        verification.id_card_front_image ? `/storage/${verification.id_card_front_image}` : null
+    );
+    const [idCardBackPreview, setIdCardBackPreview] = useState<string | null>(
+        verification.id_card_back_image ? `/storage/${verification.id_card_back_image}` : null
+    );
+
+    // Selfie
     const [selfiePreview, setSelfiePreview] = useState<string | null>(
         verification.selfie_image ? `/storage/${verification.selfie_image}` : null
     );
@@ -146,20 +160,20 @@ export default function Verification({
                                     <CardHeader>
                                         <CardTitle>Driving License Information</CardTitle>
                                         <CardDescription>
-                                            Upload a clear photo of your valid driving license
+                                            Upload clear photos of both sides of your valid driving license
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        {/* License Image Upload */}
+                                        {/* License Front Image Upload */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="driving_license_image">
-                                                License Photo *
+                                            <Label htmlFor="license_front_image">
+                                                License Front Side *
                                             </Label>
                                             <div className="mb-2">
-                                                {licensePreview ? (
+                                                {licenseFrontPreview ? (
                                                     <img
-                                                        src={licensePreview}
-                                                        alt="License preview"
+                                                        src={licenseFrontPreview}
+                                                        alt="License front preview"
                                                         className="h-48 w-auto rounded-md border object-cover"
                                                     />
                                                 ) : (
@@ -171,18 +185,53 @@ export default function Verification({
                                                 )}
                                             </div>
                                             <Input
-                                                id="driving_license_image"
-                                                name="driving_license_image"
+                                                id="license_front_image"
+                                                name="license_front_image"
                                                 type="file"
                                                 accept="image/jpeg,image/jpg,image/png,image/webp"
-                                                onChange={(e) => handleFilePreview(e, setLicensePreview)}
+                                                onChange={(e) => handleFilePreview(e, setLicenseFrontPreview)}
                                                 disabled={verification.status === 'verified'}
                                                 className="cursor-pointer"
                                             />
                                             <p className="text-xs text-muted-foreground">
                                                 Max file size: 5MB. Formats: JPEG, PNG, WebP
                                             </p>
-                                            <InputError message={errors.driving_license_image} />
+                                            <InputError message={errors.license_front_image} />
+                                        </div>
+
+                                        {/* License Back Image Upload */}
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="license_back_image">
+                                                License Back Side *
+                                            </Label>
+                                            <div className="mb-2">
+                                                {licenseBackPreview ? (
+                                                    <img
+                                                        src={licenseBackPreview}
+                                                        alt="License back preview"
+                                                        className="h-48 w-auto rounded-md border object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-48 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            No image selected
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <Input
+                                                id="license_back_image"
+                                                name="license_back_image"
+                                                type="file"
+                                                accept="image/jpeg,image/jpg,image/png,image/webp"
+                                                onChange={(e) => handleFilePreview(e, setLicenseBackPreview)}
+                                                disabled={verification.status === 'verified'}
+                                                className="cursor-pointer"
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Max file size: 5MB. Formats: JPEG, PNG, WebP
+                                            </p>
+                                            <InputError message={errors.license_back_image} />
                                         </div>
 
                                         {/* License Number */}
@@ -263,6 +312,27 @@ export default function Verification({
                                             />
                                             <InputError message={errors.license_issued_country} />
                                         </div>
+
+                                        {/* Driving Experience (for drivers) */}
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="driving_experience_years">
+                                                Driving Experience (Years)
+                                            </Label>
+                                            <Input
+                                                id="driving_experience_years"
+                                                name="driving_experience_years"
+                                                type="number"
+                                                min="0"
+                                                max="50"
+                                                defaultValue={verification.driving_experience_years || ''}
+                                                placeholder="e.g., 5"
+                                                disabled={verification.status === 'verified'}
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Optional: Specify how many years you've been driving
+                                            </p>
+                                            <InputError message={errors.driving_experience_years} />
+                                        </div>
                                     </CardContent>
                                 </Card>
 
@@ -271,20 +341,20 @@ export default function Verification({
                                     <CardHeader>
                                         <CardTitle>Identity Documents</CardTitle>
                                         <CardDescription>
-                                            Upload your government-issued ID and a selfie for verification
+                                            Upload both sides of your government-issued ID card (CCCD/CMND) and a selfie
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        {/* ID Image Upload */}
+                                        {/* ID Card Front Image Upload */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="id_image">
-                                                Government ID Photo *
+                                            <Label htmlFor="id_card_front_image">
+                                                ID Card Front Side *
                                             </Label>
                                             <div className="mb-2">
-                                                {idPreview ? (
+                                                {idCardFrontPreview ? (
                                                     <img
-                                                        src={idPreview}
-                                                        alt="ID preview"
+                                                        src={idCardFrontPreview}
+                                                        alt="ID card front preview"
                                                         className="h-48 w-auto rounded-md border object-cover"
                                                     />
                                                 ) : (
@@ -296,18 +366,53 @@ export default function Verification({
                                                 )}
                                             </div>
                                             <Input
-                                                id="id_image"
-                                                name="id_image"
+                                                id="id_card_front_image"
+                                                name="id_card_front_image"
                                                 type="file"
                                                 accept="image/jpeg,image/jpg,image/png,image/webp"
-                                                onChange={(e) => handleFilePreview(e, setIdPreview)}
+                                                onChange={(e) => handleFilePreview(e, setIdCardFrontPreview)}
                                                 disabled={verification.status === 'verified'}
                                                 className="cursor-pointer"
                                             />
                                             <p className="text-xs text-muted-foreground">
-                                                Upload your passport, national ID, or driver's license (max 5MB)
+                                                Upload the front side of your CCCD, CMND, or passport (max 5MB)
                                             </p>
-                                            <InputError message={errors.id_image} />
+                                            <InputError message={errors.id_card_front_image} />
+                                        </div>
+
+                                        {/* ID Card Back Image Upload */}
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="id_card_back_image">
+                                                ID Card Back Side *
+                                            </Label>
+                                            <div className="mb-2">
+                                                {idCardBackPreview ? (
+                                                    <img
+                                                        src={idCardBackPreview}
+                                                        alt="ID card back preview"
+                                                        className="h-48 w-auto rounded-md border object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-48 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            No image selected
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <Input
+                                                id="id_card_back_image"
+                                                name="id_card_back_image"
+                                                type="file"
+                                                accept="image/jpeg,image/jpg,image/png,image/webp"
+                                                onChange={(e) => handleFilePreview(e, setIdCardBackPreview)}
+                                                disabled={verification.status === 'verified'}
+                                                className="cursor-pointer"
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Upload the back side of your CCCD or CMND (max 5MB)
+                                            </p>
+                                            <InputError message={errors.id_card_back_image} />
                                         </div>
 
                                         {/* Selfie Image Upload */}

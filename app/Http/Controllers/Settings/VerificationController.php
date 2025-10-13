@@ -24,24 +24,24 @@ class VerificationController extends Controller
         // Load or create verification record with default status
         $verification = $user->verification ?? new UserVerification([
             'user_id' => $user->id,
-            'status' => 'pending',
+            'status'  => 'pending',
         ]);
 
         // Format dates for HTML date inputs
-        $licenseIssueDate = null;
+        $licenseIssueDate  = null;
         $licenseExpiryDate = null;
-        
+
         if ($verification->license_issue_date instanceof \Carbon\Carbon) {
             $licenseIssueDate = $verification->license_issue_date->format('Y-m-d');
         }
-        
+
         if ($verification->license_expiry_date instanceof \Carbon\Carbon) {
             $licenseExpiryDate = $verification->license_expiry_date->format('Y-m-d');
         }
 
         return Inertia::render('settings/verification', [
             'verification' => array_merge($verification->toArray(), [
-                'license_issue_date' => $licenseIssueDate,
+                'license_issue_date'  => $licenseIssueDate,
                 'license_expiry_date' => $licenseExpiryDate,
             ]),
         ]);
@@ -59,33 +59,59 @@ class VerificationController extends Controller
         // Get or create verification record with default status
         $verification = $user->verification ?? new UserVerification([
             'user_id' => $user->id,
-            'status' => 'pending',
+            'status'  => 'pending',
         ]);
 
-        // Handle driving license image upload
-        if (isset($data['driving_license_image']) && $data['driving_license_image'] instanceof \Illuminate\Http\UploadedFile) {
+        // Handle license front image upload
+        if (isset($data['license_front_image']) && $data['license_front_image'] instanceof \Illuminate\Http\UploadedFile) {
             // Delete old image if exists
-            if ($verification->driving_license_image && Storage::disk('public')->exists($verification->driving_license_image)) {
-                Storage::disk('public')->delete($verification->driving_license_image);
+            if ($verification->license_front_image && Storage::disk('public')->exists($verification->license_front_image)) {
+                Storage::disk('public')->delete($verification->license_front_image);
             }
 
             // Store new image
-            $data['driving_license_image'] = $data['driving_license_image']->store('verifications/licenses', 'public');
+            $data['license_front_image'] = $data['license_front_image']->store('verifications/licenses', 'public');
         } else {
-            unset($data['driving_license_image']);
+            unset($data['license_front_image']);
         }
 
-        // Handle ID image upload
-        if (isset($data['id_image']) && $data['id_image'] instanceof \Illuminate\Http\UploadedFile) {
+        // Handle license back image upload
+        if (isset($data['license_back_image']) && $data['license_back_image'] instanceof \Illuminate\Http\UploadedFile) {
             // Delete old image if exists
-            if ($verification->id_image && Storage::disk('public')->exists($verification->id_image)) {
-                Storage::disk('public')->delete($verification->id_image);
+            if ($verification->license_back_image && Storage::disk('public')->exists($verification->license_back_image)) {
+                Storage::disk('public')->delete($verification->license_back_image);
             }
 
             // Store new image
-            $data['id_image'] = $data['id_image']->store('verifications/ids', 'public');
+            $data['license_back_image'] = $data['license_back_image']->store('verifications/licenses', 'public');
         } else {
-            unset($data['id_image']);
+            unset($data['license_back_image']);
+        }
+
+        // Handle ID card front image upload
+        if (isset($data['id_card_front_image']) && $data['id_card_front_image'] instanceof \Illuminate\Http\UploadedFile) {
+            // Delete old image if exists
+            if ($verification->id_card_front_image && Storage::disk('public')->exists($verification->id_card_front_image)) {
+                Storage::disk('public')->delete($verification->id_card_front_image);
+            }
+
+            // Store new image
+            $data['id_card_front_image'] = $data['id_card_front_image']->store('verifications/ids', 'public');
+        } else {
+            unset($data['id_card_front_image']);
+        }
+
+        // Handle ID card back image upload
+        if (isset($data['id_card_back_image']) && $data['id_card_back_image'] instanceof \Illuminate\Http\UploadedFile) {
+            // Delete old image if exists
+            if ($verification->id_card_back_image && Storage::disk('public')->exists($verification->id_card_back_image)) {
+                Storage::disk('public')->delete($verification->id_card_back_image);
+            }
+
+            // Store new image
+            $data['id_card_back_image'] = $data['id_card_back_image']->store('verifications/ids', 'public');
+        } else {
+            unset($data['id_card_back_image']);
         }
 
         // Handle selfie image upload

@@ -1,6 +1,9 @@
 import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
+// Export driver profile types
+export * from './models/driver-profile';
+
 export interface Auth {
     user: User;
 }
@@ -58,7 +61,7 @@ export interface User {
     date_of_birth?: string | null;
 
     // Role & status
-    role: 'customer' | 'owner' | 'admin';
+    role: 'customer' | 'owner' | 'driver' | 'admin';
     status: 'active' | 'inactive' | 'suspended' | 'banned';
 
     // Status tracking (for suspended/banned accounts)
@@ -81,14 +84,17 @@ export interface UserVerification {
 
     // Driving license information
     driving_license_number?: string | null;
-    driving_license_image?: string | null;
-    license_type?: string | null;
+    license_front_image?: string | null; // Front side
+    license_back_image?: string | null; // Back side
+    license_type?: string | null; // B1, B2, C, D, E, etc.
     license_issue_date?: string | null;
     license_expiry_date?: string | null;
     license_issued_country?: string | null;
+    driving_experience_years?: number | null; // For drivers
 
     // Identity verification
-    id_image?: string | null;
+    id_card_front_image?: string | null; // CCCD front
+    id_card_back_image?: string | null; // CCCD back
     selfie_image?: string | null;
     nationality?: string | null;
 
@@ -99,13 +105,13 @@ export interface UserVerification {
     verified_by?: number | null;
     verified_at?: string | null;
     rejected_by?: number | null;
-    rejected_reason?: string | null;
     rejected_at?: string | null;
+    rejected_reason?: string | null;
 
     // Relationships
     user?: User;
-    verifier?: User;
-    rejector?: User;
+    verifier?: Pick<User, 'id' | 'name' | 'email'>;
+    rejector?: Pick<User, 'id' | 'name' | 'email'>;
 
     // Timestamps
     created_at: string;
@@ -116,13 +122,14 @@ export interface UserStats {
     total: number;
     customers: number;
     owners: number;
+    drivers: number;
     admins: number;
     verified: number;
     active: number;
 }
 
 export interface UserFilters {
-    role: 'all' | 'customer' | 'owner' | 'admin';
+    role: 'all' | 'customer' | 'owner' | 'driver' | 'admin';
     status: 'all' | 'active' | 'inactive' | 'suspended' | 'banned';
     verified: 'all' | 'yes' | 'no';
     search: string;

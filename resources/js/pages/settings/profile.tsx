@@ -5,7 +5,6 @@ import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -56,9 +55,7 @@ export default function Profile({
 
     // Sync avatar preview when auth.user.avatar changes (after save)
     useEffect(() => {
-        console.log('Avatar changed:', auth.user.avatar);
         const newUrl = getAvatarUrl(auth.user.avatar);
-        console.log('New avatar URL:', newUrl);
         setAvatarPreview(newUrl);
     }, [auth.user.avatar]);
 
@@ -299,8 +296,6 @@ export default function Profile({
                         )}
                     </Form>
                 </div>
-
-                <DeleteUser />
             </SettingsLayout>
         </AppLayout>
     );

@@ -18,12 +18,15 @@ class UserVerification extends Model
     protected $fillable = [
         'user_id',
         'driving_license_number',
-        'driving_license_image',
+        'license_front_image',
+        'license_back_image',
         'license_type',
         'license_issue_date',
         'license_expiry_date',
         'license_issued_country',
-        'id_image',
+        'driving_experience_years',
+        'id_card_front_image',
+        'id_card_back_image',
         'selfie_image',
         'nationality',
         'status',
@@ -42,10 +45,11 @@ class UserVerification extends Model
     protected function casts(): array
     {
         return [
-            'license_issue_date'  => 'date',
-            'license_expiry_date' => 'date',
-            'verified_at'         => 'datetime',
-            'rejected_at'         => 'datetime',
+            'license_issue_date'          => 'date',
+            'license_expiry_date'         => 'date',
+            'driving_experience_years'    => 'integer',
+            'verified_at'                 => 'datetime',
+            'rejected_at'                 => 'datetime',
         ];
     }
 

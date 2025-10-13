@@ -112,6 +112,16 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the user is a driver.
+     */
+    public function driver(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'driver',
+        ]);
+    }
+
+    /**
      * Indicate that the user is an admin.
      */
     public function admin(): static

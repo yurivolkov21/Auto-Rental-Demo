@@ -79,6 +79,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the user's driver profile (if user is a driver).
+     */
+    public function driverProfile()
+    {
+        return $this->hasOne(DriverProfile::class);
+    }
+
+    /**
      * Get the admin who changed this user's status.
      */
     public function statusChanger(): BelongsTo
@@ -104,6 +112,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeOwners($query)
     {
         return $query->where('role', 'owner');
+    }
+
+    /**
+     * Scope a query to only include drivers.
+     */
+    public function scopeDrivers($query)
+    {
+        return $query->where('role', 'driver');
     }
 
     /**
@@ -224,6 +240,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function canListCars(): bool
     {
         return $this->isOwner() && $this->isVerified();
+    }
+
+    /**
+     * Check if user is a driver.
+     */
+    public function isDriver(): bool
+    {
+        return $this->role === 'driver';
     }
 
     /**

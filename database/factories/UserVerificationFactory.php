@@ -33,16 +33,19 @@ class UserVerificationFactory extends Factory
 
             // Driving license information
             'driving_license_number' => fake()->numerify('B######'),
-            'driving_license_image'  => fake()->imageUrl(800, 600, 'business'),
-            'license_type'           => fake()->randomElement(['B2', 'D']),
+            'license_front_image'    => fake()->optional(0.6)->imageUrl(800, 600, 'business'), // Front side
+            'license_back_image'     => fake()->optional(0.6)->imageUrl(800, 600, 'business'), // Back side
+            'license_type'           => fake()->randomElement(['B1', 'B2', 'C', 'D', 'E']),
             'license_issue_date'     => $issueDate->format('Y-m-d'),
             'license_expiry_date'    => $expiryDate->format('Y-m-d'),
             'license_issued_country' => 'Vietnam',
+            'driving_experience_years' => fake()->optional(0.7)->numberBetween(1, 20), // 70% have experience data
 
             // Identity verification
-            'id_image'     => fake()->imageUrl(800, 600, 'people'),
-            'selfie_image' => fake()->imageUrl(600, 600, 'people'),
-            'nationality'  => 'Vietnamese',
+            'id_card_front_image' => fake()->optional(0.6)->imageUrl(800, 600, 'people'), // CCCD front
+            'id_card_back_image'  => fake()->optional(0.6)->imageUrl(800, 600, 'people'), // CCCD back
+            'selfie_image'       => fake()->imageUrl(600, 600, 'people'),
+            'nationality'        => 'Vietnamese',
 
             // Verification status
             'status' => 'pending',
@@ -102,8 +105,22 @@ class UserVerificationFactory extends Factory
             'verified_by'     => null,
             'verified_at'     => null,
             'rejected_by'     => null,
-            'rejected_reason' => null,
             'rejected_at'     => null,
+            'rejected_reason' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that this is a driver verification (with full details).
+     */
+    public function forDriver(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'license_front_image'         => fake()->imageUrl(800, 600, 'business'),
+            'license_back_image'          => fake()->imageUrl(800, 600, 'business'),
+            'id_card_front_image'         => fake()->imageUrl(800, 600, 'people'),
+            'id_card_back_image'          => fake()->imageUrl(800, 600, 'people'),
+            'driving_experience_years'    => fake()->numberBetween(2, 20),
         ]);
     }
 }
