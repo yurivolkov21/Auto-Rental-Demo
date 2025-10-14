@@ -21,6 +21,20 @@ use Illuminate\Support\Facades\DB;
 class BookingPricingService
 {
     /**
+     * Round amount to nearest thousand (for Vietnamese currency)
+     *
+     * VND rarely uses fractional amounts in cash transactions.
+     * This method rounds to the nearest 1,000 VND for convenience.
+     *
+     * @param float $amount The amount to round
+     * @return float Rounded amount (e.g., 12,345 → 12,000; 12,678 → 13,000)
+     */
+    private function roundToThousand(float $amount): float
+    {
+        return round($amount / 1000) * 1000;
+    }
+
+    /**
      * Calculate car rental base price
      *
      * Calculates the base rental amount based on hourly and daily rates.
@@ -63,7 +77,7 @@ class BookingPricingService
             'total_hours'          => $totalHours,
             'total_days'           => $totalDays,
             'remaining_hours'      => $remainingHours,
-            'base_amount'          => round($baseAmount, 2),
+            'base_amount'          => $this->roundToThousand($baseAmount),
             'hourly_rate'          => $hourlyRate,
             'daily_rate'           => $dailyRate,
             'daily_hour_threshold' => $threshold,
@@ -116,7 +130,7 @@ class BookingPricingService
         $driverFeeAmount = ($driverDays * $dailyFee) + ($driverRemainingHours * $hourlyFee);
 
         return [
-            'driver_fee_amount'      => round($driverFeeAmount, 2),
+            'driver_fee_amount'      => $this->roundToThousand($driverFeeAmount),
             'total_driver_hours'     => $totalHours,
             'driver_hourly_fee'      => $hourlyFee,
             'driver_daily_fee'       => $dailyFee,
@@ -206,7 +220,7 @@ class BookingPricingService
 
         return [
             'can_deliver'         => true,
-            'delivery_fee'        => round($deliveryFee, 2),
+            'delivery_fee'        => $this->roundToThousand($deliveryFee),
             'delivery_distance'   => round($distance, 2),
             'delivery_fee_per_km' => (float) $car->delivery_fee_per_km,
             'error_message'       => null,
@@ -376,7 +390,7 @@ class BookingPricingService
 
         return [
             'is_valid'          => true,
-            'discount_amount'   => round($discountAmount, 2),
+            'discount_amount'   => $this->roundToThousand($discountAmount),
             'promotion_id'      => $promotion->id,
             'promotion_code'    => $promotionCode,
             'promotion_details' => $promotionDetails,
@@ -421,7 +435,7 @@ class BookingPricingService
         return [
             'is_late'      => true,
             'late_hours'   => $lateHours,
-            'overtime_fee' => round($overtimeFee, 2),
+            'overtime_fee' => $this->roundToThousand($overtimeFee),
         ];
     }
 
@@ -525,16 +539,16 @@ class BookingPricingService
             'discount' => $discount,
 
             // Additional fees
-            'extra_fee'     => round($extraFee, 2),
+            'extra_fee'     => $this->roundToThousand($extraFee),
 
             // Financial totals
-            'subtotal'        => round($subtotal, 2),
-            'vat_amount'      => round($vatAmount, 2),
+            'subtotal'        => $this->roundToThousand($subtotal),
+            'vat_amount'      => $this->roundToThousand($vatAmount),
             'vat_percentage'  => $applyVat ? 10 : 0,
-            'total_amount'    => round($totalAmount, 2),
-            'deposit_amount'  => round($depositAmount, 2),
-            'amount_paid'     => round($amountPaid, 2),
-            'balance_due'     => round($balanceDue, 2),
+            'total_amount'    => $this->roundToThousand($totalAmount),
+            'deposit_amount'  => $this->roundToThousand($depositAmount),
+            'amount_paid'     => $this->roundToThousand($amountPaid),
+            'balance_due'     => $this->roundToThousand($balanceDue),
 
             // Car details (for reference)
             'car' => [

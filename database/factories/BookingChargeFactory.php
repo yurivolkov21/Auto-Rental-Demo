@@ -107,25 +107,39 @@ class BookingChargeFactory extends Factory
             $refundAmount = fake()->boolean(50) ? $depositAmount * 0.5 : $depositAmount; // 50% or full refund
         }
 
+        // Apply rounding to nearest thousand (VND) for all amounts
+        $baseAmount      = round($baseAmount / 1000) * 1000;
+        $deliveryFee     = round($deliveryFee / 1000) * 1000;
+        $driverFeeAmount = round($driverFeeAmount / 1000) * 1000;
+        $extraFee        = round($extraFee / 1000) * 1000;
+        $discountAmount  = round($discountAmount / 1000) * 1000;
+        $subtotal        = round($subtotal / 1000) * 1000;
+        $vatAmount       = round($vatAmount / 1000) * 1000;
+        $totalAmount     = round($totalAmount / 1000) * 1000;
+        $depositAmount   = round($depositAmount / 1000) * 1000;
+        $amountPaid      = round($amountPaid / 1000) * 1000;
+        $balanceDue      = round($balanceDue / 1000) * 1000;
+        $refundAmount    = round($refundAmount / 1000) * 1000;
+
         return [
             'booking_id'        => $booking->id,
             'total_hours'       => $totalHours,
             'total_days'        => $totalDays,
             'hourly_rate'       => $booking->hourly_rate,
             'daily_rate'        => $booking->daily_rate,
-            'base_amount'       => round($baseAmount, 2),
-            'delivery_fee'      => round($deliveryFee, 2),
-            'driver_fee_amount' => round($driverFeeAmount, 2),
-            'extra_fee'         => round($extraFee, 2),
+            'base_amount'       => $baseAmount,
+            'delivery_fee'      => $deliveryFee,
+            'driver_fee_amount' => $driverFeeAmount,
+            'extra_fee'         => $extraFee,
             'extra_fee_details' => $extraFeeDetails,
-            'discount_amount'   => round($discountAmount, 2),
-            'subtotal'          => round($subtotal, 2),
-            'vat_amount'        => round($vatAmount, 2),
-            'total_amount'      => round($totalAmount, 2),
-            'deposit_amount'    => round($depositAmount, 2),
-            'amount_paid'       => round($amountPaid, 2),
-            'balance_due'       => round($balanceDue, 2),
-            'refund_amount'     => round($refundAmount, 2),
+            'discount_amount'   => $discountAmount,
+            'subtotal'          => $subtotal,
+            'vat_amount'        => $vatAmount,
+            'total_amount'      => $totalAmount,
+            'deposit_amount'    => $depositAmount,
+            'amount_paid'       => $amountPaid,
+            'balance_due'       => $balanceDue,
+            'refund_amount'     => $refundAmount,
         ];
     }
 
