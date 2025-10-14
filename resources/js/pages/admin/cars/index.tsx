@@ -286,70 +286,73 @@ export default function AdminCarsIndex({
                     </CardHeader>
                     <CardContent>
                         {/* Filters */}
-                        <div className="grid gap-4 md:grid-cols-5 mb-6">
-                            <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Filter by status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="available">Available</SelectItem>
-                                    <SelectItem value="rented">Rented</SelectItem>
-                                    <SelectItem value="maintenance">Maintenance</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <Select value={categoryFilter} onValueChange={handleCategoryFilterChange}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Filter by category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Categories</SelectItem>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.id} value={category.id.toString()}>
-                                            {category.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-
-                            <Select value={brandFilter} onValueChange={handleBrandFilterChange}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Filter by brand" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Brands</SelectItem>
-                                    {brands.map((brand) => (
-                                        <SelectItem key={brand.id} value={brand.id.toString()}>
-                                            {brand.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-
-                            <Select value={verifiedFilter} onValueChange={handleVerifiedFilterChange}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Verification" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    <SelectItem value="verified">Verified</SelectItem>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <form onSubmit={handleSearch} className="flex gap-2">
-                                <Input
-                                    placeholder="Search by model, license plate, VIN, owner, color..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="flex-1"
-                                />
-                                <Button type="submit" size="icon" variant="outline">
-                                    <Search className="h-4 w-4" />
-                                </Button>
+                        <div className="flex flex-col gap-4 mb-6">
+                            <form onSubmit={handleSearch} className="flex-1">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Search by model, license plate, VIN, owner, color..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9"
+                                    />
+                                </div>
                             </form>
+
+                            <div className="grid gap-4 md:grid-cols-4">
+                                <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Filter by status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="available">Available</SelectItem>
+                                        <SelectItem value="rented">Rented</SelectItem>
+                                        <SelectItem value="maintenance">Maintenance</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={categoryFilter} onValueChange={handleCategoryFilterChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Filter by category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Categories</SelectItem>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id.toString()}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={brandFilter} onValueChange={handleBrandFilterChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Filter by brand" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Brands</SelectItem>
+                                        {brands.map((brand) => (
+                                            <SelectItem key={brand.id} value={brand.id.toString()}>
+                                                {brand.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={verifiedFilter} onValueChange={handleVerifiedFilterChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Verification" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All</SelectItem>
+                                        <SelectItem value="verified">Verified</SelectItem>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         {/* Cars Table */}

@@ -125,38 +125,35 @@ export default function AdminVerificationsIndex({
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {/* Filters */}
-                        <div className="flex flex-col gap-4 sm:flex-row">
-                            <div className="flex-1">
-                                <form onSubmit={handleSearch} className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            placeholder="Search by name or email..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-9"
-                                        />
-                                    </div>
-                                    <Button type="submit">Search</Button>
-                                </form>
-                            </div>
-                            <div className="w-full sm:w-48">
-                                <Select
-                                    value={statusFilter}
-                                    onValueChange={handleFilterChange}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Filter by status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                        <SelectItem value="verified">Verified</SelectItem>
-                                        <SelectItem value="rejected">Rejected</SelectItem>
-                                        <SelectItem value="expired">Expired</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+                            <form onSubmit={handleSearch} className="flex-1">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Search by name or email..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9"
+                                    />
+                                </div>
+                            </form>
+
+                            <Select
+                                value={statusFilter}
+                                onValueChange={handleFilterChange}
+                            >
+                                <SelectTrigger className="w-full sm:w-[200px]">
+                                    <SelectValue placeholder="All Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="verified">Verified</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                    <SelectItem value="expired">Expired</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Stats */}

@@ -184,53 +184,47 @@ export default function AdminLocationsIndex({
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {/* Filters */}
-                        <div className="flex flex-col gap-4 lg:flex-row">
-                            <div className="flex-1">
-                                <form onSubmit={handleSearch} className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            placeholder="Search by name or address..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-9"
-                                        />
-                                    </div>
-                                    <Button type="submit">Search</Button>
-                                </form>
-                            </div>
-                            <div className="flex gap-2">
-                                <div className="w-full sm:w-40">
-                                    <Select
-                                        value={statusFilter}
-                                        onValueChange={handleStatusFilterChange}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Status</SelectItem>
-                                            <SelectItem value="active">Active</SelectItem>
-                                            <SelectItem value="inactive">Inactive</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                        <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+                            <form onSubmit={handleSearch} className="flex-1">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Search by name or address..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9"
+                                    />
                                 </div>
-                                <div className="w-full sm:w-40">
-                                    <Select
-                                        value={typeFilter}
-                                        onValueChange={handleTypeFilterChange}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Types</SelectItem>
-                                            <SelectItem value="airport">Airport</SelectItem>
-                                            <SelectItem value="popular">Popular</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
+                            </form>
+
+                            <Select
+                                value={statusFilter}
+                                onValueChange={handleStatusFilterChange}
+                            >
+                                <SelectTrigger className="w-full sm:w-[200px]">
+                                    <SelectValue placeholder="Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                            <Select
+                                value={typeFilter}
+                                onValueChange={handleTypeFilterChange}
+                            >
+                                <SelectTrigger className="w-full sm:w-[200px]">
+                                    <SelectValue placeholder="Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Types</SelectItem>
+                                    <SelectItem value="airport">Airport</SelectItem>
+                                    <SelectItem value="popular">Popular</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Stats */}

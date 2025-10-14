@@ -161,37 +161,33 @@ export default function AdminCarBrandsIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="flex flex-col gap-4 md:flex-row">
-                            {/* Status Filter */}
-                            <div className="flex-1">
-                                <Select
-                                    value={statusFilter}
-                                    onValueChange={handleStatusFilterChange}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Filter by status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Search */}
-                            <form onSubmit={handleSearch} className="flex flex-1 gap-2">
-                                <Input
-                                    type="text"
-                                    placeholder="Search by name..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="flex-1"
-                                />
-                                <Button type="submit">
-                                    <Search className="h-4 w-4" />
-                                </Button>
+                        <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+                            <form onSubmit={handleSearch} className="flex-1">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Search by name..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9"
+                                    />
+                                </div>
                             </form>
+
+                            <Select
+                                value={statusFilter}
+                                onValueChange={handleStatusFilterChange}
+                            >
+                                <SelectTrigger className="w-full sm:w-[200px]">
+                                    <SelectValue placeholder="Filter by status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </CardContent>
                 </Card>
