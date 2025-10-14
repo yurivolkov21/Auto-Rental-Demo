@@ -23,7 +23,7 @@ export interface AdminNavItem {
 /**
  * Admin Navigation Items Configuration
  */
-export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
+export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: number): AdminNavItem[] => {
     return [
         {
             title: 'Dashboard',
@@ -65,6 +65,7 @@ export const getAdminNavItems = (currentPath: string): AdminNavItem[] => {
             title: 'Bookings',
             href: '/admin/bookings',
             icon: Calendar,
+            badge: pendingBookingsCount && pendingBookingsCount > 0 ? pendingBookingsCount : undefined,
             isActive: currentPath.startsWith('/admin/bookings'),
         },
         {

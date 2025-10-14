@@ -22,8 +22,9 @@ import { NavUser } from '@/components/nav-user';
  * Styled to match the main app sidebar design
  */
 export default function AdminSidebar() {
-    const { url } = usePage();
-    const navItems = getAdminNavItems(url);
+    const { url, props } = usePage();
+    const pendingBookingsCount = props.pendingBookingsCount as number | undefined;
+    const navItems = getAdminNavItems(url, pendingBookingsCount);
 
     return (
         <Sidebar collapsible="icon" variant="inset">
