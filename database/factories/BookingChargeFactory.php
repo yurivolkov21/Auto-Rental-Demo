@@ -43,9 +43,6 @@ class BookingChargeFactory extends Factory
             $deliveryFee = $booking->delivery_distance * $booking->delivery_fee_per_km;
         }
 
-        // Insurance fee (random, 0-5% of base amount)
-        $insuranceFee = fake()->boolean(30) ? round($baseAmount * fake()->randomFloat(2, 0, 0.05), 2) : 0;
-
         // Extra fees (overtime, cleaning, damages - random 0-20% chance)
         $extraFee = 0;
         $extraFeeDetails = null;
@@ -77,8 +74,8 @@ class BookingChargeFactory extends Factory
         // Discount amount (will be set by promotions, default 0)
         $discountAmount = 0;
 
-        // Calculate subtotal
-        $subtotal = $baseAmount + $deliveryFee + $driverFeeAmount + $insuranceFee + $extraFee - $discountAmount;
+        // Calculate subtotal (base + delivery + driver + extra - discount)
+        $subtotal = $baseAmount + $deliveryFee + $driverFeeAmount + $extraFee - $discountAmount;
 
         // VAT (10% - common in Vietnam, but optional)
         $vatAmount = fake()->boolean(70) ? round($subtotal * 0.10, 2) : 0;
@@ -119,7 +116,6 @@ class BookingChargeFactory extends Factory
             'base_amount'       => round($baseAmount, 2),
             'delivery_fee'      => round($deliveryFee, 2),
             'driver_fee_amount' => round($driverFeeAmount, 2),
-            'insurance_fee'     => round($insuranceFee, 2),
             'extra_fee'         => round($extraFee, 2),
             'extra_fee_details' => $extraFeeDetails,
             'discount_amount'   => round($discountAmount, 2),

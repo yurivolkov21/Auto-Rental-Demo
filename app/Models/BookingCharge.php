@@ -19,7 +19,6 @@ class BookingCharge extends Model
         'base_amount',
         'delivery_fee',
         'driver_fee_amount',
-        'insurance_fee',
         'extra_fee',
         'extra_fee_details',
         'discount_amount',
@@ -32,27 +31,24 @@ class BookingCharge extends Model
         'refund_amount',
     ];
 
-    protected $casts = [
-        'booking_id'        => 'integer',
-        'total_hours'       => 'integer',
-        'total_days'        => 'integer',
-        'hourly_rate'       => 'decimal:2',
-        'daily_rate'        => 'decimal:2',
-        'base_amount'       => 'decimal:2',
-        'delivery_fee'      => 'decimal:2',
-        'driver_fee_amount' => 'decimal:2',
-        'insurance_fee'     => 'decimal:2',
-        'extra_fee'         => 'decimal:2',
-        'extra_fee_details' => 'array',
-        'discount_amount'   => 'decimal:2',
-        'subtotal'          => 'decimal:2',
-        'vat_amount'        => 'decimal:2',
-        'total_amount'      => 'decimal:2',
-        'deposit_amount'    => 'decimal:2',
-        'amount_paid'       => 'decimal:2',
-        'balance_due'       => 'decimal:2',
-        'refund_amount'     => 'decimal:2',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'base_rental_amount' => 'decimal:2',
+            'delivery_fee'       => 'decimal:2',
+            'driver_fee_amount'  => 'decimal:2',
+            'extra_fee'          => 'decimal:2',
+            'extra_fee_details'  => 'array',
+            'discount_amount'    => 'decimal:2',
+            'subtotal'           => 'decimal:2',
+            'vat_rate'           => 'decimal:2',
+            'vat_amount'         => 'decimal:2',
+            'total_amount'       => 'decimal:2',
+            'paid_amount'        => 'decimal:2',
+            'balance_due'        => 'decimal:2',
+            'refund_amount'      => 'decimal:2',
+        ];
+    }
 
     // === RELATIONSHIPS ===
 

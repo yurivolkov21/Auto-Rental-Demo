@@ -109,7 +109,7 @@ class BookingSeeder extends Seeder
 
                     if ($charge && $bookingPromotion) {
                         $newDiscountAmount = $charge->discount_amount + $bookingPromotion->discount_amount;
-                        $newSubtotal       = $charge->base_amount + $charge->delivery_fee + $charge->driver_fee_amount + $charge->insurance_fee + $charge->extra_fee - $newDiscountAmount;
+                        $newSubtotal       = $charge->base_amount + $charge->delivery_fee + $charge->driver_fee_amount + $charge->extra_fee - $newDiscountAmount;
                         $newVatAmount      = $charge->vat_amount > 0 ? round($newSubtotal * 0.10, 2) : 0;
                         $newTotalAmount    = $newSubtotal + $newVatAmount;
                         $newBalanceDue     = $newTotalAmount - $charge->amount_paid - $charge->deposit_amount;

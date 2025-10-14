@@ -91,7 +91,6 @@ export interface BookingCharge {
   // Additional Charges
   delivery_fee: string; // decimal(10,2)
   driver_fee_amount: string; // decimal(10,2)
-  insurance_fee: string; // decimal(10,2)
   extra_fee: string; // decimal(10,2)
   extra_fee_details: ExtraFeeDetails | null;
 

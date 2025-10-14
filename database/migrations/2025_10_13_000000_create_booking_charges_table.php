@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -27,15 +27,14 @@ return new class extends Migration
             // === ADDITIONAL CHARGES ===
             $table->decimal('delivery_fee', 10, 2)->default(0);       // Car delivery fee charged
             $table->decimal('driver_fee_amount', 10, 2)->default(0); // Total driver service fee
-            $table->decimal('insurance_fee', 10, 2)->default(0);    // Insurance fee (if applicable)
-            $table->decimal('extra_fee', 10, 2)->default(0);       // Additional fees (overtime, damages, cleaning, etc.)
-            $table->text('extra_fee_details')->nullable();                              // JSON breakdown of extra fees (e.g., {"overtime": 100000, "cleaning": 50000})
+            $table->decimal('extra_fee', 10, 2)->default(0);        // Additional fees (overtime, damages, cleaning, etc.)
+            $table->text('extra_fee_details')->nullable();                               // JSON breakdown of extra fees (e.g., {"overtime": 100000, "cleaning": 50000})
 
             // === DISCOUNTS & PROMOTIONS ===
             $table->decimal('discount_amount', 10, 2)->default(0); // Total discount amount from promotions
 
             // === FINANCIAL CALCULATION ===
-            $table->decimal('subtotal', 10, 2);                        // Subtotal before tax (base + delivery + driver + insurance + extra - discount)
+            $table->decimal('subtotal', 10, 2);                        // Subtotal before tax (base + delivery + driver + extra - discount)
             $table->decimal('vat_amount', 10, 2)->default(0); // VAT/Tax amount (e.g., 10% of subtotal)
             $table->decimal('total_amount', 10, 2);                 // Grand total amount (subtotal + vat)
 

@@ -490,14 +490,12 @@ class BookingPricingService
         );
 
         // 5. Additional fees
-        $insuranceFee = $data['insurance_fee'] ?? 0;
         $extraFee = $data['extra_fee'] ?? 0;
 
         // 6. Calculate financial totals
         $subtotal = $rental['base_amount']
             + $delivery['delivery_fee']
             + $driver['driver_fee_amount']
-            + $insuranceFee
             + $extraFee
             - $discount['discount_amount'];
 
@@ -527,7 +525,6 @@ class BookingPricingService
             'discount' => $discount,
 
             // Additional fees
-            'insurance_fee' => round($insuranceFee, 2),
             'extra_fee'     => round($extraFee, 2),
 
             // Financial totals
