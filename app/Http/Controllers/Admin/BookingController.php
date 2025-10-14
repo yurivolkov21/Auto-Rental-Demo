@@ -27,8 +27,8 @@ class BookingController extends Controller
             'car.owner',
             'charge',
             'pickupLocation',
-            'dropoffLocation',
-            'driver',
+            'returnLocation',
+            'driverProfile',
         ])
             ->latest();
 
@@ -98,7 +98,7 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         $booking->load([
-            'user.verifications',
+            'user',
             'car.brand',
             'car.category',
             'car.location',
@@ -106,8 +106,8 @@ class BookingController extends Controller
             'car.images',
             'charge',
             'pickupLocation',
-            'dropoffLocation',
-            'driver',
+            'returnLocation',
+            'driverProfile',
             'promotions.promotion',
             'confirmedBy',
             'cancelledBy',
@@ -125,11 +125,11 @@ class BookingController extends Controller
     {
         $booking->load([
             'user',
-            'car',
+            'car.brand',
             'charge',
             'pickupLocation',
-            'dropoffLocation',
-            'driver',
+            'returnLocation',
+            'driverProfile',
         ]);
 
         $cars = Car::with(['brand', 'category', 'owner'])

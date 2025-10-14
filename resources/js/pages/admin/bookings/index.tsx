@@ -202,149 +202,141 @@ export default function AdminBookingsIndex({
 
             <div className="space-y-6">
                 {/* Page Header */}
-                <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                        <h1 className="text-3xl font-bold tracking-tight">Booking Management</h1>
-                        <p className="text-muted-foreground">
-                            Manage all car rental bookings and reservations
-                        </p>
-                    </div>
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Booking Management</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Manage all car rental bookings and reservations
+                    </p>
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
                     <Card className="hover:shadow-md transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
-                            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-sm font-medium leading-tight">Total Bookings</CardTitle>
+                            <Calendar className="h-4 w-4 text-blue-600 flex-shrink-0" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="pt-0">
                             <div className="text-2xl font-bold">{stats.total}</div>
-                            <p className="text-xs text-muted-foreground">All time bookings</p>
+                            <p className="text-xs text-muted-foreground mt-1">All time bookings</p>
                         </CardContent>
                     </Card>
 
                     <Card className="hover:shadow-md transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
-                            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-                            <Clock className="h-4 w-4 text-yellow-600" />
+                            <CardTitle className="text-sm font-medium leading-tight">Pending Review</CardTitle>
+                            <Clock className="h-4 w-4 text-yellow-600 flex-shrink-0" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-                            <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.pending}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Awaiting confirmation</p>
                         </CardContent>
                     </Card>
 
                     <Card className="hover:shadow-md transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
-                            <CardTitle className="text-sm font-medium">Active Rentals</CardTitle>
-                            <Car className="h-4 w-4 text-green-600" />
+                            <CardTitle className="text-sm font-medium leading-tight">Confirmed</CardTitle>
+                            <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-green-600">
-                                {stats.active + stats.confirmed}
-                            </div>
-                            <p className="text-xs text-muted-foreground">Currently ongoing</p>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.confirmed}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Ready to start</p>
                         </CardContent>
                     </Card>
 
                     <Card className="hover:shadow-md transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
-                            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                            <CheckCircle className="h-4 w-4 text-blue-600" />
+                            <CardTitle className="text-sm font-medium leading-tight">Active Rentals</CardTitle>
+                            <Car className="h-4 w-4 text-green-600 flex-shrink-0" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-blue-600">{stats.completed}</div>
-                            <p className="text-xs text-muted-foreground">Successfully finished</p>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.active}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Currently ongoing</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-md transition-shadow">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+                            <CardTitle className="text-sm font-medium leading-tight">Completed</CardTitle>
+                            <CheckCircle className="h-4 w-4 text-gray-600 flex-shrink-0" />
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.completed}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Successfully finished</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-md transition-shadow">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+                            <CardTitle className="text-sm font-medium leading-tight">Cancelled</CardTitle>
+                            <XCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                            <div className="text-2xl font-bold">{stats.cancelled}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Cancelled bookings</p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Filters */}
+                {/* Filters and Table */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Filter Bookings</CardTitle>
-                        <CardDescription>Search and filter by status, dates, or booking code</CardDescription>
+                        <CardTitle>All Bookings</CardTitle>
+                        <CardDescription>
+                            {bookings.total} booking{bookings.total !== 1 ? 's' : ''} found
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-4 md:grid-cols-4">
-                            {/* Status Filter */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Status</label>
-                                <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="All statuses" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Statuses</SelectItem>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                        <SelectItem value="confirmed">Confirmed</SelectItem>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="completed">Completed</SelectItem>
-                                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                                        <SelectItem value="rejected">Rejected</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        {/* Filters */}
+                        <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+                            <form onSubmit={handleSearch} className="flex-1">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Code, customer..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9"
+                                    />
+                                </div>
+                            </form>
 
-                            {/* Start Date */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Start Date</label>
-                                <Input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    onBlur={handleDateFilterChange}
-                                />
-                            </div>
+                            <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
+                                <SelectTrigger className="w-full sm:w-[180px]">
+                                    <SelectValue placeholder="All Statuses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Statuses</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="completed">Completed</SelectItem>
+                                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                </SelectContent>
+                            </Select>
 
-                            {/* End Date */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">End Date</label>
-                                <Input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    onBlur={handleDateFilterChange}
-                                />
-                            </div>
+                            <Input
+                                type="date"
+                                placeholder="Start Date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                onBlur={handleDateFilterChange}
+                                className="w-full sm:w-[180px]"
+                            />
 
-                            {/* Search */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Search</label>
-                                <form onSubmit={handleSearch} className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            type="search"
-                                            placeholder="Code, customer..."
-                                            className="pl-8"
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                        />
-                                    </div>
-                                    <Button type="submit" size="icon" variant="secondary">
-                                        <Search className="h-4 w-4" />
-                                    </Button>
-                                </form>
-                            </div>
+                            <Input
+                                type="date"
+                                placeholder="End Date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                onBlur={handleDateFilterChange}
+                                className="w-full sm:w-[180px]"
+                            />
                         </div>
-                    </CardContent>
-                </Card>
 
-                {/* Bookings Table */}
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle>All Bookings</CardTitle>
-                                <CardDescription>
-                                    {bookings.total} booking{bookings.total !== 1 ? 's' : ''} found
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
+                        {/* Table */}
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -420,7 +412,7 @@ export default function AdminBookingsIndex({
                                                 {formatCurrency(booking.charge.total_amount)}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <div className="flex justify-end gap-2">
+                                                <div className="flex items-center justify-end gap-1">
                                                     <Button variant="ghost" size="sm" asChild>
                                                         <Link href={`/admin/bookings/${booking.id}`}>
                                                             <Eye className="h-4 w-4" />
@@ -443,37 +435,26 @@ export default function AdminBookingsIndex({
 
                         {/* Pagination */}
                         {bookings.last_page > 1 && (
-                            <div className="mt-4 flex items-center justify-between">
+                            <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-muted-foreground">
-                                    Showing {bookings.data.length} of {bookings.total} bookings
+                                    Showing {(bookings.current_page - 1) * bookings.per_page + 1} to{' '}
+                                    {Math.min(bookings.current_page * bookings.per_page, bookings.total)} of{' '}
+                                    {bookings.total} results
                                 </div>
                                 <div className="flex gap-2">
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handlePageChange(bookings.current_page - 1)}
                                         disabled={bookings.current_page === 1}
+                                        onClick={() => handlePageChange(bookings.current_page - 1)}
                                     >
                                         Previous
                                     </Button>
-                                    <div className="flex items-center gap-1">
-                                        {Array.from({ length: bookings.last_page }, (_, i) => i + 1).map((page) => (
-                                            <Button
-                                                key={page}
-                                                variant={page === bookings.current_page ? 'default' : 'outline'}
-                                                size="sm"
-                                                onClick={() => handlePageChange(page)}
-                                                className="w-9"
-                                            >
-                                                {page}
-                                            </Button>
-                                        ))}
-                                    </div>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handlePageChange(bookings.current_page + 1)}
                                         disabled={bookings.current_page === bookings.last_page}
+                                        onClick={() => handlePageChange(bookings.current_page + 1)}
                                     >
                                         Next
                                     </Button>
