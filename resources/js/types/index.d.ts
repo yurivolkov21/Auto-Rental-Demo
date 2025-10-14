@@ -4,6 +4,9 @@ import { LucideIcon } from 'lucide-react';
 // Export driver profile types
 export * from './models/driver-profile';
 
+// Export booking types
+export * from './models/booking';
+
 export interface Auth {
     user: User;
 }

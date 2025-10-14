@@ -45,5 +45,10 @@ class DatabaseSeeder extends Seeder
         // STEP 7: Seed Driver Profiles (after users are created)
         // ============================================
         $this->call(DriverProfileSeeder::class);
+
+        // ============================================
+        // STEP 8: Seed Bookings (after cars, users, locations, drivers)
+        // ============================================
+        $this->call(BookingSeeder::class);
     }
 }
