@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\CarBrandController;
 use App\Http\Controllers\Admin\CarImageController;
 use App\Http\Controllers\Admin\LocationController;
@@ -116,6 +117,21 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::patch('/{carImage}/set-primary', [CarImageController::class, 'setPrimary'])->name('set-primary');
         Route::post('/reorder', [CarImageController::class, 'reorder'])->name('reorder');
         Route::delete('/{carImage}', [CarImageController::class, 'destroy'])->name('destroy');
+    });
+
+    // Booking Management Routes (Admin)
+    Route::prefix('bookings')->name('bookings.')->group(function () {
+        Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::get('/{booking}', [BookingController::class, 'show'])->name('show');
+        Route::get('/{booking}/edit', [BookingController::class, 'edit'])->name('edit');
+        Route::put('/{booking}', [BookingController::class, 'update'])->name('update');
+        Route::delete('/{booking}', [BookingController::class, 'destroy'])->name('destroy');
+
+        // Status Transition Routes
+        Route::post('/{booking}/confirm', [BookingController::class, 'confirm'])->name('confirm');
+        Route::post('/{booking}/reject', [BookingController::class, 'reject'])->name('reject');
+        Route::post('/{booking}/activate', [BookingController::class, 'activate'])->name('activate');
+        Route::post('/{booking}/complete', [BookingController::class, 'complete'])->name('complete');
     });
 
 });
