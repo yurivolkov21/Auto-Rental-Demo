@@ -98,6 +98,16 @@ class Car extends Model
         return $this->hasMany(CarImage::class)->orderBy('sort_order');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(Review::class)->where('status', 'approved');
+    }
+
     public function primaryImage()
     {
         return $this->hasOne(CarImage::class)->where('is_primary', true);

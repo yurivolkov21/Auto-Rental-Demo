@@ -132,6 +132,11 @@ class Booking extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
+
     // === SCOPES ===
 
     public function scopePending($query)

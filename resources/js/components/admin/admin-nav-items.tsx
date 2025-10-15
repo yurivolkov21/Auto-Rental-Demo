@@ -10,6 +10,7 @@ import {
     BadgeCheck,
     Shapes,
     CreditCard,
+    Star,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -73,6 +74,12 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             href: '/admin/payments',
             icon: CreditCard,
             isActive: currentPath.startsWith('/admin/payments'),
+        },
+        {
+            title: 'Reviews',
+            href: '/admin/reviews',
+            icon: Star,
+            isActive: currentPath.startsWith('/admin/reviews'),
         },
         {
             title: 'Driver Profiles',

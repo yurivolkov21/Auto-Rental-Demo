@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CarCategoryController;
 use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\DriverProfileController;
 use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
 /**
  * Admin Routes
@@ -140,6 +141,16 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::get('/', [AdminPaymentController::class, 'index'])->name('index');
         Route::get('/{payment}', [AdminPaymentController::class, 'show'])->name('show');
         Route::post('/{payment}/refund', [AdminPaymentController::class, 'refund'])->name('refund');
+    });
+
+    // Review Management Routes (Admin)
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [AdminReviewController::class, 'index'])->name('index');
+        Route::get('/{review}', [AdminReviewController::class, 'show'])->name('show');
+        Route::post('/{review}/approve', [AdminReviewController::class, 'approve'])->name('approve');
+        Route::post('/{review}/reject', [AdminReviewController::class, 'reject'])->name('reject');
+        Route::post('/{review}/respond', [AdminReviewController::class, 'respond'])->name('respond');
+        Route::delete('/{review}', [AdminReviewController::class, 'destroy'])->name('destroy');
     });
 
 });

@@ -55,5 +55,10 @@ class DatabaseSeeder extends Seeder
         // STEP 9: Seed Payments (after bookings and charges)
         // ============================================
         $this->call(PaymentSeeder::class);
+
+        // ============================================
+        // STEP 10: Seed Reviews (after bookings are completed)
+        // ============================================
+        $this->call(ReviewSeeder::class);
     }
 }
