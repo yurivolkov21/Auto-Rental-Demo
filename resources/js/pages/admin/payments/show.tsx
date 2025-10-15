@@ -18,7 +18,7 @@ import {
   CheckCircle, 
   Clock, 
   XCircle,
-  ArrowLeft,
+  ChevronLeft,
   RefreshCw,
   Calendar,
   Car,
@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import type { Payment } from '@/types/models/payment';
 import type { BreadcrumbItem } from '@/types';
+import { Link } from '@inertiajs/react';
 
 interface PaymentShowProps {
   payment: Payment;
@@ -102,22 +103,21 @@ export default function PaymentShow({ payment }: PaymentShowProps) {
     <AdminLayout breadcrumbs={breadcrumbs}>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.visit('/admin/payments')}
-              className="mb-2"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Payments
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/admin/payments">
+                <ChevronLeft className="h-5 w-5" />
+              </Link>
             </Button>
-            <h1 className="text-3xl font-bold">Payment Details</h1>
-            <p className="text-muted-foreground mt-1">
-              Transaction ID: {payment.transaction_id}
-            </p>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Payment Details</h1>
+              <p className="text-sm text-muted-foreground">
+                Transaction ID: {payment.transaction_id}
+              </p>
+            </div>
           </div>
+
           <div className="flex gap-2">
             {payment.status === 'completed' && (
               <Button
@@ -294,17 +294,108 @@ export default function PaymentShow({ payment }: PaymentShowProps) {
           </Card>
         )}
 
-        {/* PayPal Response (for debugging) */}
+        {/* PayPal Details */}
         {payment.paypal_response && (
           <Card>
             <CardHeader>
-              <CardTitle>PayPal API Response</CardTitle>
-              <CardDescription>Raw response data from PayPal</CardDescription>
+              <CardTitle>PayPal Transaction Details</CardTitle>
+              <CardDescription>Information from PayPal payment gateway</CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-muted p-4 rounded-lg overflow-auto text-xs">
-                {JSON.stringify(payment.paypal_response, null, 2)}
-              </pre>
+              <div className="grid gap-4 md:grid-cols-2">
+                {(() => {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const response = payment.paypal_response as Record<string, any>;
+                  
+                  return (
+                    <>
+                      {response.id && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">PayPal Order ID</p>
+                          <p className="font-mono text-sm font-medium break-all">
+                            {String(response.id)}
+                          </p>
+                        </div>
+                      )}
+                      {response.status && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">PayPal Status</p>
+                          <Badge className="bg-blue-100 text-blue-800">
+                            {String(response.status)}
+                          </Badge>
+                        </div>
+                      )}
+                      {response.create_time && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">PayPal Create Time</p>
+                          <p className="text-sm font-medium">
+                            {new Date(String(response.create_time)).toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                      {response.update_time && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">PayPal Update Time</p>
+                          <p className="text-sm font-medium">
+                            {new Date(String(response.update_time)).toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                      {response.payer?.email_address && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">Payer Email</p>
+                          <p className="text-sm font-medium">
+                            {String(response.payer.email_address)}
+                          </p>
+                        </div>
+                      )}
+                      {response.payer?.payer_id && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">Payer ID</p>
+                          <p className="font-mono text-sm font-medium">
+                            {String(response.payer.payer_id)}
+                          </p>
+                        </div>
+                      )}
+                      {response.payer?.name && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">Payer Name</p>
+                          <p className="text-sm font-medium">
+                            {String(response.payer.name.given_name || '')} {String(response.payer.name.surname || '')}
+                          </p>
+                        </div>
+                      )}
+                      {response.purchase_units?.[0]?.amount && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">PayPal Amount</p>
+                          <p className="text-sm font-semibold text-green-600">
+                            {String(response.purchase_units[0].amount.currency_code || 'USD')}{' '}
+                            {String(response.purchase_units[0].amount.value)}
+                          </p>
+                        </div>
+                      )}
+                      {response.purchase_units?.[0]?.payments?.captures?.[0]?.id && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">Capture ID</p>
+                          <p className="font-mono text-sm font-medium break-all">
+                            {String(response.purchase_units[0].payments.captures[0].id)}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Raw Response (Collapsible) */}
+              <details className="mt-4">
+                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                  View Full API Response (for debugging)
+                </summary>
+                <pre className="bg-muted p-4 rounded-lg overflow-auto text-xs mt-2">
+                  {JSON.stringify(payment.paypal_response, null, 2)}
+                </pre>
+              </details>
             </CardContent>
           </Card>
         )}

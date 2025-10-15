@@ -7,9 +7,9 @@ import {
     UserCheck,
     MapPin,
     Tag,
-    Settings,
     BadgeCheck,
     Shapes,
+    CreditCard,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -69,6 +69,12 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             isActive: currentPath.startsWith('/admin/bookings'),
         },
         {
+            title: 'Payments',
+            href: '/admin/payments',
+            icon: CreditCard,
+            isActive: currentPath.startsWith('/admin/payments'),
+        },
+        {
             title: 'Driver Profiles',
             href: '/admin/driver-profiles',
             icon: UserCheck,
@@ -85,12 +91,6 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             href: '/admin/promotions',
             icon: Tag,
             isActive: currentPath.startsWith('/admin/promotions'),
-        },
-        {
-            title: 'Settings',
-            href: '/admin/settings',
-            icon: Settings,
-            isActive: currentPath.startsWith('/admin/settings'),
         },
     ];
 };

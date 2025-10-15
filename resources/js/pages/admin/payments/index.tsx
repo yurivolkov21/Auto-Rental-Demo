@@ -50,10 +50,7 @@ interface Pagination {
   last_page: number;
   per_page: number;
   total: number;
-  from: number;
-  to: number;
   data: Payment[];
-  links: { url: string | null; label: string; active: boolean }[];
 }
 
 interface Filters {
@@ -80,32 +77,64 @@ export default function PaymentIndex({
   filters: Filters;
 }) {
   const [search, setSearch] = useState(filters.search || '');
-  const [status, setStatus] = useState(filters.status || '');
-  const [paymentMethod, setPaymentMethod] = useState(filters.payment_method || '');
-  const [paymentType, setPaymentType] = useState(filters.payment_type || '');
+  const [status, setStatus] = useState(filters.status || 'all');
+  const [paymentMethod, setPaymentMethod] = useState(filters.payment_method || 'all');
+  const [paymentType, setPaymentType] = useState(filters.payment_type || 'all');
 
-  const handleFilter = () => {
+  const handleStatusFilterChange = (newStatus: string) => {
+    setStatus(newStatus);
     router.get(
       '/admin/payments',
       {
         search: search || undefined,
-        status: status || undefined,
-        payment_method: paymentMethod || undefined,
-        payment_type: paymentType || undefined,
+        status: newStatus !== 'all' ? newStatus : undefined,
+        payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+        payment_type: paymentType !== 'all' ? paymentType : undefined,
       },
-      {
-        preserveState: true,
-        preserveScroll: true,
-      }
+      { preserveState: true }
     );
   };
 
-  const handleReset = () => {
-    setSearch('');
-    setStatus('');
-    setPaymentMethod('');
-    setPaymentType('');
-    router.get('/admin/payments');
+  const handlePaymentMethodFilterChange = (newMethod: string) => {
+    setPaymentMethod(newMethod);
+    router.get(
+      '/admin/payments',
+      {
+        search: search || undefined,
+        status: status !== 'all' ? status : undefined,
+        payment_method: newMethod !== 'all' ? newMethod : undefined,
+        payment_type: paymentType !== 'all' ? paymentType : undefined,
+      },
+      { preserveState: true }
+    );
+  };
+
+  const handlePaymentTypeFilterChange = (newType: string) => {
+    setPaymentType(newType);
+    router.get(
+      '/admin/payments',
+      {
+        search: search || undefined,
+        status: status !== 'all' ? status : undefined,
+        payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+        payment_type: newType !== 'all' ? newType : undefined,
+      },
+      { preserveState: true }
+    );
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.get(
+      '/admin/payments',
+      {
+        search: search || undefined,
+        status: status !== 'all' ? status : undefined,
+        payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+        payment_type: paymentType !== 'all' ? paymentType : undefined,
+      },
+      { preserveState: true }
+    );
   };
 
   const getStatusBadge = (status: string) => {
@@ -170,32 +199,38 @@ export default function PaymentIndex({
       <div className="space-y-6">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-bold">Payment Management</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-3xl font-bold tracking-tight">Payment Management</h1>
+          <p className="text-muted-foreground mt-1">
             Monitor and manage all payment transactions
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Payments</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+        <div className="grid gap-4 md:grid-cols-4">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+              <CardTitle className="text-sm font-medium leading-tight">
+                Total Payments
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-blue-600 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="text-2xl font-bold">{stats.total_payments}</div>
-              <p className="text-xs text-muted-foreground">All time payments</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                All time transactions
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+              <CardTitle className="text-sm font-medium leading-tight">
+                Completed
+              </CardTitle>
+              <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+            <CardContent className="pt-0">
+              <div className="text-2xl font-bold">{stats.completed}</div>
               <div className="text-xs text-muted-foreground mt-1">
                 <div>{parseFloat(stats.total_amount_completed_vnd || '0').toLocaleString('vi-VN')} ₫</div>
                 <div className="text-[10px]">≈ ${parseFloat(stats.total_amount_completed_usd || '0').toFixed(2)} USD</div>
@@ -203,13 +238,15 @@ export default function PaymentIndex({
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <Clock className="h-4 w-4 text-yellow-600" />
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+              <CardTitle className="text-sm font-medium leading-tight">
+                Pending
+              </CardTitle>
+              <Clock className="h-4 w-4 text-yellow-600 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+            <CardContent className="pt-0">
+              <div className="text-2xl font-bold">{stats.pending}</div>
               <div className="text-xs text-muted-foreground mt-1">
                 <div>{parseFloat(stats.total_amount_pending_vnd || '0').toLocaleString('vi-VN')} ₫</div>
                 <div className="text-[10px]">≈ ${parseFloat(stats.total_amount_pending_usd || '0').toFixed(2)} USD</div>
@@ -217,41 +254,52 @@ export default function PaymentIndex({
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Failed</CardTitle>
-              <XCircle className="h-4 w-4 text-red-600" />
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
+              <CardTitle className="text-sm font-medium leading-tight">
+                Failed
+              </CardTitle>
+              <XCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">{stats.failed}</div>
-              <p className="text-xs text-muted-foreground">Failed transactions</p>
+            <CardContent className="pt-0">
+              <div className="text-2xl font-bold">{stats.failed}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Failed transactions
+              </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Filters */}
+        {/* Filters and Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Filters</CardTitle>
-            <CardDescription>Filter payments by status, method, and more</CardDescription>
+            <CardTitle>Payment Transactions</CardTitle>
+            <CardDescription>
+              Filter and search through all payment transactions
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-5">
-              <div className="md:col-span-2">
-                <Input
-                  placeholder="Search by transaction ID, booking code..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
-                />
-              </div>
+            {/* Filters */}
+            <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+              <form onSubmit={handleSearch} className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search by transaction ID, booking code..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </form>
 
-              <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger>
+              <Select value={status} onValueChange={handleStatusFilterChange}>
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="failed">Failed</SelectItem>
@@ -260,12 +308,12 @@ export default function PaymentIndex({
                 </SelectContent>
               </Select>
 
-              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                <SelectTrigger>
+              <Select value={paymentMethod} onValueChange={handlePaymentMethodFilterChange}>
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Payment Method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Methods</SelectItem>
+                  <SelectItem value="all">All Methods</SelectItem>
                   <SelectItem value="paypal">PayPal</SelectItem>
                   <SelectItem value="credit_card">Credit Card</SelectItem>
                   <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
@@ -274,12 +322,12 @@ export default function PaymentIndex({
                 </SelectContent>
               </Select>
 
-              <Select value={paymentType} onValueChange={setPaymentType}>
-                <SelectTrigger>
+              <Select value={paymentType} onValueChange={handlePaymentTypeFilterChange}>
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Payment Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="deposit">Deposit</SelectItem>
                   <SelectItem value="full_payment">Full Payment</SelectItem>
                   <SelectItem value="partial">Partial</SelectItem>
@@ -288,50 +336,36 @@ export default function PaymentIndex({
               </Select>
             </div>
 
-            <div className="flex gap-2 mt-4">
-              <Button onClick={handleFilter}>
-                <Search className="h-4 w-4 mr-2" />
-                Apply Filters
-              </Button>
-              <Button variant="outline" onClick={handleReset}>
-                Reset
-              </Button>
+            {/* Stats */}
+            <div className="text-sm text-muted-foreground mb-6">
+              Showing {payments.data.length} of {payments.total} payment(s)
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Payments Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Transactions</CardTitle>
-            <CardDescription>
-              {payments.total} total payments found
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>Booking</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {payments.data.length === 0 ? (
+            {/* Table */}
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                      No payments found
-                    </TableCell>
+                    <TableHead>Transaction ID</TableHead>
+                    <TableHead>Booking</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ) : (
-                  payments.data.map((payment) => (
+                </TableHeader>
+                <TableBody>
+                  {payments.data.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        No payments found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    payments.data.map((payment) => (
                     <TableRow key={payment.id} className="hover:bg-muted/50">
                       <TableCell className="font-mono text-sm">
                         {payment.transaction_id.substring(0, 20)}...
@@ -379,24 +413,47 @@ export default function PaymentIndex({
                 )}
               </TableBody>
             </Table>
+            </div>
 
             {/* Pagination */}
-            {payments.data.length > 0 && (
+            {payments.last_page > 1 && (
               <div className="flex items-center justify-between mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Showing {payments.from} to {payments.to} of {payments.total} payments
-                </p>
+                <div className="text-sm text-muted-foreground">
+                  Showing {(payments.current_page - 1) * payments.per_page + 1} to{' '}
+                  {Math.min(payments.current_page * payments.per_page, payments.total)} of{' '}
+                  {payments.total} results
+                </div>
                 <div className="flex gap-2">
-                  {payments.links.map((link, index) => (
-                    <Button
-                      key={index}
-                      variant={link.active ? 'default' : 'outline'}
-                      size="sm"
-                      disabled={!link.url}
-                      onClick={() => link.url && router.visit(link.url)}
-                      dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
-                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={payments.current_page === 1}
+                    onClick={() =>
+                      router.get(`/admin/payments?page=${payments.current_page - 1}`, {
+                        status: status !== 'all' ? status : undefined,
+                        payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+                        payment_type: paymentType !== 'all' ? paymentType : undefined,
+                        search: search || undefined,
+                      })
+                    }
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={payments.current_page === payments.last_page}
+                    onClick={() =>
+                      router.get(`/admin/payments?page=${payments.current_page + 1}`, {
+                        status: status !== 'all' ? status : undefined,
+                        payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+                        payment_type: paymentType !== 'all' ? paymentType : undefined,
+                        search: search || undefined,
+                      })
+                    }
+                  >
+                    Next
+                  </Button>
                 </div>
               </div>
             )}
