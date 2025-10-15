@@ -31,9 +31,17 @@ return new class extends Migration
             $table->unsignedTinyInteger('seats'); // Number of seats (max 255, typically 2-9)
 
             // Technical Specifications
-            $table->enum('transmission', ['manual', 'automatic']);                  // Transmission type
-            $table->enum('fuel_type', ['petrol', 'diesel', 'electric', 'hybrid']); // Fuel/energy type
-            $table->unsignedInteger('odometer_km')->default(0);                     // Current odometer reading in kilometers
+            $table->enum('transmission', [
+                'manual',
+                'automatic'
+            ]); // Transmission type
+            $table->enum('fuel_type', [
+                'petrol',
+                'diesel',
+                'electric',
+                'hybrid'
+            ]); // Fuel/energy type
+            $table->unsignedInteger('odometer_km')->default(0); // Current odometer reading in kilometers
 
             // Documents & Compliance
             $table->date('insurance_expiry')->nullable();     // Insurance expiration date
@@ -47,7 +55,12 @@ return new class extends Migration
             $table->boolean('is_delivery_available')->default(true); // Can car be delivered to customer?
 
             // Status & Verification
-            $table->enum('status', ['available', 'rented', 'maintenance', 'inactive'])->default('available');                                           // Current rental status
+            $table->enum('status', [
+                'available',
+                'rented',
+                'maintenance',
+                'inactive'
+            ])->default('available');                                // Current rental status
             $table->boolean('is_verified')->default(false); // Admin verification status
 
             // Description & Features

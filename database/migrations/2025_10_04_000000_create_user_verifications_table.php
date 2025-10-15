@@ -17,7 +17,7 @@ return new class extends Migration
 
             // Driving license information
             $table->string('driving_license_number', 50)->nullable(); // License number (max 50 chars)
-            $table->text('license_front_image')->nullable();                // License front side (for drivers: detailed verification)
+            $table->text('license_front_image')->nullable();                 // License front side (for drivers: detailed verification)
             $table->text('license_back_image')->nullable();                // License back side (for drivers: detailed verification)
             $table->string('license_type', 20)->nullable();       // License type (A1, A2, B1, B2, C, D, E, etc.)
             $table->date('license_issue_date')->nullable();                          // Issue date
@@ -32,7 +32,12 @@ return new class extends Migration
             $table->string('nationality', 100)->nullable(); // User's nationality
 
             // Verification status
-            $table->enum('status', ['pending', 'verified', 'rejected', 'expired'])->default('pending'); // Status
+            $table->enum('status', [
+                'pending',
+                'verified',
+                'rejected',
+                'expired'
+            ])->default('pending'); // Status
 
             // Audit fields
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null'); // Admin who verified

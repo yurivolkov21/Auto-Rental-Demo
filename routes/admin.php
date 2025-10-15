@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\CarCategoryController;
 use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\DriverProfileController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 
 /**
  * Admin Routes
@@ -132,6 +133,13 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::post('/{booking}/reject', [BookingController::class, 'reject'])->name('reject');
         Route::post('/{booking}/activate', [BookingController::class, 'activate'])->name('activate');
         Route::post('/{booking}/complete', [BookingController::class, 'complete'])->name('complete');
+    });
+
+    // Payment Management Routes (Admin)
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', [AdminPaymentController::class, 'index'])->name('index');
+        Route::get('/{payment}', [AdminPaymentController::class, 'show'])->name('show');
+        Route::post('/{payment}/refund', [AdminPaymentController::class, 'refund'])->name('refund');
     });
 
 });

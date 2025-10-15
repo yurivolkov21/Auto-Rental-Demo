@@ -35,8 +35,17 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();     // Date of birth
 
             // Role & status
-            $table->enum('role', ['customer', 'owner', 'driver', 'admin'])->default('customer'); // User role (customer, owner, driver, admin)
-            $table->enum('status', ['active', 'inactive', 'suspended', 'banned'])->default('active'); // Account status
+            $table->enum('role', [
+                'customer',
+                'owner',
+                'driver',
+                'admin'])->default('customer'); // User role (customer, owner, driver, admin)
+            $table->enum('status', [
+                'active',
+                'inactive',
+                'suspended',
+                'banned'
+            ])->default('active'); // Account status
 
             // Status tracking (for suspended/banned accounts)
             $table->text('status_note')->nullable(); // Reason for status change (required for suspended/banned)

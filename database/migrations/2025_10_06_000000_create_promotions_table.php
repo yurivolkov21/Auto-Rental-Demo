@@ -20,9 +20,12 @@ return new class extends Migration
             $table->text('description')->nullable();    // Description of the promotion
 
             // Discount Configuration
-            $table->enum('discount_type', ['percentage', 'fixed_amount']); // Type of discount
-            $table->decimal('discount_value', 10, 2);               // Value of the discount
-            $table->decimal('max_discount', 10, 2)->nullable();    // Maximum discount amount (for percentage)
+            $table->enum('discount_type', [
+                'percentage',
+                'fixed_amount'
+            ]);                                                                          // Type of discount
+            $table->decimal('discount_value', 10, 2);            // Value of the discount
+            $table->decimal('max_discount', 10, 2)->nullable(); // Maximum discount amount (for percentage)
 
             // Requirements
             $table->decimal('min_amount', 10, 2)->default(0); // Minimum order amount
@@ -38,7 +41,12 @@ return new class extends Migration
             $table->datetime('end_date');  // Promotion end date & time
 
             // Status & Features
-            $table->enum('status', ['active', 'paused', 'upcoming', 'archived'])->default('active'); // Promotion status (archived = cannot be used anymore)
+            $table->enum('status', [
+                'active',
+                'paused',
+                'upcoming',
+                'archived'
+            ])->default('active');                                     // Promotion status (archived = cannot be used anymore)
             $table->boolean('is_auto_apply')->default(false); // Auto-apply without code input
             $table->boolean('is_featured')->default(false);  // Display prominently on homepage
             $table->integer('priority')->default(0);        // Priority for applying (lower = higher priority)
