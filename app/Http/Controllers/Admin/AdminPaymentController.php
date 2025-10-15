@@ -7,6 +7,8 @@ use Inertia\Response;
 use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Services\PayPalService;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 
 class AdminPaymentController extends Controller
@@ -93,9 +95,9 @@ class AdminPaymentController extends Controller
     }
 
     /**
-     * Refund a payment (TODO: Implement PayPal refund API)
+     * Refund a payment through PayPal API
      */
-    public function refund(Request $request, Payment $payment)
+    public function refund(Request $request, Payment $payment, PayPalService $paypalService): RedirectResponse
     {
         if (!$payment->isCompleted()) {
             return back()->with('error', 'Only completed payments can be refunded');
@@ -109,24 +111,48 @@ class AdminPaymentController extends Controller
             'reason' => 'nullable|string|max:500',
         ]);
 
-        // TODO: Implement actual PayPal refund API call here
-        // For now, just mark as refunded in database
-        $payment->markAsRefunded();
-        $payment->update([
-            'notes' => $validated['reason'] ?? 'Refunded by admin',
-        ]);
+        try {
+            // Only use PayPal API for PayPal payments
+            if ($payment->payment_method === 'paypal') {
+                $result = $paypalService->refundPayment($payment, $validated['reason'] ?? null);
 
-        // Update booking charge
-        $bookingCharge = $payment->booking->charge;
-        if ($bookingCharge) {
-            $bookingCharge->decrement('amount_paid', $payment->amount);
-            $bookingCharge->increment('refund_amount', $payment->amount);
-            $bookingCharge->update([
-                'balance_due' => $bookingCharge->total_amount - $bookingCharge->amount_paid - $bookingCharge->deposit_amount,
-            ]);
+                if ($result['success']) {
+                    // Update booking charge
+                    $bookingCharge = $payment->booking->charge;
+                    if ($bookingCharge) {
+                        $bookingCharge->decrement('amount_paid', $payment->amount_vnd);
+                        $bookingCharge->increment('refund_amount', $payment->amount_vnd);
+                        $bookingCharge->update([
+                            'balance_due' => $bookingCharge->total_amount - $bookingCharge->amount_paid,
+                        ]);
+                    }
+
+                    return back()->with('success', 'Payment has been refunded successfully via PayPal');
+                }
+            } else {
+                // Manual refund for non-PayPal payments
+                $payment->markAsRefunded();
+                $payment->update([
+                    'notes' => $validated['reason'] ?? 'Refunded by admin (manual)',
+                ]);
+
+                // Update booking charge
+                $bookingCharge = $payment->booking->charge;
+                if ($bookingCharge) {
+                    $bookingCharge->decrement('amount_paid', $payment->amount_vnd);
+                    $bookingCharge->increment('refund_amount', $payment->amount_vnd);
+                    $bookingCharge->update([
+                        'balance_due' => $bookingCharge->total_amount - $bookingCharge->amount_paid,
+                    ]);
+                }
+
+                return back()->with('success', 'Payment has been marked as refunded');
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to refund payment: ' . $e->getMessage());
         }
 
-        return back()->with('success', 'Payment has been refunded successfully');
+        return back()->with('error', 'Failed to process refund');
     }
 
     /**
