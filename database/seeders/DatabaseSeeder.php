@@ -50,5 +50,10 @@ class DatabaseSeeder extends Seeder
         // STEP 8: Seed Bookings (after cars, users, locations, drivers)
         // ============================================
         $this->call(BookingSeeder::class);
+
+        // ============================================
+        // STEP 9: Seed Payments (after bookings and charges)
+        // ============================================
+        $this->call(PaymentSeeder::class);
     }
 }

@@ -331,14 +331,18 @@ export default function PaymentIndex({
                         {payment.transaction_id.substring(0, 20)}...
                       </TableCell>
                       <TableCell>
-                        <a
-                          href={`/admin/bookings/${payment.booking.id}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {payment.booking.booking_code}
-                        </a>
+                        {payment.booking ? (
+                          <a
+                            href={`/admin/bookings/${payment.booking.id}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {payment.booking.booking_code}
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground">N/A</span>
+                        )}
                       </TableCell>
-                      <TableCell>{payment.user.name}</TableCell>
+                      <TableCell>{payment.user?.name || 'N/A'}</TableCell>
                       <TableCell>{getMethodBadge(payment.payment_method)}</TableCell>
                       <TableCell className="capitalize">
                         {payment.payment_type.replace('_', ' ')}

@@ -123,4 +123,20 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure the primary currency for the application and exchange rates
+    | for payment processing. VND is the primary currency for Vietnam market.
+    |
+    */
+
+    'currency' => env('APP_CURRENCY', 'VND'),
+
+    'vnd_to_usd_rate' => env('VND_TO_USD_RATE', 24500), // 1 USD = 24,500 VND
+
+    'use_fixed_exchange_rate' => env('USE_FIXED_EXCHANGE_RATE', true),
+
 ];
