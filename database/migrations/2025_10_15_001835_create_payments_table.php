@@ -35,8 +35,12 @@ return new class extends Migration
                 'refund'      // Refund transaction
             ])->default('deposit');
 
-            $table->decimal('amount', 10, 2); // Payment amount
-            $table->string('currency', 3)->default('USD'); // Currency code (USD, VND, etc.)
+            // === AMOUNT & CURRENCY (DUAL CURRENCY STORAGE) ===
+            $table->decimal('amount', 10, 2)->comment('Deprecated - use amount_vnd'); // Legacy field for backward compatibility
+            $table->decimal('amount_vnd', 12, 2); // Primary amount in VND (Vietnam Dong)
+            $table->decimal('amount_usd', 10, 2); // Amount in USD (for PayPal/international payments)
+            $table->decimal('exchange_rate', 10, 4)->comment('Exchange rate at payment time (1 USD = X VND)'); // Rate used for conversion
+            $table->string('currency', 3)->default('VND'); // Primary currency (VND)
 
             // === STATUS ===
             $table->enum('status', [

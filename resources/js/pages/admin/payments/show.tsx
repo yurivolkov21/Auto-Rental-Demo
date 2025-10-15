@@ -146,9 +146,17 @@ export default function PaymentShow({ payment }: PaymentShowProps) {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Amount</p>
-                  <p className="text-2xl font-bold text-green-600 mt-1">
-                    ${parseFloat(payment.amount).toFixed(2)} {payment.currency}
-                  </p>
+                  <div className="mt-1">
+                    <p className="text-2xl font-bold text-green-600">
+                      {parseFloat(payment.amount_vnd).toLocaleString('vi-VN')} ₫
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      ≈ ${parseFloat(payment.amount_usd).toFixed(2)} USD
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Rate: 1 USD = {parseFloat(payment.exchange_rate).toLocaleString('vi-VN')} VND
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -308,7 +316,7 @@ export default function PaymentShow({ payment }: PaymentShowProps) {
           <DialogHeader>
             <DialogTitle>Issue Refund</DialogTitle>
             <DialogDescription>
-              Refund ${parseFloat(payment.amount).toFixed(2)} to the customer. This action
+              Refund {parseFloat(payment.amount_vnd).toLocaleString('vi-VN')} ₫ (≈ ${parseFloat(payment.amount_usd).toFixed(2)} USD) to the customer. This action
               cannot be undone.
             </DialogDescription>
           </DialogHeader>

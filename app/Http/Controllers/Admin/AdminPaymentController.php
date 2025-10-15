@@ -54,12 +54,16 @@ class AdminPaymentController extends Controller
 
         // Calculate stats
         $stats = [
-            'total_payments'         => Payment::count(),
-            'completed'              => Payment::where('status', 'completed')->count(),
-            'pending'                => Payment::where('status', 'pending')->count(),
-            'failed'                 => Payment::where('status', 'failed')->count(),
-            'total_amount_completed' => Payment::where('status', 'completed')->sum('amount'),
-            'total_amount_pending'   => Payment::where('status', 'pending')->sum('amount'),
+            'total_payments'              => Payment::count(),
+            'completed'                   => Payment::where('status', 'completed')->count(),
+            'pending'                     => Payment::where('status', 'pending')->count(),
+            'failed'                      => Payment::where('status', 'failed')->count(),
+            'total_amount_completed'      => Payment::where('status', 'completed')->sum('amount'), // Legacy
+            'total_amount_pending'        => Payment::where('status', 'pending')->sum('amount'), // Legacy
+            'total_amount_completed_vnd'  => Payment::where('status', 'completed')->sum('amount_vnd'),
+            'total_amount_completed_usd'  => Payment::where('status', 'completed')->sum('amount_usd'),
+            'total_amount_pending_vnd'    => Payment::where('status', 'pending')->sum('amount_vnd'),
+            'total_amount_pending_usd'    => Payment::where('status', 'pending')->sum('amount_usd'),
         ];
 
         return Inertia::render('admin/payments/index', [

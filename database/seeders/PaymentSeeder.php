@@ -25,6 +25,9 @@ class PaymentSeeder extends Seeder
 
         $this->command->info('💰 Seeding payments...');
 
+        // Get exchange rate from config
+        $exchangeRate = config('app.vnd_to_usd_rate', 24500);
+
         foreach ($bookings as $booking) {
             // Skip if no charge
             if (!$booking->charge) {
@@ -36,13 +39,19 @@ class PaymentSeeder extends Seeder
             // Create deposit payment (70% chance of completed)
             if ($charge->deposit_amount > 0) {
                 $depositCompleted = fake()->boolean(70);
+                $amountVND = $charge->deposit_amount;
+                $amountUSD = round($amountVND / $exchangeRate, 2);
                 
                 Payment::factory()->create([
                     'booking_id' => $booking->id,
                     'user_id' => $booking->user_id,
                     'payment_method' => fake()->randomElement(['paypal', 'credit_card', 'bank_transfer']),
                     'payment_type' => 'deposit',
-                    'amount' => $charge->deposit_amount,
+                    'amount' => $amountVND, // Legacy
+                    'amount_vnd' => $amountVND,
+                    'amount_usd' => $amountUSD,
+                    'exchange_rate' => $exchangeRate,
+                    'currency' => 'VND',
                     'status' => $depositCompleted ? 'completed' : 'pending',
                     'paid_at' => $depositCompleted ? fake()->dateTimeBetween('-1 month', 'now') : null,
                 ]);
@@ -62,13 +71,19 @@ class PaymentSeeder extends Seeder
                 
                 if ($remainingAmount > 0) {
                     $fullPaymentCompleted = fake()->boolean(80);
+                    $amountVND = $remainingAmount;
+                    $amountUSD = round($amountVND / $exchangeRate, 2);
                     
                     Payment::factory()->create([
                         'booking_id' => $booking->id,
                         'user_id' => $booking->user_id,
                         'payment_method' => fake()->randomElement(['paypal', 'credit_card', 'cash']),
                         'payment_type' => 'full_payment',
-                        'amount' => $remainingAmount,
+                        'amount' => $amountVND, // Legacy
+                        'amount_vnd' => $amountVND,
+                        'amount_usd' => $amountUSD,
+                        'exchange_rate' => $exchangeRate,
+                        'currency' => 'VND',
                         'status' => $fullPaymentCompleted ? 'completed' : 'pending',
                         'paid_at' => $fullPaymentCompleted ? fake()->dateTimeBetween('-2 weeks', 'now') : null,
                     ]);
@@ -85,19 +100,24 @@ class PaymentSeeder extends Seeder
 
             // Small chance of partial payment (20%)
             if (fake()->boolean(20)) {
-                $partialAmount = fake()->randomFloat(2, 20, 100);
+                $partialAmountVND = fake()->randomFloat(0, 500000, 2000000); // 500K - 2M VND
+                $partialAmountUSD = round($partialAmountVND / $exchangeRate, 2);
                 
                 Payment::factory()->create([
                     'booking_id' => $booking->id,
                     'user_id' => $booking->user_id,
                     'payment_method' => fake()->randomElement(['cash', 'bank_transfer']),
                     'payment_type' => 'partial',
-                    'amount' => $partialAmount,
+                    'amount' => $partialAmountVND, // Legacy
+                    'amount_vnd' => $partialAmountVND,
+                    'amount_usd' => $partialAmountUSD,
+                    'exchange_rate' => $exchangeRate,
+                    'currency' => 'VND',
                     'status' => 'completed',
                     'paid_at' => fake()->dateTimeBetween('-1 week', 'now'),
                 ]);
 
-                $charge->increment('amount_paid', $partialAmount);
+                $charge->increment('amount_paid', $partialAmountVND);
                 $charge->update([
                     'balance_due' => $charge->total_amount - $charge->amount_paid - $charge->deposit_amount,
                 ]);
@@ -110,11 +130,13 @@ class PaymentSeeder extends Seeder
         // Stats
         $completed = Payment::where('status', 'completed')->count();
         $pending = Payment::where('status', 'pending')->count();
-        $totalAmount = Payment::where('status', 'completed')->sum('amount');
+        $totalAmountVND = Payment::where('status', 'completed')->sum('amount_vnd');
+        $totalAmountUSD = Payment::where('status', 'completed')->sum('amount_usd');
         
         $this->command->info("   📊 Stats:");
         $this->command->info("      - Completed: {$completed}");
         $this->command->info("      - Pending: {$pending}");
-        $this->command->info("      - Total Amount: $" . number_format($totalAmount, 2));
+        $this->command->info("      - Total VND: " . number_format($totalAmountVND, 0, ',', '.') . " ₫");
+        $this->command->info("      - Total USD: $" . number_format($totalAmountUSD, 2));
     }
 }

@@ -16,7 +16,10 @@ class Payment extends Model
         'user_id',
         'payment_method',
         'payment_type',
-        'amount',
+        'amount',           // Legacy field (deprecated)
+        'amount_vnd',       // Primary amount in VND
+        'amount_usd',       // Amount in USD
+        'exchange_rate',    // Exchange rate at payment time
         'currency',
         'status',
         'paypal_order_id',
@@ -30,6 +33,9 @@ class Payment extends Model
 
     protected $casts = [
         'amount'          => 'decimal:2',
+        'amount_vnd'      => 'decimal:2',
+        'amount_usd'      => 'decimal:2',
+        'exchange_rate'   => 'decimal:4',
         'paypal_response' => 'array',
         'paid_at'         => 'datetime',
         'refunded_at'     => 'datetime',

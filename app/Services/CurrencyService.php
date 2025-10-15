@@ -71,13 +71,31 @@ class CurrencyService
 
         // Option 2: Fetch from API (dynamic, for production)
         try {
+            // Try premium API first (exchangerate-api.com with API key - more reliable)
+            $apiKey = config('services.exchangerate.api_key');
+            
+            if ($apiKey) {
+                $response = Http::timeout(5)->get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/USD");
+                
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $rate = $data['conversion_rates']['VND'] ?? null;
+                    
+                    if ($rate) {
+                        Log::info('Exchange rate fetched from ExchangeRate-API (premium)', ['rate' => $rate]);
+                        return $rate;
+                    }
+                }
+            }
+
+            // Fallback to free API (no key required)
             $response = Http::timeout(5)->get('https://api.exchangerate-api.com/v4/latest/USD');
 
             if ($response->successful()) {
                 $data = $response->json();
                 $rate = $data['rates']['VND'] ?? $this->defaultRate;
 
-                Log::info('Exchange rate fetched from API', ['rate' => $rate]);
+                Log::info('Exchange rate fetched from ExchangeRate-API (free)', ['rate' => $rate]);
 
                 return $rate;
             }

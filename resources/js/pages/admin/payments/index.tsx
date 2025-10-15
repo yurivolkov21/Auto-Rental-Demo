@@ -37,8 +37,12 @@ interface PaymentStats {
   completed: number;
   pending: number;
   failed: number;
-  total_amount_completed: string;
-  total_amount_pending: string;
+  total_amount_completed: string; // Legacy
+  total_amount_pending: string; // Legacy
+  total_amount_completed_vnd: string;
+  total_amount_completed_usd: string;
+  total_amount_pending_vnd: string;
+  total_amount_pending_usd: string;
 }
 
 interface Pagination {
@@ -192,9 +196,10 @@ export default function PaymentIndex({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-              <p className="text-xs text-muted-foreground">
-                ${parseFloat(stats.total_amount_completed).toFixed(2)}
-              </p>
+              <div className="text-xs text-muted-foreground mt-1">
+                <div>{parseFloat(stats.total_amount_completed_vnd || '0').toLocaleString('vi-VN')} ₫</div>
+                <div className="text-[10px]">≈ ${parseFloat(stats.total_amount_completed_usd || '0').toFixed(2)} USD</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -205,9 +210,10 @@ export default function PaymentIndex({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-              <p className="text-xs text-muted-foreground">
-                ${parseFloat(stats.total_amount_pending).toFixed(2)}
-              </p>
+              <div className="text-xs text-muted-foreground mt-1">
+                <div>{parseFloat(stats.total_amount_pending_vnd || '0').toLocaleString('vi-VN')} ₫</div>
+                <div className="text-[10px]">≈ ${parseFloat(stats.total_amount_pending_usd || '0').toFixed(2)} USD</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -347,8 +353,13 @@ export default function PaymentIndex({
                       <TableCell className="capitalize">
                         {payment.payment_type.replace('_', ' ')}
                       </TableCell>
-                      <TableCell className="font-semibold">
-                        ${parseFloat(payment.amount).toFixed(2)}
+                      <TableCell>
+                        <div className="font-semibold">
+                          {parseFloat(payment.amount_vnd).toLocaleString('vi-VN')} ₫
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          ≈ ${parseFloat(payment.amount_usd).toFixed(2)} USD
+                        </div>
                       </TableCell>
                       <TableCell>{getStatusBadge(payment.status)}</TableCell>
                       <TableCell>

@@ -8,7 +8,10 @@ export interface Payment {
   user_id: number;
   payment_method: 'paypal' | 'credit_card' | 'bank_transfer' | 'cash' | 'wallet';
   payment_type: 'deposit' | 'full_payment' | 'partial' | 'refund';
-  amount: string;
+  amount: string; // Legacy field (deprecated)
+  amount_vnd: string; // Primary amount in VND
+  amount_usd: string; // Amount in USD
+  exchange_rate: string; // Exchange rate at payment time
   currency: string;
   status: 'pending' | 'completed' | 'failed' | 'refunded' | 'cancelled';
   paypal_order_id: string | null;
