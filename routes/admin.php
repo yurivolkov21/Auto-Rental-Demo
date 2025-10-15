@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\DriverProfileController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminReviewController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 /**
  * Admin Routes
@@ -23,6 +24,9 @@ use App\Http\Controllers\Admin\AdminReviewController;
  */
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Dashboard
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // User Management Routes
     Route::prefix('users')->name('users.')->group(function () {

@@ -20,8 +20,8 @@ class PaymentFactory extends Factory
     {
         $booking = Booking::inRandomOrder()->first() ?? Booking::factory()->create();
         
-        // Generate random amount in VND (Vietnamese market)
-        $amountVND = fake()->randomFloat(0, 1000000, 10000000); // 1M - 10M VND
+        // Generate random amount in VND (Vietnamese market) - rounded to nearest 1000
+        $amountVND = round(fake()->numberBetween(1000, 10000) * 1000); // 1M - 10M VND (in thousands)
         
         // Get exchange rate from config (default: 1 USD = 24,500 VND)
         $exchangeRate = config('app.vnd_to_usd_rate', 24500);

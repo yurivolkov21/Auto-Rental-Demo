@@ -34,6 +34,11 @@ class PaymentSeeder extends Seeder
                 continue;
             }
 
+            // Skip if booking is in the future (can't have payments yet)
+            if ($booking->created_at > now()) {
+                continue;
+            }
+
             $charge = $booking->charge;
 
             // Create deposit payment (70% chance of completed)
@@ -41,6 +46,18 @@ class PaymentSeeder extends Seeder
                 $depositCompleted = fake()->boolean(70);
                 $amountVND = $charge->deposit_amount;
                 $amountUSD = round($amountVND / $exchangeRate, 2);
+                
+                // Payment date should be after booking creation (within 3 days)
+                $maxPaymentDate = (clone $booking->created_at)->modify('+3 days');
+                if ($maxPaymentDate > now()) {
+                    $maxPaymentDate = now();
+                }
+                
+                // Only generate payment date if max is after created_at
+                $paymentDate = null;
+                if ($depositCompleted && $maxPaymentDate >= $booking->created_at) {
+                    $paymentDate = fake()->dateTimeBetween($booking->created_at, $maxPaymentDate);
+                }
                 
                 Payment::factory()->create([
                     'booking_id' => $booking->id,
@@ -53,7 +70,9 @@ class PaymentSeeder extends Seeder
                     'exchange_rate' => $exchangeRate,
                     'currency' => 'VND',
                     'status' => $depositCompleted ? 'completed' : 'pending',
-                    'paid_at' => $depositCompleted ? fake()->dateTimeBetween('-1 month', 'now') : null,
+                    'paid_at' => $paymentDate,
+                    'created_at' => $booking->created_at,
+                    'updated_at' => $paymentDate ?? $booking->created_at,
                 ]);
 
                 // Update charge amount_paid if completed
@@ -74,6 +93,24 @@ class PaymentSeeder extends Seeder
                     $amountVND = $remainingAmount;
                     $amountUSD = round($amountVND / $exchangeRate, 2);
                     
+                    // Full payment happens after return (within 7 days)
+                    $returnDate = $booking->actual_return_time ?? $booking->return_datetime;
+                    
+                    // Skip if return date is in the future
+                    if ($returnDate > now()) {
+                        continue;
+                    }
+                    
+                    $maxPaymentDate = (clone $returnDate)->modify('+7 days');
+                    if ($maxPaymentDate > now()) {
+                        $maxPaymentDate = now();
+                    }
+                    
+                    $paymentDate = null;
+                    if ($fullPaymentCompleted && $maxPaymentDate >= $returnDate) {
+                        $paymentDate = fake()->dateTimeBetween($returnDate, $maxPaymentDate);
+                    }
+                    
                     Payment::factory()->create([
                         'booking_id' => $booking->id,
                         'user_id' => $booking->user_id,
@@ -85,7 +122,9 @@ class PaymentSeeder extends Seeder
                         'exchange_rate' => $exchangeRate,
                         'currency' => 'VND',
                         'status' => $fullPaymentCompleted ? 'completed' : 'pending',
-                        'paid_at' => $fullPaymentCompleted ? fake()->dateTimeBetween('-2 weeks', 'now') : null,
+                        'paid_at' => $paymentDate,
+                        'created_at' => $returnDate,
+                        'updated_at' => $paymentDate ?? $returnDate,
                     ]);
 
                     // Update charge if completed
@@ -100,8 +139,21 @@ class PaymentSeeder extends Seeder
 
             // Small chance of partial payment (20%)
             if (fake()->boolean(20)) {
-                $partialAmountVND = fake()->randomFloat(0, 500000, 2000000); // 500K - 2M VND
+                $partialAmountVND = round(fake()->numberBetween(500, 2000) * 1000); // 500K - 2M VND (rounded to thousands)
                 $partialAmountUSD = round($partialAmountVND / $exchangeRate, 2);
+                
+                // Partial payment happens during rental period
+                $maxPartialDate = $booking->actual_return_time ?? $booking->return_datetime;
+                if ($maxPartialDate > now()) {
+                    $maxPartialDate = now();
+                }
+                
+                // Only create if max date is after booking creation
+                if ($maxPartialDate < $booking->created_at) {
+                    continue;
+                }
+                
+                $partialPaymentDate = fake()->dateTimeBetween($booking->created_at, $maxPartialDate);
                 
                 Payment::factory()->create([
                     'booking_id' => $booking->id,
@@ -114,7 +166,9 @@ class PaymentSeeder extends Seeder
                     'exchange_rate' => $exchangeRate,
                     'currency' => 'VND',
                     'status' => 'completed',
-                    'paid_at' => fake()->dateTimeBetween('-1 week', 'now'),
+                    'paid_at' => $partialPaymentDate,
+                    'created_at' => $partialPaymentDate,
+                    'updated_at' => $partialPaymentDate,
                 ]);
 
                 $charge->increment('amount_paid', $partialAmountVND);

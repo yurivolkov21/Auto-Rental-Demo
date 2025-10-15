@@ -34,8 +34,8 @@ class BookingFactory extends Factory
                           ? $pickupLocation
                           : (Location::inRandomOrder()->first() ?? Location::factory()->create());
 
-        // Rental period
-        $pickupDatetime = fake()->dateTimeBetween('-1 month', '+2 months');
+        // Rental period - spread across 6 months for better chart visualization
+        $pickupDatetime = fake()->dateTimeBetween('-6 months', 'now');
         $rentalDays     = fake()->numberBetween(1, 7);
         $rentalHours    = fake()->numberBetween(0, 23);
         $returnDatetime = (clone $pickupDatetime)->modify("+{$rentalDays} days {$rentalHours} hours");
@@ -98,6 +98,15 @@ class BookingFactory extends Factory
         $confirmedBy = $confirmedAt ? (User::where('role', 'admin')->inRandomOrder()->first() ?? null) : null;
         $cancelledBy = $cancelledAt ? ($status === 'rejected' ? $confirmedBy : $customer->id) : null;
 
+        // Booking created before pickup (1-14 days before)
+        $daysBeforePickup = fake()->numberBetween(1, 14);
+        $createdAt = (clone $pickupDatetime)->modify("-{$daysBeforePickup} days");
+        
+        // Ensure created_at is not in the future
+        if ($createdAt > now()) {
+            $createdAt = now();
+        }
+
         return [
             'booking_code'         => $this->generateBookingCode(),
             'user_id'              => $customer->id,
@@ -141,6 +150,10 @@ class BookingFactory extends Factory
             'special_requests'     => fake()->optional(0.2)->sentence(10),
             'admin_notes'          => $confirmedAt ? fake()->optional(0.3)->sentence() : null,
             'cancellation_reason'  => $cancelledAt ? fake()->sentence() : null,
+            
+            // Timestamps - spread across 6 months for charts
+            'created_at'           => $createdAt,
+            'updated_at'           => $confirmedAt ?? $cancelledAt ?? $createdAt,
         ];
     }
 
