@@ -10,7 +10,7 @@ import {
     ChevronLeft,
     Edit,
     Clock,
-    DollarSign,
+    Banknote,
     TrendingUp,
     Star,
     MapPin,
@@ -43,9 +43,9 @@ const VERIFICATION_STATUS_CONFIG = {
 export default function Show({ driver }: Props) {
     const formatCurrency = (amount: string | number) => {
         const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'VND',
             minimumFractionDigits: 0,
         }).format(numAmount);
     };
@@ -144,7 +144,7 @@ export default function Show({ driver }: Props) {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <DollarSign className="h-5 w-5" />
+                                    <Banknote className="h-5 w-5" />
                                     Pricing Configuration
                                 </CardTitle>
                                 <CardDescription>Driver service fees and rates</CardDescription>

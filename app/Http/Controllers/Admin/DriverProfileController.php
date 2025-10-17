@@ -39,7 +39,7 @@ class DriverProfileController extends Controller
 
         // Filter by status
         if ($status && in_array($status, ['available', 'on_duty', 'off_duty', 'suspended'])) {
-            $query->where('status', $status);
+            $query->where('driver_profiles.status', $status);
         }
 
         // Sorting

@@ -12,31 +12,34 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
+    /**
+     * Redirect user to Google OAuth provider.
+     */
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    private function getValidAvatar($googleUser)
+    /**
+     * Get a valid avatar URL from Google user or generate a fallback.
+     */
+    private function getValidAvatar($googleUser): string
     {
         $avatar = $googleUser->getAvatar();
 
-        // If avatar is empty or default, use UI Avatars
-        if (!$avatar || $avatar === '' || strpos($avatar, 'default') !== false) {
-            // Create a default avatar from the user's name using the UI Avatars service
+        // If avatar is empty or default, use UI Avatars as fallback
+        if (empty($avatar) || str_contains($avatar, 'default')) {
             $name = urlencode($googleUser->getName() ?: 'User');
-
-            $fallbackAvatar = "https://ui-avatars.com/api/?name={$name}&color=7F9CF5&background=EBF4FF&size=200";
-
-            return $fallbackAvatar;
+            return "https://ui-avatars.com/api/?name={$name}&color=7F9CF5&background=EBF4FF&size=200";
         }
 
         // Ensure avatar URL is larger (replace s96-c with s200-c if present)
-        $avatar = str_replace('s96-c', 's200-c', $avatar);
-
-        return $avatar;
+        return str_replace('s96-c', 's200-c', $avatar);
     }
 
+    /**
+     * Handle Google OAuth callback and authenticate user.
+     */
     public function handleGoogleCallback(Request $request)
     {
         try {
@@ -73,17 +76,28 @@ class GoogleController extends Controller
                 'avatar'            => $this->getValidAvatar($googleUser),
                 'email_verified_at' => now(),
                 'role'              => 'customer', // Default role
-                'status'            => 'active',
+                'status'            => 'active', // Only set active for NEW users
             ]);
         } else {
-            // Update existing user with Google info
+            // SECURITY: Check if existing user is suspended or banned
+            if (in_array($user->status, ['suspended', 'banned'])) {
+                return redirect()
+                    ->route('login')
+                    ->withErrors([
+                        'email' => $user->status === 'suspended'
+                            ? 'Your account has been suspended. Please contact support for assistance.'
+                            : 'Your account has been permanently banned and cannot be accessed.',
+                    ]);
+            }
+
+            // Update existing user with Google info (DO NOT change status)
             $user->update([
                 'name'              => $googleUser->getName() ?: $googleUser->getNickname() ?: $user->name,
                 'provider'          => 'google',
                 'provider_id'       => $googleUser->getId(),
                 'avatar'            => $this->getValidAvatar($googleUser),
                 'email_verified_at' => $user->email_verified_at ?: now(),
-                'status'            => 'active', // Ensure account is active
+                // Removed status update to preserve existing status
             ]);
         }
 

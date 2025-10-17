@@ -115,7 +115,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <Users className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">{stats.users.total}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.users.total}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.users.active} active · {stats.users.verified} verified
               </p>
@@ -129,7 +129,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <Car className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">{stats.cars.total}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.cars.total}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.cars.available} available · {stats.cars.rented} rented
               </p>
@@ -143,7 +143,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <Calendar className="h-5 w-5 text-purple-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">{stats.bookings.total}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.bookings.total}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.bookings.pending} pending · {stats.bookings.confirmed} confirmed
               </p>
@@ -157,7 +157,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <DollarSign className="h-5 w-5 text-emerald-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">
+              <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(stats.revenue.total)}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -173,7 +173,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <Star className="h-5 w-5 text-yellow-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">{stats.reviews.total}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.reviews.total}</div>
               <p className="text-xs text-muted-foreground">
                 Avg rating: {stats.reviews.average_rating} ⭐
               </p>
@@ -187,7 +187,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <Clock className="h-5 w-5 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">{stats.reviews.pending}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.reviews.pending}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.reviews.approved} approved
               </p>
@@ -201,7 +201,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <CheckCircle className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">
+              <div className="text-2xl font-bold text-foreground">
                 {stats.bookings.completed}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -217,7 +217,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
               <TrendingUp className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-black">
+              <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(stats.revenue.month)}
               </div>
               <p className="text-xs text-muted-foreground">

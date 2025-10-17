@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Eye, Edit, Star, DollarSign, TrendingUp, Users, Clock, UserCheck, UserX, Search } from 'lucide-react';
+import { Eye, Edit, Star, Banknote, TrendingUp, Users, Clock, UserCheck, UserX, Search } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -216,13 +216,13 @@ export default function Index({ drivers, stats, filters }: Props) {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-1">
-                                                        <DollarSign className="h-3 w-3 text-muted-foreground" />
+                                                        <Banknote className="h-3 w-3 text-muted-foreground" />
                                                         <span className="font-medium">{formatCurrency(driver.hourly_fee)}</span>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-1">
-                                                        <DollarSign className="h-3 w-3 text-muted-foreground" />
+                                                        <Banknote className="h-3 w-3 text-muted-foreground" />
                                                         <span className="font-medium">{formatCurrency(driver.daily_fee)}</span>
                                                     </div>
                                                 </TableCell>
