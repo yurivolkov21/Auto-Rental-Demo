@@ -319,11 +319,6 @@ export default function ReviewIndex({
               </Select>
             </div>
 
-            {/* Stats */}
-            <div className="text-sm text-muted-foreground mb-6">
-              Showing {reviews.data.length} of {reviews.total} review(s)
-            </div>
-
             {/* Table */}
             <div className="rounded-md border">
               <Table>

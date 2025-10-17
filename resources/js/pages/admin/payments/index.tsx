@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { 
-  CreditCard, 
-  CheckCircle, 
-  Clock, 
+import {
+  CreditCard,
+  CheckCircle,
+  Clock,
   XCircle,
   Eye,
   Search,
@@ -334,11 +334,6 @@ export default function PaymentIndex({
                   <SelectItem value="refund">Refund</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            {/* Stats */}
-            <div className="text-sm text-muted-foreground mb-6">
-              Showing {payments.data.length} of {payments.total} payment(s)
             </div>
 
             {/* Table */}

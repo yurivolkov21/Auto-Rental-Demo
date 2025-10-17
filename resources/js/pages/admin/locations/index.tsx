@@ -227,11 +227,6 @@ export default function AdminLocationsIndex({
                             </Select>
                         </div>
 
-                        {/* Stats */}
-                        <div className="text-sm text-muted-foreground">
-                            Showing {locations.data.length} of {locations.total} location(s)
-                        </div>
-
                         {/* Table */}
                         <div className="rounded-md border">
                             <Table>

@@ -152,16 +152,17 @@ export default function AdminCarBrandsIndex({
                     </Card>
                 </div>
 
-                {/* Filters */}
+                {/* Brands Table */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Filters</CardTitle>
+                        <CardTitle>Car Brands</CardTitle>
                         <CardDescription>
-                            Filter and search car brands
+                            Filter and search through all car brands
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <div className="flex flex-col gap-4 mb-6 sm:flex-row">
+                    <CardContent className="space-y-6">
+                        {/* Filters */}
+                        <div className="flex flex-col gap-4 sm:flex-row">
                             <form onSubmit={handleSearch} className="flex-1">
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -189,18 +190,9 @@ export default function AdminCarBrandsIndex({
                                 </SelectContent>
                             </Select>
                         </div>
-                    </CardContent>
-                </Card>
 
-                {/* Brands Table */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Car Brands</CardTitle>
-                        <CardDescription>
-                            {brands.total} brand{brands.total !== 1 ? 's' : ''} found
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                        {/* Table */}
+                        <div className="rounded-md border">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -286,6 +278,7 @@ export default function AdminCarBrandsIndex({
                                 )}
                             </TableBody>
                         </Table>
+                        </div>
 
                         {/* Pagination */}
                         {brands.last_page > 1 && (
