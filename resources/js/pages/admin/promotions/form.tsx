@@ -1,6 +1,6 @@
 import { type Promotion, type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { ChevronLeft, DollarSign, Loader2, Percent, Save } from 'lucide-react';
+import { ChevronLeft, Banknote, Loader2, Percent, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -228,7 +228,7 @@ export default function AdminPromotionsForm({
                                                 </SelectItem>
                                                 <SelectItem value="fixed_amount">
                                                     <div className="flex items-center">
-                                                        <DollarSign className="inline h-4 w-4 mr-2" />
+                                                        <Banknote className="inline h-4 w-4 mr-2" />
                                                         Fixed Amount Discount
                                                     </div>
                                                 </SelectItem>

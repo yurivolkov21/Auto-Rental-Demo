@@ -15,7 +15,7 @@ import {
     User,
     FileText,
     Wrench,
-    DollarSign,
+    Banknote,
     TrendingUp,
     Star,
     AlertTriangle,
@@ -122,9 +122,9 @@ export default function Show({ car }: ShowProps) {
     };
 
     // Handle both array format ["gps", "bluetooth"] and object format {"gps": true, "bluetooth": true}
-    const features = car.features 
-        ? (Array.isArray(car.features) 
-            ? car.features 
+    const features = car.features
+        ? (Array.isArray(car.features)
+            ? car.features
             : Object.keys(car.features).filter(key => car.features?.[key]))
         : [];
 
@@ -329,7 +329,7 @@ export default function Show({ car }: ShowProps) {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <DollarSign className="h-5 w-5" />
+                                    <Banknote className="h-5 w-5" />
                                     Pricing & Rental
                                 </CardTitle>
                             </CardHeader>
@@ -502,7 +502,7 @@ export default function Show({ car }: ShowProps) {
                                             tire_pressure_monitor: { label: 'Tire Pressure Monitor', category: 'Safety' },
                                             collision_warning: { label: 'Collision Warning', category: 'Safety' },
                                             '360_camera': { label: '360° Camera', category: 'Safety' },
-                                            
+
                                             // Technology
                                             gps: { label: 'GPS Navigation', category: 'Technology' },
                                             bluetooth: { label: 'Bluetooth', category: 'Technology' },
@@ -510,7 +510,7 @@ export default function Show({ car }: ShowProps) {
                                             etc: { label: 'ETC', category: 'Technology' },
                                             apple_carplay: { label: 'Apple CarPlay', category: 'Technology' },
                                             android_auto: { label: 'Android Auto', category: 'Technology' },
-                                            
+
                                             // Comfort
                                             air_conditioning: { label: 'Air Conditioning', category: 'Comfort' },
                                             sunroof: { label: 'Sunroof', category: 'Comfort' },
@@ -520,7 +520,7 @@ export default function Show({ car }: ShowProps) {
                                             cruise_control: { label: 'Cruise Control', category: 'Comfort' },
                                             power_windows: { label: 'Power Windows', category: 'Comfort' },
                                             keyless_entry: { label: 'Keyless Entry', category: 'Comfort' },
-                                            
+
                                             // Entertainment
                                             dvd_screen: { label: 'DVD Screen', category: 'Entertainment' },
                                             premium_sound: { label: 'Premium Sound System', category: 'Entertainment' },
@@ -529,7 +529,7 @@ export default function Show({ car }: ShowProps) {
 
                                         // Categorize features
                                         const categorized: Record<string, string[]> = {};
-                                        
+
                                         features.forEach((featureId: string) => {
                                             const featureInfo = FEATURE_MAP[featureId];
                                             if (featureInfo) {
@@ -559,9 +559,9 @@ export default function Show({ car }: ShowProps) {
                                                         </div>
                                                         <div className="flex flex-wrap gap-2">
                                                             {featureLabels.map((label: string) => (
-                                                                <Badge 
-                                                                    key={label} 
-                                                                    variant="outline" 
+                                                                <Badge
+                                                                    key={label}
+                                                                    variant="outline"
                                                                     className={`text-xs font-medium ${categoryStyles[category]}`}
                                                                 >
                                                                     <CheckCircle className="mr-1.5 h-3 w-3" />

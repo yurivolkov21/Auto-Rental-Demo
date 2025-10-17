@@ -10,7 +10,7 @@ import {
   Users,
   Car,
   Calendar,
-  DollarSign,
+  Banknote,
   Star,
   CheckCircle,
   Clock,
@@ -154,7 +154,7 @@ export default function AdminDashboard({ stats, charts }: DashboardProps) {
           <Card className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-[68px]">
               <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-5 w-5 text-emerald-600" />
+              <Banknote className="h-5 w-5 text-emerald-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">

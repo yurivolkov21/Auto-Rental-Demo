@@ -5,7 +5,7 @@ import {
     Calendar,
     Check,
     ChevronLeft,
-    DollarSign,
+    Banknote,
     Edit,
     Percent,
     Star,
@@ -230,7 +230,7 @@ export default function AdminPromotionsShow({ promotion }: Props) {
                                             </>
                                         ) : (
                                             <>
-                                                <DollarSign className="mr-1 h-3 w-3" />
+                                                <Banknote className="mr-1 h-3 w-3" />
                                                 Fixed Amount
                                             </>
                                         )}
