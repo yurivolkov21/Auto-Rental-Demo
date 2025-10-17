@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Booking;
 use App\Models\Car;
-use App\Models\Review;
 use App\Models\User;
+use App\Models\Review;
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -35,7 +35,7 @@ class ReviewFactory extends Factory
 
         $rating = fake()->numberBetween(1, 5);
         $status = fake()->randomElement(['pending', 'approved', 'rejected']);
-        
+
         // If approved, more likely to be verified
         $isVerified = $status === 'approved' ? fake()->boolean(80) : fake()->boolean(30);
 
@@ -80,7 +80,7 @@ class ReviewFactory extends Factory
                     'Thank you for choosing our service. Your satisfaction is our priority!',
                     'We\'re happy to hear you had a great experience. See you next time!',
                 ]),
-                'responded_by' => User::whereIn('role', ['owner', 'admin'])->inRandomOrder()->first()?->id 
+                'responded_by' => User::whereIn('role', ['owner', 'admin'])->inRandomOrder()->first()?->id
                     ?? User::factory()->create(['role' => 'owner'])->id,
                 'responded_at' => fake()->dateTimeBetween('-7 days', 'now'),
             ];
@@ -88,11 +88,11 @@ class ReviewFactory extends Factory
 
         return [
             'booking_id' => $booking->id,
-            'car_id' => $booking->car_id,
-            'user_id' => $booking->user_id,
-            'rating' => $rating,
-            'comment' => $comment,
-            'status' => $status,
+            'car_id'     => $booking->car_id,
+            'user_id'    => $booking->user_id,
+            'rating'     => $rating,
+            'comment'    => $comment,
+            'status'     => $status,
             'is_verified_booking' => $isVerified,
             ...$responseData,
         ];
@@ -104,7 +104,7 @@ class ReviewFactory extends Factory
     public function approved(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'approved',
+            'status'              => 'approved',
             'is_verified_booking' => true,
         ]);
     }
@@ -135,8 +135,8 @@ class ReviewFactory extends Factory
     public function withResponse(): static
     {
         return $this->state(fn (array $attributes) => [
-            'response' => fake()->paragraph(),
-            'responded_by' => User::whereIn('role', ['owner', 'admin'])->inRandomOrder()->first()?->id 
+            'response'     => fake()->paragraph(),
+            'responded_by' => User::whereIn('role', ['owner', 'admin'])->inRandomOrder()->first()?->id
                 ?? User::factory()->create(['role' => 'owner'])->id,
             'responded_at' => fake()->dateTimeBetween('-7 days', 'now'),
         ]);

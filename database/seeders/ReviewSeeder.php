@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
 use App\Models\Review;
+use App\Models\Booking;
 use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder
@@ -24,12 +24,12 @@ class ReviewSeeder extends Seeder
 
         // Create reviews for 50% of completed bookings
         $reviewCount = (int) ceil($completedBookings->count() * 0.5);
-        
+
         $this->command->info("Creating {$reviewCount} reviews...");
 
-        $approvedCount = 0;
-        $pendingCount = 0;
-        $rejectedCount = 0;
+        $approvedCount     = 0;
+        $pendingCount      = 0;
+        $rejectedCount     = 0;
         $withResponseCount = 0;
 
         foreach ($completedBookings->random(min($reviewCount, $completedBookings->count())) as $booking) {
@@ -40,16 +40,16 @@ class ReviewSeeder extends Seeder
 
             $review = Review::factory()->create([
                 'booking_id' => $booking->id,
-                'car_id' => $booking->car_id,
-                'user_id' => $booking->user_id,
+                'car_id'     => $booking->car_id,
+                'user_id'    => $booking->user_id,
             ]);
 
             // Count by status
             match ($review->status) {
                 'approved' => $approvedCount++,
-                'pending' => $pendingCount++,
+                'pending'  => $pendingCount++,
                 'rejected' => $rejectedCount++,
-                default => null,
+                default    => null,
             };
 
             if ($review->response) {
