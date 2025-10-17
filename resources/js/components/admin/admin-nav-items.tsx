@@ -45,10 +45,10 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             isActive: currentPath.startsWith('/admin/verifications'),
         },
         {
-            title: 'Cars',
-            href: '/admin/cars',
-            icon: Car,
-            isActive: currentPath.startsWith('/admin/cars'),
+            title: 'Driver Profiles',
+            href: '/admin/driver-profiles',
+            icon: UserCheck,
+            isActive: currentPath.startsWith('/admin/driver-profiles'),
         },
         {
             title: 'Car Brands',
@@ -61,6 +61,12 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             href: '/admin/car-categories',
             icon: Shapes,
             isActive: currentPath.startsWith('/admin/car-categories'),
+        },
+        {
+            title: 'Cars',
+            href: '/admin/cars',
+            icon: Car,
+            isActive: currentPath.startsWith('/admin/cars'),
         },
         {
             title: 'Bookings',
@@ -80,12 +86,6 @@ export const getAdminNavItems = (currentPath: string, pendingBookingsCount?: num
             href: '/admin/reviews',
             icon: Star,
             isActive: currentPath.startsWith('/admin/reviews'),
-        },
-        {
-            title: 'Driver Profiles',
-            href: '/admin/driver-profiles',
-            icon: UserCheck,
-            isActive: currentPath.startsWith('/admin/driver-profiles'),
         },
         {
             title: 'Locations',
