@@ -253,6 +253,7 @@ class CarController extends Controller
                 'id' => $img->id,
                 'image_url' => $img->image_url,
                 'is_primary' => $img->is_primary,
+                'display_order' => $img->display_order ?? 0,
             ]),
             'reviews' => $car->reviews->map(fn($review) => [
                 'id' => $review->id,

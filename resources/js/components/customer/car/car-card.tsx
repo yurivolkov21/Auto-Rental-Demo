@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/react';
 interface CarCardProps {
     car: {
         id: number;
-        name: string | null;
+        name?: string | null;
         slug?: string;
         price_per_day?: number;
         daily_rate?: string;

@@ -1,9 +1,10 @@
-import CustomerLayout from '@/layouts/customer-layout';
+import { CustomerLayout } from '@/layouts/customer/customer-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CarCard } from '@/components/customer/car/car-card';
+import { SearchWidget } from '@/components/customer/search/search-widget';
 import { Link } from '@inertiajs/react';
-import { Car, Star } from 'lucide-react';
 import type { Car as CarType, CarCategory, Promotion } from '@/types';
 
 interface HomeProps {
@@ -36,40 +37,30 @@ export default function Home({
     featuredCars,
     categories,
     activePromotions,
+    locations,
     stats,
     recentReviews,
 }: HomeProps) {
     return (
         <CustomerLayout title="AutoRental - Premium Car Rental Service in Vietnam">
             {/* Hero Section - Inspired by CarBook */}
-            <section className="relative min-h-[600px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white flex items-center">
+            <section className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white flex items-center">
                 <div className="absolute inset-0 bg-black/40"></div>
-                <div className="container mx-auto px-4 relative z-10">
-                    <div className="max-w-3xl mx-auto text-center py-20">
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                            Fast & Easy Way To Rent A Car
-                        </h1>
-                        <p className="text-xl md:text-2xl mb-10 text-gray-200 leading-relaxed">
-                            Experience premium car rental service in Vietnam. Choose from our wide
-                            selection of vehicles and hit the road today.
-                        </p>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <Button
-                                size="lg"
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg"
-                                asChild
-                            >
-                                <Link href="/cars">Browse Cars</Link>
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="bg-transparent text-white border-2 border-white hover:bg-white hover:text-blue-900 px-8 py-6 text-lg"
-                                asChild
-                            >
-                                <Link href="/about">Learn More</Link>
-                            </Button>
+                <div className="container mx-auto px-4 relative z-10 py-16">
+                    <div className="max-w-6xl mx-auto">
+                        {/* Hero Text */}
+                        <div className="text-center mb-10">
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                                Fast & Easy Way To Rent A Car
+                            </h1>
+                            <p className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto">
+                                Experience premium car rental service in Vietnam. Choose from our
+                                wide selection of vehicles and hit the road today.
+                            </p>
                         </div>
+
+                        {/* Search Widget */}
+                        <SearchWidget locations={locations} className="max-w-5xl mx-auto" />
                     </div>
                 </div>
             </section>
@@ -118,7 +109,7 @@ export default function Home({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         <div className="text-center">
                             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-600 flex items-center justify-center">
-                                <span className="text-5xl">📍</span>
+                                <span className="text-4xl font-bold text-white">1</span>
                             </div>
                             <h3 className="text-xl font-bold mb-3">Choose Your Pickup Location</h3>
                             <p className="text-gray-600">
@@ -127,7 +118,7 @@ export default function Home({
                         </div>
                         <div className="text-center">
                             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-600 flex items-center justify-center">
-                                <span className="text-5xl">🤝</span>
+                                <span className="text-4xl font-bold text-white">2</span>
                             </div>
                             <h3 className="text-xl font-bold mb-3">Select the Best Deal</h3>
                             <p className="text-gray-600">
@@ -136,7 +127,7 @@ export default function Home({
                         </div>
                         <div className="text-center">
                             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-600 flex items-center justify-center">
-                                <span className="text-5xl">🚗</span>
+                                <span className="text-4xl font-bold text-white">3</span>
                             </div>
                             <h3 className="text-xl font-bold mb-3">Reserve Your Rental Car</h3>
                             <p className="text-gray-600">
@@ -167,64 +158,33 @@ export default function Home({
                             <h2 className="text-4xl font-bold">Featured Vehicles</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {featuredCars.map((car) => (
-                                <Card
-                                    key={car.id}
-                                    className="overflow-hidden hover:shadow-xl transition-shadow group"
-                                >
-                                    <Link href={`/cars/${car.id}`}>
-                                        <div className="relative">
-                                            {car.images?.[0] ? (
-                                                <img
-                                                    src={`/storage/${car.images[0].image_path}`}
-                                                    alt={car.model}
-                                                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-56 bg-gray-200 flex items-center justify-center">
-                                                    <Car className="h-20 w-20 text-gray-400" />
-                                                </div>
-                                            )}
-                                        </div>
-                                        <CardContent className="p-5">
-                                            <h3 className="text-xl font-bold mb-3 group-hover:text-blue-600 transition-colors">
-                                                {car.brand?.name} {car.model}
-                                            </h3>
-                                            <div className="flex items-center justify-between mb-4">
-                                                <Badge variant="outline" className="text-xs">
-                                                    {car.category?.name}
-                                                </Badge>
-                                                <div className="text-right">
-                                                    <div className="text-2xl font-bold text-blue-600">
-                                                        {new Intl.NumberFormat('vi-VN').format(
-                                                            Number(car.daily_rate)
-                                                        )}{' '}
-                                                        ₫
-                                                    </div>
-                                                    <div className="text-xs text-gray-500">/day</div>
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    className="flex-1 bg-blue-600 hover:bg-blue-700"
-                                                    asChild
-                                                >
-                                                    <Link href={`/booking/${car.id}`}>Book Now</Link>
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="flex-1"
-                                                    asChild
-                                                >
-                                                    <Link href={`/cars/${car.id}`}>Details</Link>
-                                                </Button>
-                                            </div>
-                                        </CardContent>
-                                    </Link>
-                                </Card>
-                            ))}
+                            {featuredCars.map((car) => {
+                                const transformedCar = {
+                                    id: car.id,
+                                    name: car.name,
+                                    slug: car.id.toString(),
+                                    daily_rate: car.daily_rate,
+                                    primary_image:
+                                        car.images?.[0]?.url || '/images/placeholder-car.jpg',
+                                    average_rating: car.average_rating
+                                        ? parseFloat(car.average_rating)
+                                        : 0,
+                                    reviews_count: 0,
+                                    seats: car.seats,
+                                    transmission: car.transmission,
+                                    fuel_type: car.fuel_type,
+                                    is_featured: false,
+                                    category: {
+                                        id: car.category?.id || 0,
+                                        name: car.category?.name || '',
+                                    },
+                                    brand: {
+                                        id: car.brand?.id || 0,
+                                        name: car.brand?.name || '',
+                                    },
+                                };
+                                return <CarCard key={car.id} car={transformedCar} />;
+                            })}
                         </div>
                         <div className="text-center mt-10">
                             <Button size="lg" variant="outline" className="px-8 py-6 text-lg" asChild>
@@ -292,14 +252,11 @@ export default function Home({
                                 <Link key={category.id} href={`/cars?category=${category.id}`}>
                                     <Card className="hover:shadow-lg transition-all hover:scale-105 cursor-pointer h-full text-center group">
                                         <CardContent className="pt-8 pb-6">
-                                            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
-                                                {category.icon || '🚗'}
-                                            </div>
-                                            <h3 className="font-bold mb-1 group-hover:text-blue-600 transition-colors">
+                                            <h3 className="font-bold mb-1 text-lg group-hover:text-blue-600 transition-colors">
                                                 {category.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500">
-                                                {category.cars_count} vehicles
+                                            <p className="text-sm text-gray-500">
+                                                {category.cars_count} cars
                                             </p>
                                         </CardContent>
                                     </Card>
@@ -326,14 +283,16 @@ export default function Home({
                                     <CardContent className="pt-6 pb-6">
                                         <div className="flex items-center gap-1 mb-4">
                                             {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star
+                                                <span
                                                     key={i}
-                                                    className={`h-5 w-5 ${
+                                                    className={`text-xl ${
                                                         i < review.rating
-                                                            ? 'fill-yellow-400 text-yellow-400'
-                                                            : 'fill-gray-200 text-gray-200'
+                                                            ? 'text-yellow-400'
+                                                            : 'text-gray-200'
                                                     }`}
-                                                />
+                                                >
+                                                    ★
+                                                </span>
                                             ))}
                                         </div>
                                         <p className="text-gray-700 mb-4 italic leading-relaxed">

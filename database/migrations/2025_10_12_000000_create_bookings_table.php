@@ -67,6 +67,11 @@ return new class extends Migration
             $table->datetime('confirmed_at')->nullable();  // When booking was confirmed
             $table->datetime('cancelled_at')->nullable(); // When booking was cancelled
 
+            // === PAYMENT INFO ===
+            $table->decimal('total_amount', 12, 2)->default(0); // Total booking amount
+            $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer'])->nullable(); // Payment method
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending'); // Payment status
+
             // === NOTES & REASONS ===
             $table->text('special_requests')->nullable();      // Customer's special requests
             $table->text('admin_notes')->nullable();          // Internal notes from admin

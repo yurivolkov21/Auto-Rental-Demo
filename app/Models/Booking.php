@@ -45,6 +45,10 @@ class Booking extends Model
         'special_requests',
         'admin_notes',
         'cancellation_reason',
+        // Add missing payment fields
+        'total_amount',
+        'payment_method',
+        'payment_status',
     ];
 
     protected $casts = [
@@ -73,6 +77,7 @@ class Booking extends Model
         'is_delivery'          => 'boolean',
         'delivery_distance'    => 'decimal:2',
         'delivery_fee_per_km'  => 'decimal:2',
+        'total_amount'         => 'decimal:2',
     ];
 
     // === RELATIONSHIPS ===
@@ -115,6 +120,17 @@ class Booking extends Model
     public function driverProfile(): BelongsTo
     {
         return $this->belongsTo(DriverProfile::class);
+    }
+
+    // Alias for driver relationship (used in controller)
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(DriverProfile::class, 'driver_profile_id');
+    }
+
+    public function charges(): HasMany
+    {
+        return $this->hasMany(BookingCharge::class);
     }
 
     public function charge(): HasOne
