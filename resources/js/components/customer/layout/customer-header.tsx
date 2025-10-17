@@ -1,170 +1,167 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
-import type { User as UserType } from '@/types';
+import type { User } from '@/types/index.d';
 
-interface CustomerHeaderProps {
-    user?: UserType | null;
-}
-
-export default function CustomerHeader({ user }: CustomerHeaderProps) {
+/**
+ * CustomerHeader Component
+ * Professional, minimal header with sticky behavior
+ * Design inspired by Turo/Enterprise - clean and elegant
+ */
+export function CustomerHeader() {
+    const { props } = usePage();
+    const auth = props.auth as { user: User | null };
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const navigation = [
+    const navigationLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Browse Cars', href: '/cars' },
+        { name: 'Cars', href: '/cars' },
+        { name: 'Locations', href: '/locations' },
+        { name: 'Services', href: '/services' },
         { name: 'About', href: '/about' },
         { name: 'Contact', href: '/contact' },
     ];
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-            <div className="container mx-auto px-4">
+        <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center">
-                        <span className="text-2xl font-bold text-gray-900">AutoRental</span>
+                        <span className="text-2xl font-bold text-gray-900">
+                            Auto<span className="text-blue-600">Rental</span>
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
-                        {navigation.map((item) => (
+                    <nav className="hidden md:flex items-center gap-8">
+                        {navigationLinks.map((link) => (
                             <Link
-                                key={item.name}
-                                href={item.href}
+                                key={link.name}
+                                href={link.href}
                                 className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
                             >
-                                {item.name}
+                                {link.name}
                             </Link>
                         ))}
                     </nav>
 
-                    {/* Desktop Auth Buttons */}
-                    <div className="hidden md:flex items-center space-x-4">
-                        {user ? (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="gap-2">
-                                        <User className="h-4 w-4" />
-                                        {user.name}
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                        <Link href="/dashboard" className="cursor-pointer">
-                                            <LayoutDashboard className="mr-2 h-4 w-4" />
-                                            Dashboard
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            href="/logout"
-                                            method="post"
-                                            as="button"
-                                            className="w-full cursor-pointer text-red-600"
-                                        >
-                                            <LogOut className="mr-2 h-4 w-4" />
-                                            Logout
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                    {/* Auth Section */}
+                    <div className="hidden md:flex items-center gap-4">
+                        {auth.user ? (
+                            <>
+                                <Link
+                                    href="/dashboard"
+                                    className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                                >
+                                    Dashboard
+                                </Link>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <Link
+                                        href="/logout"
+                                        method="post"
+                                        as="button"
+                                        className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                                    >
+                                        Logout
+                                    </Link>
+                                </div>
+                            </>
                         ) : (
                             <>
-                                <Button variant="ghost" size="sm" asChild>
-                                    <Link href="/login">Login</Link>
-                                </Button>
-                                <Button size="sm" asChild>
-                                    <Link href="/register">Sign Up</Link>
+                                <Link
+                                    href="/login"
+                                    className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                                >
+                                    Sign In
+                                </Link>
+                                <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                                    <Link href="/register">Get Started</Link>
                                 </Button>
                             </>
                         )}
                     </div>
 
-                    {/* Mobile Menu */}
-                    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                        <SheetTrigger asChild className="md:hidden">
-                            <Button variant="ghost" size="sm">
-                                <Menu className="h-6 w-6" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-72">
-                            <nav className="flex flex-col space-y-4 mt-8">
-                                {navigation.map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className="text-lg font-medium text-gray-700 hover:text-blue-600 transition-colors"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        {item.name}
-                                    </Link>
-                                ))}
-                                <div className="pt-4 border-t space-y-2">
-                                    {user ? (
-                                        <>
-                                            <div className="px-4 py-2 text-sm text-gray-600">
-                                                Signed in as <strong>{user.name}</strong>
-                                            </div>
-                                            <Button variant="outline" className="w-full" asChild>
-                                                <Link
-                                                    href="/dashboard"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                >
-                                                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                                                    Dashboard
-                                                </Link>
-                                            </Button>
-                                            <Button variant="destructive" className="w-full" asChild>
-                                                <Link
-                                                    href="/logout"
-                                                    method="post"
-                                                    as="button"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                >
-                                                    <LogOut className="mr-2 h-4 w-4" />
-                                                    Logout
-                                                </Link>
-                                            </Button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Button variant="outline" className="w-full" asChild>
-                                                <Link
-                                                    href="/login"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                >
-                                                    Login
-                                                </Link>
-                                            </Button>
-                                            <Button className="w-full" asChild>
-                                                <Link
-                                                    href="/register"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                >
-                                                    Sign Up
-                                                </Link>
-                                            </Button>
-                                        </>
-                                    )}
-                                </div>
-                            </nav>
-                        </SheetContent>
-                    </Sheet>
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden p-2 text-gray-700 hover:text-blue-600"
+                        aria-label="Toggle menu"
+                    >
+                        <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            {mobileMenuOpen ? (
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            ) : (
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                            )}
+                        </svg>
+                    </button>
                 </div>
+
+                {/* Mobile Menu */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden py-4 border-t">
+                        <nav className="flex flex-col gap-4">
+                            {navigationLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                            <div className="pt-4 border-t flex flex-col gap-3">
+                                {auth.user ? (
+                                    <>
+                                        <Link
+                                            href="/dashboard"
+                                            className="text-base font-medium text-gray-700"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <Link
+                                            href="/logout"
+                                            method="post"
+                                            as="button"
+                                            className="text-base font-medium text-gray-700 text-left"
+                                        >
+                                            Logout
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/login" className="text-base font-medium text-gray-700">
+                                            Sign In
+                                        </Link>
+                                        <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                                            <Link href="/register">Get Started</Link>
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        </nav>
+                    </div>
+                )}
             </div>
         </header>
     );

@@ -1,63 +1,64 @@
 import { Link } from '@inertiajs/react';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-export default function CustomerFooter() {
+/**
+ * CustomerFooter Component
+ * Clean, professional footer without decorative icons
+ * Design inspired by Enterprise/Hertz - text-focused and elegant
+ */
+export function CustomerFooter() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="border-t bg-gray-50 dark:bg-gray-900">
-            <div className="container mx-auto px-4 py-12 md:py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <footer className="border-t bg-white">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
                     {/* Column 1: Company Info */}
                     <div>
-                        <Link href="/" className="font-bold text-xl mb-4 block">
-                            <span>AutoRental</span>
+                        <Link href="/" className="inline-block mb-4">
+                            <span className="text-xl font-bold text-gray-900">
+                                Auto<span className="text-blue-600">Rental</span>
+                            </span>
                         </Link>
-                        <p className="text-sm text-muted-foreground mb-4">
+                        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
                             Premium car rental service in Vietnam. Experience comfort and reliability
                             with our wide range of vehicles.
                         </p>
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 text-sm">
                             <a
                                 href="https://facebook.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-primary transition-colors"
-                                aria-label="Facebook"
+                                className="text-gray-600 hover:text-blue-600 transition-colors"
                             >
-                                <Facebook className="h-5 w-5" />
+                                Facebook
                             </a>
                             <a
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-primary transition-colors"
-                                aria-label="Instagram"
+                                className="text-gray-600 hover:text-blue-600 transition-colors"
                             >
-                                <Instagram className="h-5 w-5" />
+                                Instagram
                             </a>
                             <a
                                 href="https://twitter.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-primary transition-colors"
-                                aria-label="Twitter"
+                                className="text-gray-600 hover:text-blue-600 transition-colors"
                             >
-                                <Twitter className="h-5 w-5" />
+                                Twitter
                             </a>
                         </div>
                     </div>
 
                     {/* Column 2: Quick Links */}
                     <div>
-                        <h3 className="font-semibold mb-4">Quick Links</h3>
-                        <ul className="space-y-2 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-4">Quick Links</h3>
+                        <ul className="space-y-3 text-sm">
                             <li>
                                 <Link
                                     href="/cars"
-                                    className="text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
                                 >
                                     Browse Cars
                                 </Link>
@@ -65,15 +66,23 @@ export default function CustomerFooter() {
                             <li>
                                 <Link
                                     href="/locations"
-                                    className="text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
                                 >
                                     Our Locations
                                 </Link>
                             </li>
                             <li>
                                 <Link
+                                    href="/services"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                >
+                                    Services
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href="/about"
-                                    className="text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
                                 >
                                     About Us
                                 </Link>
@@ -81,17 +90,9 @@ export default function CustomerFooter() {
                             <li>
                                 <Link
                                     href="/contact"
-                                    className="text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
                                 >
                                     Contact
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/faq"
-                                    className="text-muted-foreground hover:text-primary transition-colors"
-                                >
-                                    FAQ
                                 </Link>
                             </li>
                         </ul>
@@ -99,77 +100,73 @@ export default function CustomerFooter() {
 
                     {/* Column 3: Contact */}
                     <div>
-                        <h3 className="font-semibold mb-4">Contact Us</h3>
-                        <ul className="space-y-3 text-sm text-muted-foreground">
-                            <li className="flex items-start gap-2">
-                                <Phone className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                <div>
-                                    <p>+84 123 456 789</p>
-                                    <p className="text-xs">Mon-Fri: 8AM-8PM</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <Mail className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                <div>
-                                    <p>info@autorental.vn</p>
-                                    <p className="text-xs">24/7 Support</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                <div>
-                                    <p>123 Nguyen Hue, District 1</p>
-                                    <p className="text-xs">Ho Chi Minh City, Vietnam</p>
-                                </div>
-                            </li>
-                        </ul>
+                        <h3 className="font-semibold text-gray-900 mb-4">Contact</h3>
+                        <div className="space-y-3 text-sm">
+                            <div>
+                                <p className="font-medium text-gray-900">Phone</p>
+                                <p className="text-gray-600">+84 123 456 789</p>
+                                <p className="text-xs text-gray-500 mt-1">Mon-Fri: 8AM-8PM</p>
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900">Email</p>
+                                <p className="text-gray-600">info@autorental.vn</p>
+                                <p className="text-xs text-gray-500 mt-1">24/7 Support</p>
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900">Address</p>
+                                <p className="text-gray-600">123 Nguyen Hue, District 1</p>
+                                <p className="text-gray-600">Ho Chi Minh City, Vietnam</p>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Column 4: Newsletter */}
+                    {/* Column 4: Legal */}
                     <div>
-                        <h3 className="font-semibold mb-4">Newsletter</h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                            Subscribe to get special offers and updates.
-                        </p>
-                        <form className="space-y-2">
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="bg-background"
-                            />
-                            <Button type="submit" className="w-full">
-                                Subscribe
-                            </Button>
-                        </form>
+                        <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
+                        <ul className="space-y-3 text-sm">
+                            <li>
+                                <Link
+                                    href="/terms"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                >
+                                    Terms of Service
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/privacy"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                >
+                                    Privacy Policy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/rental-agreement"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                >
+                                    Rental Agreement
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/cancellation"
+                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                >
+                                    Cancellation Policy
+                                </Link>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t py-6">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+            <div className="border-t bg-gray-50 py-6">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
                         <p>© {currentYear} AutoRental. All rights reserved.</p>
-                        <div className="flex gap-4">
-                            <Link
-                                href="/terms"
-                                className="hover:text-primary transition-colors"
-                            >
-                                Terms of Service
-                            </Link>
-                            <Link
-                                href="/privacy"
-                                className="hover:text-primary transition-colors"
-                            >
-                                Privacy Policy
-                            </Link>
-                            <Link
-                                href="/rental-agreement"
-                                className="hover:text-primary transition-colors"
-                            >
-                                Rental Agreement
-                            </Link>
-                        </div>
+                        <p>Made with care in Vietnam</p>
                     </div>
                 </div>
             </div>
