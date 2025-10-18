@@ -18,6 +18,14 @@ interface CarCardProps {
         is_featured?: boolean;
         category: { id: number; name: string };
         brand: { id: number; name: string };
+        // New fields from database
+        year?: number;
+        color?: string;
+        odometer_km?: number;
+        is_delivery_available?: boolean;
+        delivery_fee_per_km?: string;
+        rental_count?: number;
+        features?: string; // JSON string
     };
 }
 
@@ -30,6 +38,24 @@ export function CarCard({ car }: CarCardProps) {
     const carLink = car.slug ? `/cars/${car.slug}` : `/cars/${car.id}`;
     const displayPrice = car.price_per_day || parseFloat(car.daily_rate || '0');
     const hourlyPrice = car.hourly_rate ? parseFloat(car.hourly_rate) : null;
+
+    // Parse features JSON safely
+    const getTopFeatures = (): string[] => {
+        if (!car.features) return [];
+        try {
+            const featuresObj = JSON.parse(car.features);
+            return Object.entries(featuresObj)
+                .filter(([, value]) => value === true)
+                .map(([key]) => key.replace(/_/g, ' '))
+                .slice(0, 3); // Top 3 features
+        } catch {
+            return [];
+        }
+    };
+
+    const topFeatures = getTopFeatures();
+    const isPopular = (car.rental_count || 0) >= 10; // 10+ rentals = popular
+    const isFreeDelivery = car.is_delivery_available && (!car.delivery_fee_per_km || parseFloat(car.delivery_fee_per_km) === 0);
 
     return (
         <Link href={carLink}>
@@ -44,10 +70,39 @@ export function CarCard({ car }: CarCardProps) {
                     {/* Image Overlay on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    {/* Featured Badge */}
-                    {car.is_featured && (
-                        <span className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs font-semibold rounded-lg shadow-lg">
-                            ⭐ Featured
+                    {/* Badges - Top Left */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                        {/* Featured Badge */}
+                        {car.is_featured && (
+                            <span className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                ⭐ Featured
+                            </span>
+                        )}
+
+                        {/* Popular Badge */}
+                        {isPopular && (
+                            <span className="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                🔥 Popular
+                            </span>
+                        )}
+                    </div>
+
+                    {/* Year Badge - Top Right */}
+                    {car.year && (
+                        <span className="absolute top-3 right-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm text-gray-900 text-xs font-semibold rounded-lg shadow-md">
+                            {car.year} Model
+                        </span>
+                    )}
+
+                    {/* Delivery Badge - Bottom Left */}
+                    {isFreeDelivery && (
+                        <span className="absolute bottom-3 left-3 px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg shadow-lg">
+                            ✓ Free Delivery
+                        </span>
+                    )}
+                    {car.is_delivery_available && !isFreeDelivery && (
+                        <span className="absolute bottom-3 left-3 px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg shadow-lg">
+                            ✓ Delivery Available
                         </span>
                     )}
                 </div>
@@ -95,6 +150,20 @@ export function CarCard({ car }: CarCardProps) {
                         <span className="text-gray-300">·</span>
                         <span className="capitalize font-medium">{car.fuel_type}</span>
                     </div>
+
+                    {/* Features Tags - Top 3 from JSON */}
+                    {topFeatures.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {topFeatures.map((feature, index) => (
+                                <span
+                                    key={index}
+                                    className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md border border-blue-100"
+                                >
+                                    {feature}
+                                </span>
+                            ))}
+                        </div>
+                    )}
 
                     {/* Price Section */}
                     <div className="mb-4 pb-4 border-b border-gray-100">

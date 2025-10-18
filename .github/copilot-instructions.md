@@ -70,6 +70,104 @@ npm run types && npm run lint  # Frontend validation
 - TS interfaces: `resources/js/types/models/*.ts` sync với PHP `$fillable`
 - Decimals: `decimal(10,2)` money, `decimal(12,2)` large costs, `decimal(3,2)` rates
 
+## UI Design Strategy - Database-Driven Approach
+**CRITICAL:** All UI designs MUST align with database schema fields. Always check migrations before designing forms/pages.
+
+### Design Workflow:
+1. **Read Migration First**: Check `database/migrations/*_create_{table}_table.php` for exact fields
+2. **Check Model**: Verify `$fillable`, `$casts`, relationships in `app/Models/{Model}.php`
+3. **Design UI**: Create forms/displays that match ALL database fields
+4. **Sync TypeScript**: Update `resources/js/types/models/*.ts` interfaces
+
+### Field-to-UI Mapping Rules:
+
+**Text Fields:**
+- `string()` → `<Input type="text" />`
+- `text()` / `longText()` → `<Textarea />`
+- `json()` → `<Textarea />` with JSON validation OR structured form fields
+
+**Numeric Fields:**
+- `integer()` / `unsignedInteger()` → `<Input type="number" step="1" />`
+- `decimal(X,Y)` → `<Input type="number" step="0.01" />` (show formatted with currency/units)
+- Pricing fields → Always format with `formatCurrency()` for VND
+
+**Date/Time Fields:**
+- `date()` → `<Input type="date" />`
+- `datetime()` / `timestamp()` → `<Input type="datetime-local" />`
+- `time()` → `<Input type="time" />`
+
+**Boolean Fields:**
+- `boolean()` → `<Checkbox />` or `<Switch />` (prefer Switch for settings)
+- Show "Yes/No" or "Active/Inactive" in displays
+
+**Enum Fields:**
+- Read `enum('value1','value2')` from migration
+- UI → `<Select>` with exact enum options
+- Never hardcode options - derive from schema or constants
+- Display → `<Badge>` with color coding by status
+
+**Foreign Keys:**
+- `foreignId('model_id')` → `<Select>` with related model options
+- Load options from backend: `Model::all()->pluck('name', 'id')`
+- Display → Show related model name, not just ID
+
+**Nullable Fields:**
+- `->nullable()` → Form field NOT required
+- Add "(Optional)" label
+- Handle null in display with fallback: `value ?? 'N/A'`
+
+**Timestamps:**
+- `timestamps()` → Auto-handled, show in "2 days ago" format or full datetime
+- Use `created_at`, `updated_at` for audit trails
+
+### Form Design Checklist:
+- [ ] All required fields marked with `*`
+- [ ] Optional fields labeled "(Optional)"
+- [ ] Enum selects match migration values exactly
+- [ ] Foreign key selects populated from database
+- [ ] Decimal fields with correct step (0.01, 0.001, etc)
+- [ ] Boolean fields as switches/checkboxes
+- [ ] JSON fields with proper input (textarea or structured)
+- [ ] Validation rules match migration constraints
+- [ ] Error messages shown below each field
+
+### Display/Show Page Checklist:
+- [ ] All database fields displayed (except password, tokens)
+- [ ] Formatted output (currency, dates, enums)
+- [ ] Related models shown with names (not IDs)
+- [ ] Nullable fields show "N/A" or empty state
+- [ ] Timestamps in human-readable format
+- [ ] Boolean fields as badges (Active/Inactive)
+
+### Migration-to-Frontend Flow:
+```
+Migration field → Model $fillable → Controller validation → TypeScript type → UI component
+```
+
+**Example:**
+```php
+// Migration
+$table->decimal('daily_rate', 10, 2);
+$table->enum('status', ['available', 'rented', 'maintenance']);
+$table->boolean('is_featured')->default(false);
+
+// Model
+protected $fillable = ['daily_rate', 'status', 'is_featured'];
+protected $casts = ['daily_rate' => 'decimal:2', 'is_featured' => 'boolean'];
+
+// TypeScript
+interface Car {
+  daily_rate: string;
+  status: 'available' | 'rented' | 'maintenance';
+  is_featured: boolean;
+}
+
+// UI
+<Input type="number" step="0.01" /> // daily_rate
+<Select options={['available','rented','maintenance']} /> // status
+<Switch checked={is_featured} /> // is_featured
+```
+
 ## Admin Panel Design System
 **CRITICAL - All admin pages MUST follow this unified design:**
 
@@ -143,6 +241,106 @@ Standard icons across admin:
 - No `console.log()` in production code
 - No commented-out code blocks
 - Remove test buttons after testing features
+
+## Customer Pages Design System
+**CRITICAL - All customer-facing pages MUST follow these design principles:**
+
+### Design Philosophy
+- **NO Decorative Icons**: Professional, clean look without frivolous icon clutter
+- **Photo-First**: Large, high-quality car images take priority
+- **Typography-Focused**: Clear hierarchy with Instrument Sans font
+- **Premium Feel**: Inspired by Turo, Enterprise, Hertz - NOT cheap rental sites
+
+### Layout Components
+- **Layout**: `CustomerLayout` with navigation (from `@/layouts/customer/customer-layout`)
+- **Header**: Logo, main nav, Sign In, Get Started button
+- **Footer**: Links, contact info, social (minimal)
+
+### Core Components (shadcn/ui + custom)
+1. **CarCard**: Grid item for car listings
+   - Large image (aspect-[4/3])
+   - Category + Brand (small, uppercase)
+   - Car name (text-xl, bold)
+   - Rating stars (if available)
+   - Specs: seats, transmission, fuel (text only)
+   - Price: Large VND, gradient text
+   - "View details" button (centered, with arrow)
+
+2. **SearchWidget**: Hero search form
+   - Location select (with airport badges)
+   - Date inputs (pickup/return)
+   - Large "Search Cars" button
+   - Quick stats below
+
+3. **BookingCalculator**: Sticky sidebar on car detail
+   - Daily + Hourly rates (if available)
+   - Date/time inputs
+   - Location selects
+   - Driver service (optional)
+   - Real-time price updates
+   - Large "Book Now" button
+
+4. **CarFilterSidebar**: Filters on listing page
+   - Categories (checkboxes)
+   - Brands (checkboxes)
+   - Price range (slider with VND)
+   - Transmission (radio)
+   - Seats (radio)
+   - "Apply" + "Reset" buttons
+
+### Currency Display
+- **ALL prices in VND**: Use `formatCurrency()` from `@/lib/currency.ts`
+- **Format**: "1.000.000₫" (thousand separators)
+- **Compact**: "1TR₫" for large numbers (filter ranges)
+- **NEVER use $** - this is Vietnam market
+
+### Color Scheme (Customer Pages)
+- **Primary Blue**: #2563EB (buttons, links, accents)
+- **Gradients**: blue-600 to blue-700 (prices, CTAs)
+- **Text**: gray-900 (headings), gray-600 (body), gray-500 (meta)
+- **Backgrounds**: white cards on gray-50 body
+- **Borders**: gray-100 (subtle), gray-200 (visible)
+
+### Typography Hierarchy
+- **Hero**: text-4xl/5xl, font-bold
+- **Section Titles**: text-3xl, font-bold
+- **Card Titles**: text-xl, font-bold
+- **Body**: text-base, text-gray-600
+- **Meta**: text-sm/xs, text-gray-500, uppercase for labels
+
+### Spacing & Layout
+- **Container**: max-w-7xl mx-auto px-4
+- **Grid**: grid-cols-1 md:grid-cols-2 lg:grid-cols-4 (car cards)
+- **Gaps**: gap-6 (grid), gap-4 (form fields)
+- **Padding**: p-6 (cards), py-12/16 (sections)
+- **Rounded**: rounded-xl (cards), rounded-lg (inputs/buttons)
+
+### Animations & Interactions
+- **Hover**: scale-110 (images, 700ms), shadow-xl → shadow-2xl (cards)
+- **Transitions**: duration-300 (default), duration-500/700 (smooth)
+- **Loading**: Skeleton screens, not spinners
+- **Success**: Green toast notifications (top-right)
+
+### Booking Flow UX
+1. **Car Detail → Book Now**: Requires login (redirect to /login)
+2. **Checkout (2 steps)**:
+   - Step 1: Booking Details (dates, locations, driver, promo)
+   - Step 2: Review & Confirm (payment method, submit)
+3. **Confirmation**: Success page with booking reference
+
+### Data Display Rules (Customer Pages)
+- **Car Specs**: Show ALL available fields from migration (seats, transmission, fuel, year, mileage, color)
+- **Pricing**: Show both hourly + daily rates if available
+- **Availability**: Real-time status from database
+- **Reviews**: Show rating, count, recent reviews with user names
+- **Images**: Primary image + gallery (if multiple)
+- **Location**: Full address + map (if coordinates available)
+
+### Responsive Design
+- **Mobile-first**: All components work on mobile
+- **Breakpoints**: sm (640px), md (768px), lg (1024px), xl (1280px)
+- **Touch-friendly**: Buttons min 44x44px, form inputs large
+- **Sticky elements**: Booking calculator on desktop only
 
 ## Known Issues
 1. `promotions`: Use `where('status','active')` NOT `is_active`

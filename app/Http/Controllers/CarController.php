@@ -104,6 +104,7 @@ class CarController extends Controller
                 'slug' => $car->id, // We'll use ID as slug for now
                 'price_per_day' => floatval($car->daily_rate),
                 'daily_rate' => $car->daily_rate,
+                'hourly_rate' => $car->hourly_rate,
                 'primary_image' => $car->primary_image,
                 'average_rating' => $car->average_rating ? floatval($car->average_rating) : 0,
                 'reviews_count' => $car->reviews_count ?? 0,
@@ -111,6 +112,14 @@ class CarController extends Controller
                 'transmission' => $car->transmission,
                 'fuel_type' => $car->fuel_type,
                 'is_featured' => false, // Add logic if needed
+                // New fields for enhanced display
+                'year' => $car->year,
+                'color' => $car->color,
+                'odometer_km' => $car->odometer_km,
+                'is_delivery_available' => $car->is_delivery_available,
+                'delivery_fee_per_km' => $car->delivery_fee_per_km,
+                'rental_count' => $car->rental_count,
+                'features' => $car->features,
                 'category' => [
                     'id' => $car->category->id,
                     'name' => $car->category->name,
@@ -192,12 +201,22 @@ class CarController extends Controller
                     'name' => $relatedCar->name,
                     'slug' => $relatedCar->id,
                     'price_per_day' => floatval($relatedCar->daily_rate),
+                    'daily_rate' => $relatedCar->daily_rate,
+                    'hourly_rate' => $relatedCar->hourly_rate,
                     'primary_image' => $relatedCar->primary_image,
                     'average_rating' => $relatedCar->average_rating ? floatval($relatedCar->average_rating) : 0,
                     'reviews_count' => $relatedCar->reviews_count ?? 0,
                     'seats' => $relatedCar->seats,
                     'transmission' => $relatedCar->transmission,
                     'fuel_type' => $relatedCar->fuel_type,
+                    // Add new fields for CarCard display
+                    'year' => $relatedCar->year,
+                    'color' => $relatedCar->color,
+                    'odometer_km' => $relatedCar->odometer_km,
+                    'is_delivery_available' => $relatedCar->is_delivery_available,
+                    'delivery_fee_per_km' => $relatedCar->delivery_fee_per_km,
+                    'rental_count' => $relatedCar->rental_count,
+                    'features' => $relatedCar->features,
                     'category' => [
                         'id' => $relatedCar->category->id,
                         'name' => $relatedCar->category->name,
@@ -232,6 +251,12 @@ class CarController extends Controller
             'deposit_amount' => $car->deposit_amount,
             'is_delivery_available' => $car->is_delivery_available,
             'delivery_fee_per_km' => $car->delivery_fee_per_km,
+            // Add missing pricing/delivery fields
+            'overtime_fee_per_hour' => $car->overtime_fee_per_hour,
+            'min_rental_hours' => $car->min_rental_hours,
+            'daily_hour_threshold' => $car->daily_hour_threshold,
+            'max_delivery_distance' => $car->max_delivery_distance,
+            // Performance metrics
             'primary_image' => $car->primary_image,
             'average_rating' => $car->average_rating ? floatval($car->average_rating) : 0,
             'reviews_count' => $car->reviews_count ?? 0,

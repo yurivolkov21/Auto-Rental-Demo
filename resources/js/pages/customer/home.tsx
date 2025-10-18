@@ -164,6 +164,7 @@ export default function Home({
                                     name: car.name,
                                     slug: car.id.toString(),
                                     daily_rate: car.daily_rate,
+                                    hourly_rate: car.hourly_rate,
                                     primary_image:
                                         car.images?.[0]?.url || '/images/placeholder-car.jpg',
                                     average_rating: car.average_rating
@@ -174,6 +175,14 @@ export default function Home({
                                     transmission: car.transmission,
                                     fuel_type: car.fuel_type,
                                     is_featured: false,
+                                    // New fields for enhanced display (handle nulls)
+                                    year: car.year,
+                                    color: car.color ?? undefined,
+                                    odometer_km: car.odometer_km,
+                                    is_delivery_available: car.is_delivery_available,
+                                    delivery_fee_per_km: car.delivery_fee_per_km ?? undefined,
+                                    rental_count: car.rental_count,
+                                    features: car.features ? JSON.stringify(car.features) : undefined,
                                     category: {
                                         id: car.category?.id || 0,
                                         name: car.category?.name || '',
