@@ -45,15 +45,16 @@ class BookingController extends Controller
             ->get(['id', 'name', 'address', 'is_airport', 'is_popular']);
 
         // Get available drivers
-        $drivers = DriverProfile::where('is_available', true)
+        $drivers = DriverProfile::where('is_available_for_booking', true)
+            ->where('status', 'available')
             ->with('user:id,name')
             ->get()
             ->map(fn($driver) => [
                 'id' => $driver->id,
                 'name' => $driver->user->name,
-                'daily_rate' => $driver->daily_rate,
-                'languages' => $driver->languages,
-                'rating' => $driver->rating,
+                'daily_rate' => $driver->daily_fee, // Map daily_fee to daily_rate for frontend
+                'languages' => [], // Default empty array (field doesn't exist in current migration)
+                'rating' => $driver->average_rating ?? 0,
             ]);
 
         // Calculate initial pricing

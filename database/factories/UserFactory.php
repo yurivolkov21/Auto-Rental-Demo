@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'name'              => fake()->name(),
             'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password'          => static::$password ??= Hash::make('P@ssword123'),
+            'password'          => static::$password ??= Hash::make('password'),
             'remember_token'    => Str::random(10),
 
             // Two-factor authentication
@@ -36,14 +36,14 @@ class UserFactory extends Factory
             'two_factor_confirmed_at'   => null,
 
             // Profile information
-            'avatar'        => fake()->optional(0.3)->imageUrl(200, 200, 'people'),
-            'bio'           => fake()->optional(0.5)->sentence(10),
+            'avatar'        => null,
+            'bio'           => null,
             'phone'         => fake()->optional(0.7)->numerify('+84#########'),
-            'address'       => fake()->optional(0.6)->address(),
-            'date_of_birth' => fake()->optional(0.8)->date('Y-m-d', '-18 years'),
+            'address'       => null,
+            'date_of_birth' => null,
 
-            // Role & status
-            'role'   => fake()->randomElement(['customer', 'owner', 'admin']),
+            // Role & status (default to customer)
+            'role'   => 'customer',
             'status' => 'active',
 
             // OAuth (null by default)
@@ -175,7 +175,7 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'provider'    => $provider,
             'provider_id' => fake()->uuid(),
-            'password'    => Hash::make('P@ssword123'), // OAuth users still get a password for fallback
+            'password'    => Hash::make('P@ssword123'),
         ]);
     }
 }

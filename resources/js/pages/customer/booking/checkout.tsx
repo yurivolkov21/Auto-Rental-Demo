@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { router, usePage } from '@inertiajs/react';
 import axios from 'axios';
+import { formatCurrency } from '@/lib/currency';
 
 interface Car {
     id: number;
@@ -328,9 +329,7 @@ export default function BookingCheckout({
                                                     <option value="">No driver needed</option>
                                                     {drivers.map((driver) => (
                                                         <option key={driver.id} value={driver.id}>
-                                                            {driver.name} - $
-                                                            {parseFloat(driver.daily_rate).toLocaleString()}
-                                                            /day (Rating: {driver.rating}/5)
+                                                            {driver.name} - {formatCurrency(parseFloat(driver.daily_rate))}/day (Rating: {driver.rating}/5)
                                                         </option>
                                                     ))}
                                                 </select>
@@ -660,36 +659,36 @@ export default function BookingCheckout({
                                     </div>
 
                                     {/* Price Breakdown */}
-                                    <div className="space-y-3 mb-4 pb-4 border-b">
+                                    <div className="space-y-3 mb-4 pb-4 border-b border-gray-100">
                                         <div className="flex justify-between text-sm">
                                             <span className="text-gray-600">Base rental</span>
-                                            <span className="font-medium">
-                                                ${pricing.base_price.toLocaleString()}
+                                            <span className="font-semibold text-gray-900">
+                                                {formatCurrency(pricing.base_price)}
                                             </span>
                                         </div>
                                         {pricing.driver_fee && pricing.driver_fee > 0 && (
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-gray-600">Driver service</span>
-                                                <span className="font-medium">
-                                                    ${pricing.driver_fee.toLocaleString()}
+                                                <span className="font-semibold text-gray-900">
+                                                    {formatCurrency(pricing.driver_fee)}
                                                 </span>
                                             </div>
                                         )}
                                         {pricing.discount && pricing.discount > 0 && (
                                             <div className="flex justify-between text-sm text-green-600">
                                                 <span>Discount</span>
-                                                <span className="font-medium">
-                                                    -${pricing.discount.toLocaleString()}
+                                                <span className="font-semibold">
+                                                    -{formatCurrency(pricing.discount)}
                                                 </span>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Total */}
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-lg font-semibold">Total</span>
-                                        <span className="text-2xl font-bold text-blue-600">
-                                            ${pricing.total.toLocaleString()}
+                                    <div className="flex justify-between items-center pt-2">
+                                        <span className="text-lg font-semibold text-gray-900">Total</span>
+                                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                                            {formatCurrency(pricing.total)}
                                         </span>
                                     </div>
 

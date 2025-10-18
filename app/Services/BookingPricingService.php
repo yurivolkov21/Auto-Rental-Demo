@@ -249,7 +249,7 @@ class BookingPricingService
     public function calculateDiscount(
         ?string $promotionCode,
         float $baseAmount,
-        int $userId,
+        ?int $userId, // Nullable - user may not be logged in when viewing checkout
         int $rentalHours
     ): array {
         // No promotion code provided
@@ -339,22 +339,24 @@ class BookingPricingService
             ];
         }
 
-        // Check per-user usage limit
-        $userUsageCount = DB::table('booking_promotions')
-            ->join('bookings', 'booking_promotions.booking_id', '=', 'bookings.id')
-            ->where('booking_promotions.promotion_id', $promotion->id)
-            ->where('bookings.user_id', $userId)
-            ->count();
+        // Check per-user usage limit (only if user is logged in)
+        if ($userId) {
+            $userUsageCount = DB::table('booking_promotions')
+                ->join('bookings', 'booking_promotions.booking_id', '=', 'bookings.id')
+                ->where('booking_promotions.promotion_id', $promotion->id)
+                ->where('bookings.user_id', $userId)
+                ->count();
 
-        if ($userUsageCount >= $promotion->max_uses_per_user) {
-            return [
-                'is_valid'          => false,
-                'discount_amount'   => 0,
-                'promotion_id'      => $promotion->id,
-                'promotion_code'    => $promotionCode,
-                'promotion_details' => null,
-                'error_message'     => 'You have already used this promotion the maximum number of times.',
-            ];
+            if ($userUsageCount >= $promotion->max_uses_per_user) {
+                return [
+                    'is_valid'          => false,
+                    'discount_amount'   => 0,
+                    'promotion_id'      => $promotion->id,
+                    'promotion_code'    => $promotionCode,
+                    'promotion_details' => null,
+                    'error_message'     => 'You have already used this promotion the maximum number of times.',
+                ];
+            }
         }
 
         // Calculate discount amount
@@ -499,7 +501,7 @@ class BookingPricingService
         $discount = $this->calculateDiscount(
             $data['promotion_code'] ?? null,
             $rental['base_amount'],
-            $data['user_id'],
+            $data['user_id'] ?? null, // Optional - may not have user_id if guest browsing
             $rental['total_hours']
         );
 
@@ -535,8 +537,8 @@ class BookingPricingService
             // Delivery service
             'delivery' => $delivery,
 
-            // Discount/Promotion
-            'discount' => $discount,
+            // Discount/Promotion (full details)
+            'discount_details' => $discount,
 
             // Additional fees
             'extra_fee'     => $this->roundToThousand($extraFee),
@@ -549,6 +551,12 @@ class BookingPricingService
             'deposit_amount'  => $this->roundToThousand($depositAmount),
             'amount_paid'     => $this->roundToThousand($amountPaid),
             'balance_due'     => $this->roundToThousand($balanceDue),
+
+            // Shorthand properties for easier frontend access
+            'base_price'  => $this->roundToThousand($rental['base_amount']),
+            'driver_fee'  => $this->roundToThousand($driver['driver_fee_amount']),
+            'discount'    => $this->roundToThousand($discount['discount_amount'] ?? 0),
+            'total'       => $this->roundToThousand($totalAmount),
 
             // Car details (for reference)
             'car' => [

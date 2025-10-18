@@ -5,6 +5,7 @@ import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import { formatCurrencyCompact } from '@/lib/currency';
 
 interface CarFilterSidebarProps {
     categories: Array<{ id: number; name: string }>;
@@ -206,9 +207,9 @@ export function CarFilterSidebar({
                             step={10}
                             className="w-full"
                         />
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                            <span>${priceValue[0]}</span>
-                            <span>${priceValue[1]}</span>
+                        <div className="flex items-center justify-between text-sm font-medium text-gray-700">
+                            <span>{formatCurrencyCompact(priceValue[0])}</span>
+                            <span>{formatCurrencyCompact(priceValue[1])}</span>
                         </div>
                     </div>
                 </div>

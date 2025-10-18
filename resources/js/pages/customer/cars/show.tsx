@@ -5,6 +5,7 @@ import { BookingCalculator } from '@/components/customer/car/booking-calculator'
 import { CarReviews } from '@/components/customer/car/car-reviews';
 import { CarCard } from '@/components/customer/car/car-card';
 import { Link } from '@inertiajs/react';
+import { formatCurrency } from '@/lib/currency';
 
 interface CarImage {
     id: number;
@@ -155,10 +156,20 @@ export default function CarShow({ car, relatedCars, availableLocations }: CarSho
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm text-gray-500 mb-1">Starting at</p>
-                                        <p className="text-3xl font-bold text-gray-900">
-                                            ${parseFloat(car.daily_rate).toLocaleString()}
-                                            <span className="text-lg text-gray-500 font-normal">
+                                        <p className="text-sm text-gray-500 mb-2">Rental Rates</p>
+
+                                        {/* Hourly Rate */}
+                                        {car.hourly_rate && parseFloat(car.hourly_rate) > 0 && (
+                                            <p className="text-lg font-semibold text-gray-700 mb-1">
+                                                {formatCurrency(parseFloat(car.hourly_rate))}
+                                                <span className="text-sm text-gray-500 font-normal"> /hour</span>
+                                            </p>
+                                        )}
+
+                                        {/* Daily Rate - Main */}
+                                        <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                                            {formatCurrency(parseFloat(car.daily_rate))}
+                                            <span className="text-lg text-gray-500 font-normal ml-1">
                                                 /day
                                             </span>
                                         </p>

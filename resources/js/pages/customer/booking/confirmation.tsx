@@ -2,6 +2,7 @@ import { CustomerLayout } from '@/layouts/customer/customer-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from '@inertiajs/react';
+import { formatCurrency } from '@/lib/currency';
 
 interface Car {
     id: number;
@@ -264,34 +265,34 @@ export default function BookingConfirmation({ booking }: ConfirmationProps) {
                     )}
 
                     {/* Payment Summary */}
-                    <Card className="mb-6">
+                    <Card className="mb-6 shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="pt-6">
-                            <h2 className="text-xl font-semibold mb-4">Payment Summary</h2>
+                            <h2 className="text-xl font-semibold mb-6 text-gray-900">Payment Summary</h2>
 
-                            <div className="space-y-3 mb-4 pb-4 border-b">
+                            <div className="space-y-3 mb-6 pb-6 border-b border-gray-100">
                                 {booking.charges.map((charge, index) => (
                                     <div key={index} className="flex justify-between text-sm">
                                         <span className="text-gray-600">
                                             {charge.description || charge.type}
                                         </span>
-                                        <span className="font-medium">
-                                            ${parseFloat(charge.amount).toLocaleString()}
+                                        <span className="font-semibold text-gray-900">
+                                            {formatCurrency(parseFloat(charge.amount))}
                                         </span>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-lg font-semibold">Total Amount</span>
-                                <span className="text-2xl font-bold text-blue-600">
-                                    ${parseFloat(booking.total_amount).toLocaleString()}
+                            <div className="flex justify-between items-center mb-6 pt-2">
+                                <span className="text-lg font-semibold text-gray-900">Total Amount</span>
+                                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                                    {formatCurrency(parseFloat(booking.total_amount))}
                                 </span>
                             </div>
 
-                            <div className="text-sm text-gray-600">
-                                <p>
-                                    Payment Method:{' '}
-                                    <span className="font-medium capitalize">
+                            <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
+                                <p className="flex items-center justify-between">
+                                    <span>Payment Method:</span>
+                                    <span className="font-semibold text-gray-900 capitalize">
                                         {booking.payment_method.replace('_', ' ')}
                                     </span>
                                 </p>

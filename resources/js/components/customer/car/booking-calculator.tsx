@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { router } from '@inertiajs/react';
+import { formatCurrency } from '@/lib/currency';
 
 interface BookingCalculatorProps {
     carId: number;
@@ -51,12 +52,12 @@ export function BookingCalculator({ carId, dailyRate, availableLocations }: Book
     };
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-24">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 sticky top-24 shadow-lg">
             {/* Price Header */}
-            <div className="mb-6">
-                <p className="text-sm text-gray-500 mb-1">Daily rate</p>
-                <p className="text-3xl font-bold text-gray-900">
-                    ${parseFloat(dailyRate).toLocaleString()}
+            <div className="mb-6 pb-6 border-b border-gray-100">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Daily rate</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                    {formatCurrency(parseFloat(dailyRate))}
                     <span className="text-lg text-gray-500 font-normal">/day</span>
                 </p>
             </div>
@@ -107,24 +108,26 @@ export function BookingCalculator({ carId, dailyRate, availableLocations }: Book
 
             {/* Price Breakdown */}
             {days > 0 && (
-                <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
+                <div className="space-y-3 mb-6 pb-6 border-b border-gray-100">
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">
-                            ${dailyRateNum.toLocaleString()} × {days} {days === 1 ? 'day' : 'days'}
+                            {formatCurrency(dailyRateNum)} × {days} {days === 1 ? 'day' : 'days'}
                         </span>
-                        <span className="font-medium text-gray-900">
-                            ${subtotal.toLocaleString()}
+                        <span className="font-semibold text-gray-900">
+                            {formatCurrency(subtotal)}
                         </span>
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Service fee (5%)</span>
-                        <span className="font-medium text-gray-900">
-                            ${serviceFee.toLocaleString()}
+                        <span className="font-semibold text-gray-900">
+                            {formatCurrency(serviceFee)}
                         </span>
                     </div>
-                    <div className="flex justify-between text-base font-semibold pt-3 border-t border-gray-200">
+                    <div className="flex justify-between items-center text-lg font-bold pt-4 border-t border-gray-200">
                         <span className="text-gray-900">Total</span>
-                        <span className="text-gray-900">${total.toLocaleString()}</span>
+                        <span className="text-2xl bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                            {formatCurrency(total)}
+                        </span>
                     </div>
                 </div>
             )}
@@ -133,13 +136,13 @@ export function BookingCalculator({ carId, dailyRate, availableLocations }: Book
             <Button
                 onClick={handleBookNow}
                 disabled={!pickupDate || !returnDate || !locationId}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
             >
                 Book Now
             </Button>
 
             <p className="text-xs text-gray-500 text-center mt-4">
-                You won't be charged yet
+                ✓ You won't be charged yet
             </p>
         </div>
     );

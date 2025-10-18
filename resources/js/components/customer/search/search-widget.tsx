@@ -51,18 +51,18 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
                     {/* Pickup Location */}
                     <div className="space-y-2">
-                        <Label htmlFor="pickupLocation" className="text-sm font-medium text-gray-700">
+                        <Label htmlFor="pickupLocation" className="text-sm font-medium text-gray-900">
                             Pickup Location
                         </Label>
                         <select
                             id="pickupLocation"
                             value={pickupLocation}
                             onChange={(e) => setPickupLocation(e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             required
                             aria-label="Select pickup location"
                         >
-                            <option value="">Select location</option>
+                            <option value="" className="text-gray-500">Select location</option>
                             {locations
                                 .filter((loc) => loc.is_popular)
                                 .map((location) => (
@@ -87,7 +87,7 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
 
                     {/* Pickup Date */}
                     <div className="space-y-2">
-                        <Label htmlFor="pickupDate" className="text-sm font-medium text-gray-700">
+                        <Label htmlFor="pickupDate" className="text-sm font-medium text-gray-900">
                             Pickup Date
                         </Label>
                         <input
@@ -96,7 +96,7 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
                             value={pickupDate}
                             onChange={(e) => setPickupDate(e.target.value)}
                             min={today}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             required
                             aria-label="Select pickup date"
                         />
@@ -104,7 +104,7 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
 
                     {/* Return Date */}
                     <div className="space-y-2">
-                        <Label htmlFor="returnDate" className="text-sm font-medium text-gray-700">
+                        <Label htmlFor="returnDate" className="text-sm font-medium text-gray-900">
                             Return Date
                         </Label>
                         <input
@@ -113,7 +113,7 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
                             value={returnDate}
                             onChange={(e) => setReturnDate(e.target.value)}
                             min={pickupDate || today}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             required
                             aria-label="Select return date"
                         />
@@ -121,12 +121,12 @@ export function SearchWidget({ locations, className = '' }: SearchWidgetProps) {
 
                     {/* Search Button */}
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700 opacity-0 hidden md:block">
+                        <Label className="text-sm font-medium text-transparent select-none hidden md:block">
                             Search
                         </Label>
                         <Button
                             type="submit"
-                            className="w-full h-12 md:h-[50px] bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-lg transition-all shadow-lg hover:shadow-xl"
+                            className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-lg transition-all shadow-lg hover:shadow-xl"
                         >
                             Search Cars
                         </Button>
