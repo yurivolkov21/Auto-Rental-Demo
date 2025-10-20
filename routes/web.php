@@ -6,9 +6,18 @@ use App\Http\Controllers\Google\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Customer\AboutController;
+use App\Http\Controllers\Customer\ContactController;
+use App\Http\Controllers\Customer\ServiceController;
+use App\Http\Controllers\Customer\LocationController;
 
 // Customer Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/services', [ServiceController::class, 'index'])->name('services');
+Route::get('/locations', [LocationController::class, 'index'])->name('locations');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Car browsing routes (public)
 Route::prefix('cars')->name('cars.')->group(function () {

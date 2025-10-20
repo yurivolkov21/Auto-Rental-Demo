@@ -64,7 +64,7 @@ class BookingPricingService
         // Get car pricing configuration
         $hourlyRate = (float) $car->hourly_rate;
         $dailyRate = (float) $car->daily_rate;
-        $threshold = $car->daily_hour_threshold ?? 10;
+        $threshold = $car->daily_hour_threshold ?? 24;
 
         // Convert hours to days based on threshold
         $totalDays = (int) floor($totalHours / $threshold);
@@ -120,7 +120,7 @@ class BookingPricingService
         // Get driver pricing configuration
         $hourlyFee = (float) $driverProfile->hourly_fee;
         $dailyFee = (float) $driverProfile->daily_fee;
-        $threshold = $driverProfile->daily_hour_threshold ?? 10;
+        $threshold = $driverProfile->daily_hour_threshold ?? 24;
 
         // Convert hours to days
         $driverDays = (int) floor($totalHours / $threshold);

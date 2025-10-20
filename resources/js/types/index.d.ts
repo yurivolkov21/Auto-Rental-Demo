@@ -7,6 +7,9 @@ export * from './models/driver-profile';
 // Export booking types
 export * from './models/booking';
 
+// Export contact types
+export * from './models/contact';
+
 export interface Auth {
     user: User;
 }
