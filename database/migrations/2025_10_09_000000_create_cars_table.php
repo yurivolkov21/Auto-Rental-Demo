@@ -70,7 +70,7 @@ return new class extends Migration
             // Pricing Configuration (Hybrid: Hourly + Daily with auto-conversion)
             $table->decimal('hourly_rate', 10, 2); // Hourly rate for short rentals (required)
             $table->decimal('daily_rate', 10, 2); // Daily rate for long rentals (required)
-            $table->unsignedTinyInteger('daily_hour_threshold')->default(10);     // Auto-convert to daily after X hours (e.g., 10h = 1 day)
+            $table->unsignedTinyInteger('daily_hour_threshold')->default(24);     // Auto-convert to daily after X hours (e.g., 24h = 1 day)
             $table->decimal('deposit_amount', 10, 2)->default(0); // Security deposit
             $table->unsignedSmallInteger('min_rental_hours')->default(4);       // Minimum rental duration (e.g., 4 hours)
             $table->decimal('overtime_fee_per_hour', 10, 2)->default(0); // Late return fee per hour

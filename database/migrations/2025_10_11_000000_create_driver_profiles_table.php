@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('hourly_fee', 10, 2)->default(0);  // Driver fee per hour (e.g., 50,000 VND)
             $table->decimal('daily_fee', 10, 2)->default(0);  // Driver fee per day (e.g., 400,000 VND)
             $table->decimal('overtime_fee_per_hour', 10, 2)->default(0); // Extra fee for overtime work
-            $table->unsignedTinyInteger('daily_hour_threshold')->default(10);          // Hours threshold to switch to daily rate (default: 10 hours)
+            $table->unsignedTinyInteger('daily_hour_threshold')->default(24);          // Hours threshold to switch to daily rate (default: 24 hours)
 
             // === AVAILABILITY & STATUS ===
             $table->enum('status', ['available', 'on_duty', 'off_duty', 'suspended'])->default('available'); // Current driver status
