@@ -25,8 +25,8 @@ Route::prefix('cars')->name('cars.')->group(function () {
     Route::get('/{id}', [CarController::class, 'show'])->name('show');
 });
 
-// Booking routes (guest allowed)
-Route::prefix('booking')->name('booking.')->group(function () {
+// Booking routes (require authentication)
+Route::middleware(['auth'])->prefix('booking')->name('booking.')->group(function () {
     Route::get('/checkout', [BookingController::class, 'checkout'])->name('checkout');
     Route::post('/calculate', [BookingController::class, 'calculate'])->name('calculate');
     Route::post('/validate-promotion', [BookingController::class, 'validatePromotion'])->name('validate-promotion');

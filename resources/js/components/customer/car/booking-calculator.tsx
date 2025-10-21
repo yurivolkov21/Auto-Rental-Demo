@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { formatCurrency } from '@/lib/currency';
 
 interface BookingCalculatorProps {
@@ -15,8 +15,13 @@ interface BookingCalculatorProps {
  * Booking Calculator Widget
  * Sticky sidebar widget for quick booking
  * Shows price calculation and CTA
+ * REQUIRES AUTHENTICATION to proceed to checkout
  */
 export function BookingCalculator({ carId, dailyRate, availableLocations }: BookingCalculatorProps) {
+    const page = usePage();
+    // Auth may be undefined for guest users
+    const isAuthenticated = !!(page.props.auth && typeof page.props.auth === 'object' && 'user' in page.props.auth && page.props.auth.user);
+
     const [pickupDate, setPickupDate] = useState('');
     const [returnDate, setReturnDate] = useState('');
     const [locationId, setLocationId] = useState(availableLocations[0]?.id.toString() || '');
@@ -38,6 +43,30 @@ export function BookingCalculator({ carId, dailyRate, availableLocations }: Book
     const handleBookNow = () => {
         if (!pickupDate || !returnDate || !locationId) {
             alert('Please fill in all fields');
+            return;
+        }
+
+        // Check if user is authenticated
+        if (!isAuthenticated) {
+            // Save booking params to session for after login
+            const bookingParams = {
+                car_id: carId,
+                pickup_date: pickupDate,
+                return_date: returnDate,
+                pickup_location_id: locationId,
+                return_location_id: locationId,
+            };
+            sessionStorage.setItem('pendingBooking', JSON.stringify(bookingParams));
+
+            // Redirect to login with return URL
+            const returnUrl = `/booking/checkout?${new URLSearchParams({
+                car_id: carId.toString(),
+                pickup_date: pickupDate,
+                return_date: returnDate,
+                pickup_location_id: locationId,
+            }).toString()}`;
+
+            router.visit(`/login?redirect=${encodeURIComponent(returnUrl)}`);
             return;
         }
 
@@ -138,11 +167,11 @@ export function BookingCalculator({ carId, dailyRate, availableLocations }: Book
                 disabled={!pickupDate || !returnDate || !locationId}
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
             >
-                Book Now
+                {isAuthenticated ? 'Book Now' : 'Sign In to Book'}
             </Button>
 
             <p className="text-xs text-gray-500 text-center mt-4">
-                ✓ You won't be charged yet
+                {isAuthenticated ? '✓ You won\'t be charged yet' : '🔒 Login required to complete booking'}
             </p>
         </div>
     );

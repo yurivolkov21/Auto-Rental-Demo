@@ -62,6 +62,10 @@ class BookingController extends Controller
             'car_id' => $car->id,
             'pickup_datetime' => $request->pickup_date . ' 09:00:00',
             'return_datetime' => $request->return_date . ' 18:00:00',
+            'pickup_location_id' => $request->pickup_location_id ?? $car->location_id,
+            'with_driver' => false, // No driver pre-selected in checkout
+            'driver_profile_id' => null,
+            'user_id' => Auth::id(),
         ]);
 
         // Transform car data
@@ -102,11 +106,24 @@ class BookingController extends Controller
             'car_id' => 'required|exists:cars,id',
             'pickup_datetime' => 'required|date',
             'return_datetime' => 'required|date|after:pickup_datetime',
+            'pickup_location_id' => 'nullable|exists:locations,id',
             'driver_id' => 'nullable|exists:driver_profiles,id',
             'promotion_code' => 'nullable|string',
         ]);
 
-        $pricing = $this->pricingService->calculateTotalBreakdown($request->all());
+        // Map request data to service expected format
+        $pricingData = [
+            'car_id' => $request->car_id,
+            'pickup_datetime' => $request->pickup_datetime,
+            'return_datetime' => $request->return_datetime,
+            'pickup_location_id' => $request->pickup_location_id,
+            'with_driver' => !empty($request->driver_id),
+            'driver_profile_id' => $request->driver_id,
+            'promotion_code' => $request->promotion_code,
+            'user_id' => Auth::id(), // For per-user promotion limit check
+        ];
+
+        $pricing = $this->pricingService->calculateTotalBreakdown($pricingData);
 
         return response()->json($pricing);
     }
@@ -178,15 +195,10 @@ class BookingController extends Controller
 
     /**
      * Store new booking
-     * Requires authentication
+     * Authentication required via route middleware
      */
     public function store(Request $request)
     {
-        // Require authentication
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please login to complete your booking');
-        }
-
         $validated = $request->validate([
             'car_id' => 'required|exists:cars,id',
             'pickup_datetime' => 'required|date|after_or_equal:now',
@@ -225,8 +237,11 @@ class BookingController extends Controller
                 'car_id' => $validated['car_id'],
                 'pickup_datetime' => $validated['pickup_datetime'],
                 'return_datetime' => $validated['return_datetime'],
-                'driver_id' => $validated['driver_id'] ?? null,
+                'pickup_location_id' => $validated['pickup_location_id'],
+                'with_driver' => !empty($validated['driver_id']),
+                'driver_profile_id' => $validated['driver_id'] ?? null,
                 'promotion_code' => $validated['promotion_code'] ?? null,
+                'user_id' => Auth::id(),
             ]);
 
             // Get car owner_id
@@ -262,8 +277,8 @@ class BookingController extends Controller
                 $booking->update([
                     'with_driver' => true,
                     'driver_profile_id' => $validated['driver_id'],
-                    'driver_hourly_fee' => $driver->hourly_rate,
-                    'driver_daily_fee' => $driver->daily_rate,
+                    'driver_hourly_fee' => $driver->hourly_fee,
+                    'driver_daily_fee' => $driver->daily_fee,
                 ]);
             }
 
@@ -308,6 +323,7 @@ class BookingController extends Controller
 
     /**
      * Show booking confirmation page
+     * Authentication required via route middleware
      */
     public function confirmation(Request $request, int $id): Response
     {

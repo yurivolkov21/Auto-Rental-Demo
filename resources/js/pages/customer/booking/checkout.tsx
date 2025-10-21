@@ -114,6 +114,7 @@ export default function BookingCheckout({
                     car_id: car.id,
                     pickup_datetime: pickupDatetime,
                     return_datetime: returnDatetime,
+                    pickup_location_id: parseInt(pickupLocationId),
                     driver_id: selectedDriverId || null,
                     promotion_code: promoApplied ? promoCode : null,
                 });
@@ -126,7 +127,7 @@ export default function BookingCheckout({
         };
 
         calculatePricing();
-    }, [pickupDatetime, returnDatetime, selectedDriverId, promoApplied, car.id, promoCode]);
+    }, [pickupDatetime, returnDatetime, pickupLocationId, selectedDriverId, promoApplied, car.id, promoCode]);
 
     const handleApplyPromo = async () => {
         if (!promoCode.trim()) return;
