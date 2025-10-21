@@ -667,19 +667,19 @@ export default function BookingCheckout({
                                                 {formatCurrency(pricing.base_price)}
                                             </span>
                                         </div>
-                                        {pricing.driver_fee && pricing.driver_fee > 0 && (
+                                        {(pricing.driver_fee ?? 0) > 0 && (
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-gray-600">Driver service</span>
                                                 <span className="font-semibold text-gray-900">
-                                                    {formatCurrency(pricing.driver_fee)}
+                                                    {formatCurrency(pricing.driver_fee ?? 0)}
                                                 </span>
                                             </div>
                                         )}
-                                        {pricing.discount && pricing.discount > 0 && (
+                                        {(pricing.discount ?? 0) > 0 && (
                                             <div className="flex justify-between text-sm text-green-600">
                                                 <span>Discount</span>
                                                 <span className="font-semibold">
-                                                    -{formatCurrency(pricing.discount)}
+                                                    -{formatCurrency(pricing.discount ?? 0)}
                                                 </span>
                                             </div>
                                         )}
