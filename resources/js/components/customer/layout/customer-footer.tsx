@@ -109,7 +109,7 @@ export function CustomerFooter() {
                             </div>
                             <div>
                                 <p className="font-medium text-gray-900">Email</p>
-                                <p className="text-gray-600">info@autorental.vn</p>
+                                <p className="text-gray-600">laravel.carbook.app@gmail.com</p>
                                 <p className="text-xs text-gray-500 mt-1">24/7 Support</p>
                             </div>
                             <div>
