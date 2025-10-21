@@ -48,7 +48,7 @@ return new class extends Migration
             ])->default('active'); // Account status
 
             // Status tracking (for suspended/banned accounts)
-            $table->text('status_note')->nullable(); // Reason for status change (required for suspended/banned)
+            $table->text('status_note')->nullable();                // Reason for status change (required for suspended/banned)
             $table->timestamp('status_changed_at')->nullable();    // When status was last changed
             $table->foreignId('status_changed_by_id')->nullable() // Admin who changed the status
                   ->constrained('users')->nullOnDelete();

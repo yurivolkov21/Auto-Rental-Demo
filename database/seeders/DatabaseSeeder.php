@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,17 +11,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a default admin user for testing
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'laravel.carbook.app@gmail.com',
-            'role' => 'admin',
-            'email_verified_at' => now(),
+        $this->command->info('🌱 Starting database seeding...');
+        $this->command->newLine();
+
+        // Seed users (admin, customers, owners, drivers)
+        $this->call([
+            UserSeeder::class,
+            UserVerificationSeeder::class,
+            LocationSeeder::class,
+            CarCategorySeeder::class,
+            CarBrandSeeder::class,
+            CarSeeder::class,
+            CarImageSeeder::class,
+            DriverProfileSeeder::class, // Driver profiles (20 profiles for 20 drivers)
+            PromotionSeeder::class,     // Promotions (15 promotions: active, upcoming, archived, paused)
         ]);
 
-        $this->command->info('✅ Admin user created: laravel.carbook.app@gmail.com / password');
-        $this->command->info('');
-        $this->command->info('All factories and seeders have been removed.');
-        $this->command->info('You can now create new seeders with fresh data structure.');
+        $this->command->newLine();
+        $this->command->info('🎉 Database seeding completed successfully!');
     }
 }
