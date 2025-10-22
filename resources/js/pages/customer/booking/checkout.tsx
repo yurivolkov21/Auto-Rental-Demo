@@ -102,7 +102,7 @@ export default function BookingCheckout({
 
     // Step 2: Payment & Requests
     const [specialRequests, setSpecialRequests] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState<string>('credit_card');
+    const [paymentMethod, setPaymentMethod] = useState<string>('paypal'); // Default to PayPal (only available method)
     const [acceptTerms, setAcceptTerms] = useState(false);
 
     // Recalculate pricing when inputs change
@@ -157,6 +157,12 @@ export default function BookingCheckout({
     };
 
     const handleSubmit = async () => {
+        // Validate payment method is available
+        if (paymentMethod !== 'paypal') {
+            alert('Please select PayPal as your payment method. Other payment methods are coming soon!');
+            return;
+        }
+
         try {
             // Step 1: Create booking
             const bookingResponse = await axios.post('/booking/store', {
@@ -568,24 +574,29 @@ export default function BookingCheckout({
                                                             value: 'credit_card',
                                                             label: 'Credit/Debit Card',
                                                             desc: 'Pay securely with Visa, Mastercard, or Amex',
+                                                            available: false,
                                                         },
                                                         {
                                                             value: 'paypal',
                                                             label: 'PayPal',
                                                             desc: 'Fast and secure payment via PayPal',
+                                                            available: true,
                                                         },
                                                         {
                                                             value: 'bank_transfer',
                                                             label: 'Bank Transfer',
                                                             desc: 'Direct transfer to our bank account',
+                                                            available: false,
                                                         },
                                                     ].map((method) => (
                                                         <label
                                                             key={method.value}
-                                                            className={`flex items-start p-4 border rounded-lg cursor-pointer transition-colors ${
-                                                                paymentMethod === method.value
-                                                                    ? 'border-blue-600 bg-blue-50'
-                                                                    : 'border-gray-300 hover:border-gray-400'
+                                                            className={`flex items-start p-4 border rounded-lg transition-colors ${
+                                                                method.available
+                                                                    ? paymentMethod === method.value
+                                                                        ? 'border-blue-600 bg-blue-50 cursor-pointer'
+                                                                        : 'border-gray-300 hover:border-gray-400 cursor-pointer'
+                                                                    : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
                                                             }`}
                                                         >
                                                             <input
@@ -593,22 +604,39 @@ export default function BookingCheckout({
                                                                 name="paymentMethod"
                                                                 value={method.value}
                                                                 checked={paymentMethod === method.value}
+                                                                disabled={!method.available}
                                                                 onChange={(e) =>
                                                                     setPaymentMethod(e.target.value)
                                                                 }
                                                                 className="mt-1 mr-3"
                                                             />
-                                                            <div>
-                                                                <div className="font-medium text-gray-900">
-                                                                    {method.label}
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="font-medium text-gray-900">
+                                                                        {method.label}
+                                                                    </span>
+                                                                    {!method.available && (
+                                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                                                            Coming Soon
+                                                                        </span>
+                                                                    )}
                                                                 </div>
-                                                                <div className="text-sm text-gray-600">
+                                                                <div className="text-sm text-gray-600 mt-1">
                                                                     {method.desc}
                                                                 </div>
                                                             </div>
                                                         </label>
                                                     ))}
                                                 </div>
+                                                
+                                                {/* Payment Method Info */}
+                                                {paymentMethod === 'paypal' && (
+                                                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                        <p className="text-sm text-blue-800">
+                                                            <strong>Note:</strong> You will be redirected to PayPal to complete your payment securely. After successful payment, you'll receive a confirmation email.
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             {/* Special Requests */}
