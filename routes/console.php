@@ -15,3 +15,9 @@ Schedule::command('currency:refresh')
     ->when(fn () => !config('app.use_fixed_exchange_rate', true))
     ->onSuccess(fn () => Log::info('Exchange rate refreshed successfully'))
     ->onFailure(fn () => Log::error('Failed to refresh exchange rate'));
+
+// Schedule booking reminders (24 hours before pickup)
+Schedule::command('bookings:send-reminders')
+    ->hourly()
+    ->onSuccess(fn () => Log::info('Booking reminders sent successfully'))
+    ->onFailure(fn () => Log::error('Failed to send booking reminders'));

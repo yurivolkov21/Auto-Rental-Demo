@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingConfirmation;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\PayPalService;
@@ -10,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -62,8 +64,8 @@ class PaymentController extends Controller
                     'order_id' => $orderId,
                 ]);
 
-                // TODO: Send confirmation email
-                // Mail::to($booking->user->email)->send(new BookingConfirmation($booking));
+                // Send confirmation email (queued)
+                Mail::to($booking->user->email)->queue(new BookingConfirmation($booking));
 
                 return redirect()->route('booking.confirmation', $booking->id)
                     ->with('success', 'Payment completed successfully! Your booking is confirmed.');

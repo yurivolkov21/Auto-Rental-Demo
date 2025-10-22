@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Customer;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Booking;
+use App\Mail\BookingCancelled;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -144,8 +146,10 @@ class BookingController extends Controller
             'cancellation_reason' => $request->reason,
         ]);
 
+        // Send cancellation email notification (queued)
+        Mail::to($booking->user->email)->queue(new BookingCancelled($booking, $request->reason));
+
         // TODO: Process refund if payment was made
-        // TODO: Send cancellation email notification
         // TODO: Notify car owner about cancellation
 
         return redirect()->route('customer.bookings.show', $booking->id)->with('success',
