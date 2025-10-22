@@ -26,6 +26,7 @@ interface Booking {
     id: number;
     reference_number: string;
     status: string;
+    payment_status: string;
     pickup_datetime: string;
     return_datetime: string;
     total_amount: string;
@@ -111,7 +112,7 @@ export default function BookingConfirmation({ booking }: ConfirmationProps) {
                     </div>
 
                     {/* Booking Status */}
-                    <div className="text-center mb-8">
+                    <div className="text-center mb-8 flex justify-center gap-3">
                         <span
                             className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusBadge(
                                 booking.status
@@ -119,6 +120,19 @@ export default function BookingConfirmation({ booking }: ConfirmationProps) {
                         >
                             {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                         </span>
+                        {booking.payment_status && (
+                            <span
+                                className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
+                                    booking.payment_status === 'paid'
+                                        ? 'bg-green-100 text-green-800 border-green-200'
+                                        : booking.payment_status === 'pending'
+                                          ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                          : 'bg-red-100 text-red-800 border-red-200'
+                                } border`}
+                            >
+                                Payment: {booking.payment_status.charAt(0).toUpperCase() + booking.payment_status.slice(1)}
+                            </span>
+                        )}
                     </div>
 
                     {/* Car & Dates Card */}
@@ -360,7 +374,7 @@ export default function BookingConfirmation({ booking }: ConfirmationProps) {
                         >
                             Download Receipt
                         </Button>
-                        <Link href="/dashboard/bookings">
+                        <Link href="/customer/bookings">
                             <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
                                 View My Bookings
                             </Button>

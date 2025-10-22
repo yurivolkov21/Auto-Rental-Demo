@@ -34,9 +34,25 @@ Route::middleware(['auth'])->prefix('booking')->name('booking.')->group(function
     Route::get('/{id}/confirmation', [BookingController::class, 'confirmation'])->name('confirmation');
 });
 
+// Payment routes (require authentication)
+Route::middleware(['auth'])->prefix('payment')->name('payment.')->group(function () {
+    Route::post('/process', [\App\Http\Controllers\PaymentController::class, 'processPayment'])->name('process');
+    Route::get('/paypal/success', [\App\Http\Controllers\PaymentController::class, 'paypalSuccess'])->name('paypal.success');
+    Route::get('/paypal/cancel', [\App\Http\Controllers\PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
+    Route::get('/{id}', [\App\Http\Controllers\PaymentController::class, 'show'])->name('show');
+});
+
+// Customer Dashboard routes (require authentication)
+Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/bookings', [\App\Http\Controllers\Customer\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/{id}', [\App\Http\Controllers\Customer\BookingController::class, 'show'])->name('bookings.show');
+    Route::post('/bookings/{id}/cancel', [\App\Http\Controllers\Customer\BookingController::class, 'cancel'])->name('bookings.cancel');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        return redirect()->route('customer.dashboard');
     })->name('dashboard');
 });
 

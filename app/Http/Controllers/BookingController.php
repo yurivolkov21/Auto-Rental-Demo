@@ -312,12 +312,23 @@ class BookingController extends Controller
 
             DB::commit();
 
-            // Redirect to confirmation page
-            return redirect()->route('booking.confirmation', $booking->id);
+            // Return booking ID for payment processing
+            // Frontend will then call /payment/process with booking_id
+            return response()->json([
+                'success' => true,
+                'booking_id' => $booking->id,
+                'booking_code' => $booking->booking_code,
+                'total_amount' => $booking->total_amount,
+                'payment_method' => $validated['payment_method'],
+                'message' => 'Booking created successfully. Proceed to payment.',
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 

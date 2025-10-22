@@ -156,18 +156,54 @@ export default function BookingCheckout({
         setPromoMessage('');
     };
 
-    const handleSubmit = () => {
-        router.post('/booking/store', {
-            car_id: car.id,
-            pickup_datetime: pickupDatetime,
-            return_datetime: returnDatetime,
-            pickup_location_id: pickupLocationId,
-            return_location_id: returnLocationId,
-            driver_id: selectedDriverId || null,
-            promotion_code: promoApplied ? promoCode : null,
-            payment_method: paymentMethod,
-            special_requests: specialRequests,
-        });
+    const handleSubmit = async () => {
+        try {
+            // Step 1: Create booking
+            const bookingResponse = await axios.post('/booking/store', {
+                car_id: car.id,
+                pickup_datetime: pickupDatetime,
+                return_datetime: returnDatetime,
+                pickup_location_id: pickupLocationId,
+                return_location_id: returnLocationId,
+                driver_id: selectedDriverId || null,
+                promotion_code: promoApplied ? promoCode : null,
+                payment_method: paymentMethod,
+                special_requests: specialRequests,
+            });
+
+            if (!bookingResponse.data.success) {
+                alert('Failed to create booking: ' + bookingResponse.data.message);
+                return;
+            }
+
+            const bookingId = bookingResponse.data.booking_id;
+
+            // Step 2: Process payment based on method
+            if (paymentMethod === 'paypal') {
+                // Initiate PayPal payment
+                const paymentResponse = await axios.post('/payment/process', {
+                    booking_id: bookingId,
+                    payment_method: 'paypal',
+                    payment_type: 'full_payment', // or 'deposit'
+                });
+
+                if (paymentResponse.data.success && paymentResponse.data.approval_url) {
+                    // Redirect to PayPal for payment
+                    window.location.href = paymentResponse.data.approval_url;
+                } else {
+                    alert('Failed to initiate PayPal payment. Please try again.');
+                }
+            } else {
+                // For other payment methods (credit_card, bank_transfer)
+                // Redirect directly to confirmation page
+                // In production, these would have their own payment flows
+                router.visit(`/booking/${bookingId}/confirmation`);
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            const err = error as { response?: { data?: { message?: string } } };
+            alert('Error: ' + (err.response?.data?.message || 'Failed to process booking'));
+        }
     };
 
     const goToStep = (step: Step) => {
